@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html class="light" lang="en" ng-app="Nalam360App">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Nalam360 | My Profile</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <!-- Local CSS Reference -->
+    <link rel="stylesheet" href="index.css"/>
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#00645a",
+                        "primary-container": "#087f73",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#d6fff7",
+                        "primary-fixed": "#95f3e4",
+                        "primary-fixed-dim": "#78d7c8",
+                        "secondary": "#0058bb",
+                        "secondary-container": "#1f71e2",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#d8e2ff",
+                        "tertiary": "#4d5b59",
+                        "tertiary-container": "#657471",
+                        "background": "#e4fff9",
+                        "surface": "#e4fff9",
+                        "surface-dim": "#c2e0da",
+                        "surface-bright": "#e4fff9",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#dbfaf4",
+                        "surface-container": "#d5f4ee",
+                        "surface-container-high": "#d0efe8",
+                        "surface-container-highest": "#cae9e3",
+                        "surface-variant": "#cae9e3",
+                        "on-background": "#02201c",
+                        "on-surface": "#02201c",
+                        "on-surface-variant": "#3e4947",
+                        "outline": "#6e7977",
+                        "outline-variant": "#bdc9c6",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#193531"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "16px",
+                        "xl": "24px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "base": "8px",
+                        "sm": "12px",
+                        "margin-mobile": "16px",
+                        "md": "24px",
+                        "gutter": "24px",
+                        "lg": "40px",
+                        "xl": "64px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Plus Jakarta Sans", "sans-serif"],
+                        "h2": ["Plus Jakarta Sans", "sans-serif"],
+                        "h3": ["Plus Jakarta Sans", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "caption": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "h1": ["2.5rem", { lineHeight: "1.2", fontWeight: "800" }],
+                        "h1-mobile": ["1.875rem", { lineHeight: "1.25", fontWeight: "800" }],
+                        "h2": ["1.75rem", { lineHeight: "1.3", fontWeight: "700" }],
+                        "h3": ["1.25rem", { lineHeight: "1.4", fontWeight: "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-surface overflow-x-hidden" ng-controller="PatientController">
+
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full w-[280px] bg-primary dark:bg-inverse-surface hidden lg:flex flex-col py-md gap-base shadow-lg z-[60] transition-all duration-200 ease-in-out">
+    <div class="px-gutter mb-lg">
+        <h1 class="font-h2 text-h2 text-on-primary">Nalam360</h1>
+        <p class="text-on-primary/70 font-label-md">Patient Portal</p>
+    </div>
+    <nav class="flex-1 flex flex-col gap-1 custom-scrollbar overflow-y-auto px-2">
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="dashboard.html">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="font-label-md">Dashboard</span>
+        </a>
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="healthcare.html">
+            <span class="material-symbols-outlined">map</span>
+            <span class="font-label-md">Find Healthcare</span>
+        </a>
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="healthcare.html#doctors-tab">
+            <span class="material-symbols-outlined">medical_services</span>
+            <span class="font-label-md">Doctors</span>
+        </a>
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="healthcare.html#camps-tab">
+            <span class="material-symbols-outlined">event</span>
+            <span class="font-label-md">Appointments</span>
+        </a>
+        <a class="flex items-center gap-sm p-3 bg-primary-container text-on-primary-container rounded-lg mx-2 transition-all duration-200" href="profile.html">
+            <span class="material-symbols-outlined">person</span>
+            <span class="font-label-md">My Profile</span>
+        </a>
+    </nav>
+    <div class="px-2 mt-auto border-t border-on-primary/10 pt-base">
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="index.html">
+            <span class="material-symbols-outlined">logout</span>
+            <span class="font-label-md">Logout</span>
+        </a>
+    </div>
+</aside>
+
+<!-- Top App Bar for Mobile -->
+<header class="lg:hidden flex items-center justify-between p-margin-mobile bg-primary text-on-primary shadow-md sticky top-0 z-50">
+    <div class="flex items-center gap-sm">
+        <h1 class="font-h3 text-h3">My Profile</h1>
+    </div>
+    <div class="flex items-center gap-sm">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-tr {{patient.bgGradient}} flex items-center justify-center text-white font-bold shadow-sm">
+            {{patient.initials}}
+        </div>
+    </div>
+</header>
+
+<!-- Main Workspace -->
+<main class="lg:ml-[280px] min-h-screen flex flex-col pt-4 lg:pt-0 pb-20 lg:pb-0 transition-all duration-200">
+    
+    <!-- Desktop Header -->
+    <header class="hidden lg:flex justify-between items-center px-gutter py-md bg-surface/80 backdrop-blur-md border-b border-outline-variant sticky top-0 z-40">
+        <div>
+            <h1 class="font-h2 text-h2 text-on-surface">My Profile</h1>
+            <p class="text-on-surface-variant font-label-md">Manage your personal and health information</p>
+        </div>
+        <div class="flex items-center gap-md">
+            <div class="flex items-center gap-sm p-2 bg-surface-container-high rounded-full border border-outline-variant pr-4 shadow-sm hover:shadow-md transition-shadow">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr {{patient.bgGradient}} flex items-center justify-center text-white font-bold shadow-sm">
+                    {{patient.initials}}
+                </div>
+                <span class="font-label-md text-on-surface font-semibold">{{patient.name}}</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="p-margin-mobile lg:p-gutter max-w-container-max mx-auto w-full flex-1 flex flex-col gap-lg">
+        
+        <!-- Profile Form Card -->
+        <div class="bg-surface-container-lowest rounded-xl p-md lg:p-lg border border-outline-variant shadow-sm flex flex-col md:flex-row gap-xl items-start">
+            
+            <div class="w-full md:w-1/3 flex flex-col items-center gap-md">
+                <div class="w-32 h-32 rounded-full bg-gradient-to-tr {{patient.bgGradient}} flex items-center justify-center text-white font-h1 text-4xl shadow-md">
+                    {{patient.name.charAt(0) || '?'}}
+                </div>
+                <div class="text-center">
+                    <h2 class="font-h3 text-h3 text-on-surface">{{patient.name}}</h2>
+                    <p class="text-on-surface-variant font-label-md">{{patient.relationship}}</p>
+                </div>
+            </div>
+
+            <div class="w-full md:w-2/3 flex flex-col gap-md">
+                <h3 class="font-h3 text-h3 text-primary border-b border-outline-variant pb-2 mb-2">Personal Details</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-label-md text-on-surface-variant">Full Name</label>
+                        <input type="text" ng-model="patient.name" ng-change="saveProfile()" class="p-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md" placeholder="Enter name">
+                    </div>
+                    
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-label-md text-on-surface-variant">Mobile Number</label>
+                        <input type="text" ng-model="patient.mobile" ng-change="saveProfile()" class="p-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md" placeholder="Enter mobile">
+                    </div>
+
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-label-md text-on-surface-variant">Village/Location</label>
+                        <input type="text" ng-model="patient.village" ng-change="saveProfile()" class="p-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md" placeholder="Enter village">
+                    </div>
+
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-label-md text-on-surface-variant">Gender</label>
+                        <select ng-model="patient.gender" ng-change="saveProfile()" class="p-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer Shell -->
+    <footer class="w-full bg-surface-dim dark:bg-surface-container-lowest border-t border-outline-variant dark:border-outline py-lg mt-auto">
+        <div class="max-w-container-max mx-auto px-gutter text-center">
+            <p class="text-on-surface-variant font-label-md mb-xs">Nalam360 - Empowering Rural Health</p>
+            <p class="text-on-surface-variant/70 text-[12px]">Laboratory Project Demonstration</p>
+        </div>
+    </footer>
+</main>
+
+<!-- Mobile Bottom Navigation Shell -->
+<nav class="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-white flex justify-around items-center border-t border-outline-variant z-50 shadow-lg">
+    <a class="flex flex-col items-center text-on-surface-variant" href="dashboard.html">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span class="text-[10px]">Home</span>
+    </a>
+    <a class="flex flex-col items-center text-on-surface-variant" href="healthcare.html">
+        <span class="material-symbols-outlined">map</span>
+        <span class="text-[10px]">Find Care</span>
+    </a>
+    <a class="flex flex-col items-center text-primary" href="profile.html">
+        <span class="material-symbols-outlined">person</span>
+        <span class="text-[10px] font-bold">Profile</span>
+    </a>
+    <button class="flex flex-col items-center text-error" ng-click="directivesDemo.showEmergencyCard = !directivesDemo.showEmergencyCard">
+        <span class="material-symbols-outlined text-error">emergency</span>
+        <span class="text-[10px] font-bold">Emergency</span>
+    </button>
+</nav>
+
+<!-- AngularJS Core -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-animate.min.js"></script>
+
+<!-- Nalam360 App Logic -->
+<script src="app.js"></script>
+
+</body>
+</html>

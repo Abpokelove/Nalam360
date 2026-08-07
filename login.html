@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" class="light" ng-app="Nalam360App">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Nalam360 | Patient Login</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <!-- Local CSS Reference -->
+    <link rel="stylesheet" href="index.css"/>
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#00645a",
+                        "primary-container": "#087f73",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#d6fff7",
+                        "primary-fixed": "#95f3e4",
+                        "primary-fixed-dim": "#78d7c8",
+                        "secondary": "#0058bb",
+                        "secondary-container": "#1f71e2",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#d8e2ff",
+                        "tertiary": "#4d5b59",
+                        "tertiary-container": "#657471",
+                        "background": "#e4fff9",
+                        "surface": "#e4fff9",
+                        "surface-dim": "#c2e0da",
+                        "surface-bright": "#e4fff9",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#dbfaf4",
+                        "surface-container": "#d5f4ee",
+                        "on-background": "#02201c",
+                        "on-surface": "#02201c",
+                        "on-surface-variant": "#3e4947",
+                        "outline": "#6e7977",
+                        "outline-variant": "#bdc9c6",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "16px",
+                        "xl": "24px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "base": "8px",
+                        "sm": "12px",
+                        "margin-mobile": "16px",
+                        "md": "24px",
+                        "gutter": "24px",
+                        "lg": "40px",
+                        "xl": "64px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Plus Jakarta Sans", "sans-serif"],
+                        "h2": ["Plus Jakarta Sans", "sans-serif"],
+                        "h3": ["Plus Jakarta Sans", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "caption": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "h1": ["2.5rem", { lineHeight: "1.2", fontWeight: "800" }],
+                        "h1-mobile": ["1.875rem", { lineHeight: "1.25", fontWeight: "800" }],
+                        "h2": ["1.75rem", { lineHeight: "1.3", fontWeight: "700" }],
+                        "h3": ["1.25rem", { lineHeight: "1.4", fontWeight: "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background min-h-screen flex flex-col justify-between text-on-surface font-body-md" ng-controller="PatientController">
+
+<!-- Top Bar -->
+<header class="w-full bg-surface/80 backdrop-blur h-16 flex justify-between items-center px-gutter border-b border-outline-variant/20">
+    <a class="font-h3 text-h3 font-bold text-primary" href="index.html">Nalam360</a>
+    <a href="index.html" class="flex items-center gap-xs text-primary font-label-md hover:underline text-xs">
+        <span class="material-symbols-outlined text-[18px]">arrow_back</span> Back to Home
+    </a>
+</header>
+
+<!-- Main Container -->
+<main class="flex-1 flex items-center justify-center py-xl px-gutter">
+    <div class="w-full max-w-[420px] bg-white rounded-xl p-lg shadow-lg border border-outline-variant/30 relative">
+        <div class="text-center mb-lg">
+            <h1 class="font-h2 text-h2 text-primary font-bold">Patient Login</h1>
+            <p class="text-body-md text-on-surface-variant mt-xs text-xs">Access your personal health portal</p>
+        </div>
+
+        <!-- Form Validation Demonstration -->
+        <!-- AngularJS Directives: ng-submit -->
+        <form name="loginForm" ng-submit="submitLogin()" novalidate class="space-y-md">
+            
+            <!-- Mobile Number -->
+            <div class="relative">
+                <label class="block font-label-md text-on-surface text-xs mb-xs">Mobile Number</label>
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-[20px]">call</span>
+                    <input type="text" name="mobile" ng-model="credentials.mobile" 
+                           required ng-pattern="/^[0-9]{10}$/"
+                           class="w-full pl-10 pr-10 py-2 rounded-lg border text-xs focus:ring-primary focus:border-primary text-body-md"
+                           ng-class="{'border-error': loginForm.mobile.$invalid && loginForm.mobile.$dirty, 'border-primary': loginForm.mobile.$valid}"
+                           placeholder="Enter 10-digit mobile number" />
+                    
+                    <!-- Form Validation Indicators (✔ and ✖) -->
+                    <!-- AngularJS Directives: ng-show -->
+                    <span ng-show="loginForm.mobile.$valid" class="absolute right-3 top-1/2 -translate-y-1/2 text-green-600 font-bold text-sm">✔</span>
+                    <span ng-show="loginForm.mobile.$invalid && loginForm.mobile.$dirty" class="absolute right-3 top-1/2 -translate-y-1/2 text-error font-bold text-sm">✖</span>
+                </div>
+                <!-- Dynamic Validation Messages -->
+                <p ng-show="loginForm.mobile.$error.required && loginForm.mobile.$dirty" class="text-error text-[10px] mt-1">Mobile number is required.</p>
+                <p ng-show="loginForm.mobile.$error.pattern && loginForm.mobile.$dirty" class="text-error text-[10px] mt-1">Please enter a valid 10-digit mobile number.</p>
+            </div>
+
+            <!-- Password -->
+            <div class="relative">
+                <label class="block font-label-md text-on-surface text-xs mb-xs">Password</label>
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-[20px]">lock</span>
+                    <input type="password" name="password" ng-model="credentials.password" 
+                           required ng-minlength="4"
+                           class="w-full pl-10 pr-10 py-2 rounded-lg border text-xs focus:ring-primary focus:border-primary text-body-md"
+                           ng-class="{'border-error': loginForm.password.$invalid && loginForm.password.$dirty, 'border-primary': loginForm.password.$valid}"
+                           placeholder="Enter your password" />
+                    
+                    <span ng-show="loginForm.password.$valid" class="absolute right-3 top-1/2 -translate-y-1/2 text-green-600 font-bold text-sm">✔</span>
+                    <span ng-show="loginForm.password.$invalid && loginForm.password.$dirty" class="absolute right-3 top-1/2 -translate-y-1/2 text-error font-bold text-sm">✖</span>
+                </div>
+                <p ng-show="loginForm.password.$error.required && loginForm.password.$dirty" class="text-error text-[10px] mt-1">Password is required.</p>
+                <p ng-show="loginForm.password.$error.minlength && loginForm.password.$dirty" class="text-error text-[10px] mt-1">Password must be at least 4 characters long.</p>
+            </div>
+
+            <!-- Remember Me & Forgot Password -->
+            <div class="flex items-center justify-between text-caption font-label-md text-xs">
+                <label class="flex items-center gap-xs cursor-pointer">
+                    <input type="checkbox" ng-model="credentials.remember" class="rounded text-primary focus:ring-primary border-outline-variant" />
+                    <span class="text-on-surface-variant">Remember Me</span>
+                </label>
+                <a href="#" ng-click="forgotPassword()" class="text-primary hover:underline font-bold">Forgot Password?</a>
+            </div>
+
+            <!-- AngularJS Directives: ng-disabled -->
+            <button type="submit" ng-disabled="loginForm.$invalid"
+                    class="w-full bg-primary text-on-primary py-2 rounded-lg font-bold hover:bg-primary-container transition-all scale-98 shadow-md text-xs disabled:bg-outline-variant/40 disabled:cursor-not-allowed">
+                Login
+            </button>
+
+            <!-- Reset Button -->
+            <button type="button" ng-click="resetForm('login')"
+                    class="w-full border border-outline-variant text-on-surface-variant py-2 rounded-lg font-label-md hover:bg-surface-container transition-all text-xs">
+                Reset Form
+            </button>
+        </form>
+
+        <div class="mt-md text-center text-caption font-label-md text-xs">
+            <span class="text-on-surface-variant">Don't have an account?</span>
+            <a href="register.html" class="text-primary hover:underline font-bold ml-xs">Register here</a>
+        </div>
+    </div>
+</main>
+
+<!-- Lab Demonstration Card -->
+<section class="p-gutter bg-surface-container border-t border-outline-variant/30">
+    <div class="max-w-[420px] mx-auto bg-white p-md rounded-lg shadow-sm border border-outline-variant/20">
+        <!-- Collapsible Evaluator Header -->
+        <div class="flex justify-between items-center border-b border-primary/20 pb-2 mb-2">
+            <span class="font-h3 text-primary text-xs font-bold flex items-center gap-xs">
+                <span class="material-symbols-outlined text-primary text-[18px]">science</span> Lab Console
+            </span>
+            <button ng-click="showEvaluatorConsole = !showEvaluatorConsole" class="text-[10px] font-bold text-primary hover:underline">
+                {{ showEvaluatorConsole ? 'Hide' : 'Show' }}
+            </button>
+        </div>
+        
+        <div ng-show="showEvaluatorConsole" class="animate-fade-slide">
+            <h3 class="font-h3 text-h3 text-primary text-xs mb-xs font-bold font-bold">AngularJS Login Demo Data</h3>
+            <ul class="text-caption space-y-1 text-xs">
+                <li><strong>Live Model Binding:</strong> Phone: {{ credentials.mobile || 'Empty' }}</li>
+                <li><strong>Form Validity:</strong> <span ng-class="loginForm.$valid ? 'text-green-600 font-bold' : 'text-error font-bold'">{{ loginForm.$valid ? 'VALID' : 'INVALID' }}</span></li>
+                <li><strong>Simulated Account:</strong> Phone: <code>9876543210</code>, Pass: <code>1234</code></li>
+            </ul>
+        </div>
+        <div ng-show="feedbackMessage" class="mt-sm p-sm bg-primary-fixed/20 text-primary rounded text-caption border border-primary-fixed font-bold text-xs animate-fade-slide">
+            {{ feedbackMessage }}
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="py-sm bg-surface-dim border-t border-outline-variant/30 text-center text-caption text-on-surface-variant text-xs">
+    © 2024 Nalam360 Healthcare. All rights reserved.
+</footer>
+
+<!-- AngularJS Core & Animations -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-animate.min.js"></script>
+
+<!-- Central app script -->
+<script src="app.js"></script>
+
+</body>
+</html>

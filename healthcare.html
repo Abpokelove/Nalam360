@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html class="light" lang="en" ng-app="Nalam360App">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Nalam360 | Find Healthcare</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <!-- Local CSS Reference -->
+    <link rel="stylesheet" href="index.css"/>
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#00645a",
+                        "primary-container": "#087f73",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#d6fff7",
+                        "primary-fixed": "#95f3e4",
+                        "primary-fixed-dim": "#78d7c8",
+                        "secondary": "#0058bb",
+                        "secondary-container": "#1f71e2",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#d8e2ff",
+                        "tertiary": "#4d5b59",
+                        "tertiary-container": "#657471",
+                        "background": "#e4fff9",
+                        "surface": "#e4fff9",
+                        "surface-dim": "#c2e0da",
+                        "surface-bright": "#e4fff9",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#dbfaf4",
+                        "surface-container": "#d5f4ee",
+                        "surface-container-high": "#d0efe8",
+                        "surface-container-highest": "#cae9e3",
+                        "surface-variant": "#cae9e3",
+                        "on-background": "#02201c",
+                        "on-surface": "#02201c",
+                        "on-surface-variant": "#3e4947",
+                        "outline": "#6e7977",
+                        "outline-variant": "#bdc9c6",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#193531"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "16px",
+                        "xl": "24px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "base": "8px",
+                        "sm": "12px",
+                        "margin-mobile": "16px",
+                        "md": "24px",
+                        "gutter": "24px",
+                        "lg": "40px",
+                        "xl": "64px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Plus Jakarta Sans", "sans-serif"],
+                        "h2": ["Plus Jakarta Sans", "sans-serif"],
+                        "h3": ["Plus Jakarta Sans", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "caption": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "h1": ["2.5rem", { lineHeight: "1.2", fontWeight: "800" }],
+                        "h1-mobile": ["1.875rem", { lineHeight: "1.25", fontWeight: "800" }],
+                        "h2": ["1.75rem", { lineHeight: "1.3", fontWeight: "700" }],
+                        "h3": ["1.25rem", { lineHeight: "1.4", fontWeight: "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-surface overflow-x-hidden" ng-controller="PatientController">
+
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full w-[280px] bg-primary dark:bg-inverse-surface hidden lg:flex flex-col py-md gap-base shadow-lg z-[60] transition-all duration-200 ease-in-out">
+    <div class="px-gutter mb-lg">
+        <h1 class="font-h2 text-h2 text-on-primary">Nalam360</h1>
+        <p class="text-on-primary/70 font-label-md">Patient Portal</p>
+    </div>
+    <nav class="flex-1 flex flex-col gap-1 custom-scrollbar overflow-y-auto px-2">
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="dashboard.html">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="font-label-md">Dashboard</span>
+        </a>
+        <a class="flex items-center gap-sm p-3 bg-primary-container text-on-primary-container rounded-lg mx-2 transition-all duration-200" href="healthcare.html">
+            <span class="material-symbols-outlined">map</span>
+            <span class="font-label-md">Find Healthcare</span>
+        </a>
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="#doctors-tab">
+            <span class="material-symbols-outlined">medical_services</span>
+            <span class="font-label-md">Doctors</span>
+        </a>
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="#camps-tab">
+            <span class="material-symbols-outlined">campaign</span>
+            <span class="font-label-md">Health Camps</span>
+        </a>
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="profile.html">
+            <span class="material-symbols-outlined">person</span>
+            <span class="font-label-md">My Profile</span>
+        </a>
+    </nav>
+    <div class="px-2 mt-auto border-t border-on-primary/10 pt-base">
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="index.html">
+            <span class="material-symbols-outlined">logout</span>
+            <span class="font-label-md">Logout</span>
+        </a>
+    </div>
+</aside>
+
+<!-- Main Content Area -->
+<main class="lg:ml-[280px] min-h-screen relative">
+    
+    <!-- TopNavBar Shell -->
+    <header class="fixed top-0 left-0 lg:left-[280px] right-0 h-16 bg-surface dark:bg-surface-container-high z-50 flex justify-between items-center px-gutter shadow-sm transition-all duration-200">
+        <div class="flex items-center gap-sm">
+            <button class="lg:hidden p-2 text-primary" ng-click="toggleMobileSidebar()">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            <div class="flex flex-col">
+                <span class="text-primary font-bold font-h3 text-h3 leading-none">Find Care</span>
+                <span class="text-on-surface-variant font-caption flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">location_on</span> 
+                    Active Location: {{ searchFilters.location || 'All Villages' }}
+                </span>
+            </div>
+        </div>
+        <div class="flex items-center gap-sm">
+            <!-- Current Location Button -->
+            <button ng-click="fetchCurrentLocation()" class="flex items-center gap-xs bg-primary text-on-primary px-md py-xs rounded-lg font-label-md hover:bg-primary-container transition-all text-xs">
+                <span class="material-symbols-outlined text-[16px]">my_location</span>
+                <span>{{ locationButtonText }}</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile SideNav Backdrop -->
+    <div ng-show="mobileSidebarOpen" ng-click="toggleMobileSidebar()" class="fixed inset-0 bg-on-background/50 backdrop-blur-sm z-[65] lg:hidden"></div>
+
+    <!-- Mobile SideNav -->
+    <aside ng-show="mobileSidebarOpen" class="fixed inset-y-0 left-0 w-[240px] bg-primary z-[70] flex flex-col py-md shadow-2xl transition-all lg:hidden">
+        <div class="px-md mb-md flex justify-between items-center text-white">
+            <h2 class="font-h2 text-lg">Nalam360</h2>
+            <button ng-click="toggleMobileSidebar()"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <nav class="flex-1 flex flex-col gap-2 px-2 text-white">
+            <a href="dashboard.html" class="p-2 hover:bg-on-primary/10 rounded flex items-center gap-base"><span class="material-symbols-outlined">dashboard</span> Home</a>
+            <a href="healthcare.html" class="p-2 hover:bg-on-primary/10 rounded flex items-center gap-base"><span class="material-symbols-outlined">map</span> Find Care</a>
+            <a href="index.html" class="p-2 hover:bg-on-primary/10 rounded flex items-center gap-base"><span class="material-symbols-outlined">logout</span> Logout</a>
+        </nav>
+    </aside>
+
+    <!-- Healthcare Canvas -->
+    <div class="pt-24 pb-lg px-gutter max-w-container-max mx-auto">
+        
+        <!-- Filter Control panel -->
+        <section class="mb-lg bg-white p-md rounded-xl border border-outline-variant shadow-soft">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-md items-end">
+                <div>
+                    <label class="block font-label-md text-on-surface mb-xs">Search Keywords</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline">search</span>
+                        <input type="text" ng-model="searchFilters.query" placeholder="Search doctor, hospital, camp..." 
+                               class="w-full pl-10 pr-4 py-2 border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-body-md" />
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-label-md text-on-surface mb-xs">Filter by Village</label>
+                    <select ng-model="searchFilters.location" class="w-full p-2 border border-outline-variant rounded-lg bg-transparent font-label-md">
+                        <option value="">All Villages</option>
+                        <option ng-repeat="v in villages" ng-value="v">{{ v }}</option>
+                    </select>
+                </div>
+                <div>
+                    <!-- Reset Filters Button -->
+                    <button ng-click="resetFilters()" class="w-full bg-surface-container-high text-primary py-2 rounded-lg font-label-md border border-outline-variant/30 hover:bg-surface-container-highest transition-all flex items-center justify-center gap-base">
+                        <span class="material-symbols-outlined text-[18px]">restart_alt</span> Reset Filters
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Appointment Booking Modal Overlay -->
+        <!-- AngularJS Directives: ng-show -->
+        <div ng-show="bookingModal.visible" class="fixed inset-0 bg-on-background/60 backdrop-blur-sm z-[80] flex items-center justify-center p-gutter transition-all duration-300">
+            <div class="w-full max-w-[450px] bg-white rounded-xl p-lg border border-outline-variant shadow-2xl relative">
+                <div class="flex justify-between items-start mb-md">
+                    <h3 class="font-h3 text-primary font-bold">Book Appointment</h3>
+                    <button ng-click="closeBookingModal()" class="text-outline hover:text-error"><span class="material-symbols-outlined">close</span></button>
+                </div>
+
+                <div class="flex items-center gap-md mb-lg p-base bg-surface-container rounded-lg border border-outline-variant/40">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-tr {{ bookingModal.doctor.bgGradient }} flex items-center justify-center font-bold text-white text-base">
+                        {{ bookingModal.doctor.initials }}
+                    </div>
+                    <div>
+                        <p class="font-label-md text-on-surface font-bold text-sm">{{ bookingModal.doctor.name }}</p>
+                        <p class="text-caption text-on-surface-variant font-semibold text-xs">{{ bookingModal.doctor.specialty }} • {{ bookingModal.doctor.fee | currency:'₹' }}</p>
+                    </div>
+                </div>
+
+                <!-- Simulating dynamic loading spinner via $timeout -->
+                <div ng-show="bookingModal.loading" class="py-xl text-center flex flex-col items-center gap-md">
+                    <span class="material-symbols-outlined text-[48px] text-primary animate-spin">sync</span>
+                    <p class="font-label-md text-on-surface-variant text-xs">Generating Appointment Token...</p>
+                </div>
+
+                <!-- Booking confirmation screen -->
+                <div ng-show="!bookingModal.loading && bookingModal.token" class="p-md bg-primary-fixed/20 border border-primary-fixed rounded-lg text-center space-y-sm">
+                    <span class="material-symbols-outlined text-[48px] text-primary">verified</span>
+                    <h4 class="font-h3 text-primary text-base font-bold">Booking Confirmed!</h4>
+                    <p class="text-caption text-xs">Your appointment has been registered with the local health worker.</p>
+                    <div class="p-base bg-white rounded border border-primary/20 inline-block">
+                        <span class="text-caption font-bold text-on-surface-variant block text-[10px]">CONFIRMATION TOKEN:</span>
+                        <span class="font-mono text-lg font-bold text-primary">{{ bookingModal.token }}</span>
+                    </div>
+                    <button ng-click="closeBookingModal()" class="w-full py-2 bg-primary text-white rounded font-semibold hover:bg-primary-container text-xs mt-md">
+                        Okay, Got it
+                    </button>
+                </div>
+
+                <!-- Form to choose details -->
+                <form ng-show="!bookingModal.loading && !bookingModal.token" ng-submit="confirmBooking()" name="bookForm" novalidate class="space-y-md">
+                    <div>
+                        <label class="block font-label-md text-on-surface text-xs mb-xs">Appointment Date</label>
+                        <input type="date" ng-model="bookingModal.date" required class="w-full p-2 border rounded text-xs" />
+                    </div>
+                    <div>
+                        <label class="block font-label-md text-on-surface text-xs mb-xs">Preferred Time Slot</label>
+                        <select ng-model="bookingModal.time" required class="w-full p-2 border rounded text-xs">
+                            <option value="">-- Choose Slot --</option>
+                            <option>09:30 AM - Morning</option>
+                            <option>11:00 AM - Morning</option>
+                            <option>02:30 PM - Afternoon</option>
+                            <option>04:30 PM - Evening</option>
+                        </select>
+                    </div>
+                    <button type="submit" ng-disabled="bookForm.$invalid" class="w-full py-3 bg-primary text-on-primary rounded-lg font-bold hover:bg-primary-container text-xs disabled:opacity-50 mt-sm">
+                        Confirm Appointment Booking
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main Categories Bento Sections -->
+        <div class="space-y-xl">
+            
+            <!-- 1. Nearby Doctors -->
+            <section id="doctors-tab" class="scroll-mt-20">
+                <div class="flex justify-between items-center mb-md border-b pb-xs">
+                    <h3 class="font-h3 text-h2 text-primary flex items-center gap-base"><span class="material-symbols-outlined">medical_services</span> Verified Doctors</h3>
+                    <div class="flex gap-sm items-center">
+                        <label class="text-caption font-semibold hidden sm:inline text-xs">Sort Doctors:</label>
+                        <select ng-model="doctorSortKey" class="p-1 border border-outline-variant/60 rounded text-caption font-label-md text-[10px]">
+                            <option value="name">Sort by Name</option>
+                            <option value="-exp">Sort by Experience (High)</option>
+                            <option value="fee">Sort by Fee (Low)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+                    <!-- Loop through doctors with Filters & orderBy (using village || undefined to fix empty match) -->
+                    <div ng-repeat="doc in doctors | filter:searchFilters.query | filter:{village: searchFilters.location || undefined} | orderBy:doctorSortKey" 
+                         class="bg-white rounded-xl overflow-hidden shadow-sm border border-outline-variant/30 flex flex-col justify-between p-md hover:border-primary transition-all animate-repeat-item">
+                        <div>
+                            <div class="flex items-center gap-md mb-md">
+                                <div class="w-16 h-16 rounded-full bg-gradient-to-tr {{ doc.bgGradient }} flex items-center justify-center font-bold text-white text-xl border-2 border-primary-fixed shadow-sm">
+                                    {{ doc.initials }}
+                                </div>
+                                <div>
+                                    <h4 class="font-label-md text-base text-on-surface font-bold">{{ doc.name }}</h4>
+                                    <p class="text-caption text-on-surface-variant font-semibold text-xs">{{ doc.specialty }}</p>
+                                </div>
+                            </div>
+                            <div class="space-y-xs text-caption text-on-surface-variant border-t border-outline-variant/20 pt-sm mb-md text-xs">
+                                <p class="flex items-center gap-xs"><span class="material-symbols-outlined text-[16px] text-primary">location_on</span> Village: {{ doc.village }}</p>
+                                <p class="flex items-center gap-xs"><span class="material-symbols-outlined text-[16px] text-primary">work</span> Experience: {{ doc.exp }} years</p>
+                                <p class="flex items-center gap-xs"><span class="material-symbols-outlined text-[16px] text-primary">payments</span> Consultation Fee: {{ doc.fee | currency:'₹' }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-base border-t border-outline-variant/20 flex items-center justify-between gap-md">
+                            <span class="text-caption font-bold px-2 py-0.5 rounded text-[10px]" ng-class="doc.available ? 'bg-primary-fixed text-primary' : 'bg-outline-variant text-on-surface-variant'">
+                                {{ doc.available ? 'Available Now' : 'By Appt Only' }}
+                            </span>
+                            <button ng-click="openBookingModal(doc)" class="bg-primary text-on-primary px-md py-sm rounded font-label-md hover:bg-primary-container text-xs transition-colors">
+                                Book Visit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Nearby Hospitals -->
+            <section id="hospitals-tab" class="scroll-mt-20">
+                <div class="flex justify-between items-center mb-md border-b pb-xs">
+                    <h3 class="font-h3 text-h2 text-primary flex items-center gap-base"><span class="material-symbols-outlined">local_hospital</span> Medical Centres & Hospitals</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+                    <div ng-repeat="hospital in hospitals | filter:searchFilters.query | filter:{village: searchFilters.location || undefined}" 
+                         class="bg-white rounded-xl p-md border border-outline-variant/30 shadow-sm flex flex-col justify-between hover:border-primary transition-all animate-repeat-item">
+                        <div>
+                            <div class="flex items-center gap-sm mb-base">
+                                <span class="material-symbols-outlined text-primary bg-primary/10 p-base rounded-full text-[24px]">local_hospital</span>
+                                <h4 class="font-label-md text-base text-on-surface font-bold">{{ hospital.name }}</h4>
+                            </div>
+                            <div class="space-y-xs text-caption text-on-surface-variant mb-md text-xs">
+                                <p><strong>Location:</strong> {{ hospital.village }} ({{ hospital.distance }} km away)</p>
+                                <p><strong>Operating Hours:</strong> {{ hospital.hours }}</p>
+                                <p><strong>Emergency Number:</strong> {{ hospital.phone }}</p>
+                            </div>
+                        </div>
+                        <a href="tel:{{ hospital.phone }}" class="w-full py-2 bg-surface-container border text-primary font-label-md text-center rounded hover:bg-surface-container-high transition-colors text-xs flex items-center justify-center gap-base">
+                            <span class="material-symbols-outlined text-[16px]">call</span> Dial Helpline
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Health Camps -->
+            <section id="camps-tab" class="scroll-mt-20">
+                <div class="flex justify-between items-center mb-md border-b pb-xs">
+                    <h3 class="font-h3 text-h2 text-primary flex items-center gap-base"><span class="material-symbols-outlined">campaign</span> Upcoming Village Health Camps</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+                    <div ng-repeat="camp in healthCamps | filter:searchFilters.query | filter:{location: searchFilters.location || undefined}" 
+                         class="bg-white rounded-xl overflow-hidden border border-outline-variant/30 shadow-sm flex flex-col justify-between animate-repeat-item">
+                        
+                        <!-- Beautiful CSS Gradient layout representing camp visual banner -->
+                        <div class="h-40 bg-gradient-to-br {{ camp.bgGradient }} flex flex-col justify-center items-center text-white p-md gap-xs relative">
+                            <span class="material-symbols-outlined text-[48px]">campaign</span>
+                            <span class="text-caption font-bold tracking-widest uppercase text-xs">Health Camp</span>
+                        </div>
+
+                        <div class="p-md flex-1 flex flex-col justify-between">
+                            <div class="mb-md">
+                                <div class="flex justify-between items-start mb-base">
+                                    <h4 class="font-label-md text-base text-on-surface font-bold">{{ camp.title }}</h4>
+                                    <span class="bg-primary-fixed text-primary px-2 py-0.5 rounded text-[10px] font-bold">{{ camp.type }}</span>
+                                </div>
+                                <div class="space-y-xs text-caption text-on-surface-variant text-xs">
+                                    <p class="flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">event</span> {{ camp.date }}</p>
+                                    <p class="flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">location_on</span> {{ camp.location }}</p>
+                                </div>
+                            </div>
+                            <button ng-click="registerCamp(camp)" ng-disabled="camp.registered" 
+                                    class="w-full py-2 text-xs font-bold rounded transition-all"
+                                    ng-class="camp.registered ? 'bg-primary-fixed text-primary' : 'bg-primary text-on-primary hover:bg-primary-container'">
+                                {{ camp.registered ? '✔ Registered Successfully' : 'Register Free Slot' }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+
+
+    </div>
+
+    <!-- Footer Shell -->
+    <footer class="w-full bg-surface-dim dark:bg-surface-container-lowest border-t border-outline-variant dark:border-outline py-lg">
+        <div class="w-full px-gutter max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-md text-caption">
+            <div class="flex flex-col md:items-start items-center">
+                <h3 class="font-h3 text-h3 text-primary font-bold">Nalam360</h3>
+                <p class="text-on-surface-variant">© 2024 Nalam360 Healthcare. All rights reserved.</p>
+            </div>
+            <div class="flex flex-wrap justify-center gap-md">
+                <a class="text-on-surface-variant hover:text-secondary-container underline" href="#">Privacy Policy</a>
+                <a class="text-on-surface-variant hover:text-secondary-container underline" href="#">Help Center</a>
+            </div>
+        </div>
+    </footer>
+</main>
+
+<!-- Mobile Bottom Navigation Shell -->
+<nav class="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-white flex justify-around items-center border-t border-outline-variant z-50 shadow-lg">
+    <a class="flex flex-col items-center text-on-surface-variant" href="dashboard.html">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span class="text-[10px]">Home</span>
+    </a>
+    <a class="flex flex-col items-center text-primary" href="healthcare.html">
+        <span class="material-symbols-outlined">map</span>
+        <span class="text-[10px] font-bold">Find Care</span>
+    </a>
+    <a class="flex flex-col items-center text-on-surface-variant" href="profile.html">
+        <span class="material-symbols-outlined">person</span>
+        <span class="text-[10px]">Profile</span>
+    </a>
+    <button class="flex flex-col items-center text-error" ng-click="directivesDemo.showEmergencyCard = !directivesDemo.showEmergencyCard">
+        <span class="material-symbols-outlined text-error">emergency</span>
+        <span class="text-[10px] font-bold">Emergency</span>
+    </button>
+</nav>
+
+<!-- AngularJS Core & Animations -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-animate.min.js"></script>
+
+<!-- Central app script -->
+<script src="app.js"></script>
+
+</body>
+</html>

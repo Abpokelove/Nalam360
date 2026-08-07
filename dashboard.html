@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html class="light" lang="en" ng-app="Nalam360App">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Nalam360 | Patient Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <!-- Local CSS Reference -->
+    <link rel="stylesheet" href="index.css"/>
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#00645a",
+                        "primary-container": "#087f73",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#d6fff7",
+                        "primary-fixed": "#95f3e4",
+                        "primary-fixed-dim": "#78d7c8",
+                        "secondary": "#0058bb",
+                        "secondary-container": "#1f71e2",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#d8e2ff",
+                        "tertiary": "#4d5b59",
+                        "tertiary-container": "#657471",
+                        "background": "#e4fff9",
+                        "surface": "#e4fff9",
+                        "surface-dim": "#c2e0da",
+                        "surface-bright": "#e4fff9",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#dbfaf4",
+                        "surface-container": "#d5f4ee",
+                        "surface-container-high": "#d0efe8",
+                        "surface-container-highest": "#cae9e3",
+                        "surface-variant": "#cae9e3",
+                        "on-background": "#02201c",
+                        "on-surface": "#02201c",
+                        "on-surface-variant": "#3e4947",
+                        "outline": "#6e7977",
+                        "outline-variant": "#bdc9c6",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#193531"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "16px",
+                        "xl": "24px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "base": "8px",
+                        "sm": "12px",
+                        "margin-mobile": "16px",
+                        "md": "24px",
+                        "gutter": "24px",
+                        "lg": "40px",
+                        "xl": "64px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Plus Jakarta Sans", "sans-serif"],
+                        "h2": ["Plus Jakarta Sans", "sans-serif"],
+                        "h3": ["Plus Jakarta Sans", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "caption": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "h1": ["2.5rem", { lineHeight: "1.2", fontWeight: "800" }],
+                        "h1-mobile": ["1.875rem", { lineHeight: "1.25", fontWeight: "800" }],
+                        "h2": ["1.75rem", { lineHeight: "1.3", fontWeight: "700" }],
+                        "h3": ["1.25rem", { lineHeight: "1.4", fontWeight: "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-surface overflow-x-hidden" ng-controller="PatientController">
+
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full w-[280px] bg-primary dark:bg-inverse-surface hidden lg:flex flex-col py-md gap-base shadow-lg z-[60] transition-all duration-200 ease-in-out">
+    <div class="px-gutter mb-lg">
+        <h1 class="font-h2 text-h2 text-on-primary">Nalam360</h1>
+        <p class="text-on-primary/70 font-label-md">Patient Portal</p>
+    </div>
+    <nav class="flex-1 flex flex-col gap-1 custom-scrollbar overflow-y-auto px-2">
+        <a class="flex items-center gap-sm p-3 bg-primary-container text-on-primary-container rounded-lg mx-2 transition-all duration-200" href="dashboard.html">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="font-label-md">Dashboard</span>
+        </a>
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="healthcare.html">
+            <span class="material-symbols-outlined">map</span>
+            <span class="font-label-md">Find Healthcare</span>
+        </a>
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="healthcare.html#doctors-tab">
+            <span class="material-symbols-outlined">medical_services</span>
+            <span class="font-label-md">Doctors</span>
+        </a>
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="healthcare.html#camps-tab">
+            <span class="material-symbols-outlined">event</span>
+            <span class="font-label-md">Appointments</span>
+        </a>
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="profile.html">
+            <span class="material-symbols-outlined">person</span>
+            <span class="font-label-md">My Profile</span>
+        </a>
+        <button class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 text-left w-[calc(100%-16px)] transition-all duration-200" ng-click="toggleEmergencyPanel()">
+            <span class="material-symbols-outlined text-error-container">emergency</span>
+            <span class="font-label-md text-error-container">Emergency Contacts</span>
+        </button>
+    </nav>
+    <div class="px-2 mt-auto border-t border-on-primary/10 pt-base">
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="index.html">
+            <span class="material-symbols-outlined">logout</span>
+            <span class="font-label-md">Logout</span>
+        </a>
+    </div>
+</aside>
+
+<!-- Main Content Area -->
+<main class="lg:ml-[280px] min-h-screen relative">
+    
+    <!-- TopNavBar Shell -->
+    <header class="fixed top-0 left-0 lg:left-[280px] right-0 h-16 bg-surface dark:bg-surface-container-high z-50 flex justify-between items-center px-gutter shadow-sm transition-all duration-200">
+        <div class="flex items-center gap-sm">
+            <button class="lg:hidden p-2 text-primary" ng-click="toggleMobileSidebar()">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            <div class="flex flex-col">
+                <span class="text-primary font-bold font-h3 text-h3 leading-none">Nalam360</span>
+                <span class="text-on-surface-variant font-caption flex items-center gap-1 text-xs">
+                    <span class="material-symbols-outlined text-[14px]">location_on</span> 
+                    {{ patient.village }}, Tamil Nadu
+                </span>
+            </div>
+        </div>
+        <div class="flex items-center gap-md">
+            <!-- Clock using $interval DI -->
+            <div class="hidden sm:flex flex-col text-right">
+                <span class="text-caption text-on-surface-variant font-semibold text-[10px]">Live System Time</span>
+                <span class="text-label-md font-mono text-primary font-bold text-xs">{{ systemTime | date:'hh:mm:ss a' }}</span>
+            </div>
+            
+            <div class="h-8 w-[1px] bg-outline-variant mx-2 hidden sm:block"></div>
+            
+            <!-- AngularJS Patient Details Toggle -->
+            <div class="flex items-center gap-sm cursor-pointer hover:bg-surface-container p-1 rounded-lg transition-all" ng-click="togglePatientDetails()">
+                <!-- CSS-only Avatar Placeholder -->
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr {{ patient.bgGradient }} flex items-center justify-center font-bold text-white text-xs border border-primary/20 shadow-sm">
+                    {{ patient.initials }}
+                </div>
+                <span class="hidden sm:inline font-label-md text-xs font-semibold">{{ patient.name }}</span>
+                <span class="material-symbols-outlined text-[18px]">{{ showPatientDetails ? 'expand_less' : 'expand_more' }}</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile SideNav Backdrop -->
+    <div ng-show="mobileSidebarOpen" ng-click="toggleMobileSidebar()" class="fixed inset-0 bg-on-background/50 backdrop-blur-sm z-[65] lg:hidden"></div>
+
+    <!-- Mobile SideNav -->
+    <aside ng-show="mobileSidebarOpen" class="fixed inset-y-0 left-0 w-[240px] bg-primary z-[70] flex flex-col py-md shadow-2xl transition-all lg:hidden">
+        <div class="px-md mb-md flex justify-between items-center text-white">
+            <h2 class="font-h2 text-lg">Nalam360</h2>
+            <button ng-click="toggleMobileSidebar()"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <nav class="flex-1 flex flex-col gap-2 px-2 text-white">
+            <a href="dashboard.html" class="p-2 hover:bg-on-primary/10 rounded flex items-center gap-base"><span class="material-symbols-outlined">dashboard</span> Home</a>
+            <a href="healthcare.html" class="p-2 hover:bg-on-primary/10 rounded flex items-center gap-base"><span class="material-symbols-outlined">map</span> Find Care</a>
+            <button ng-click="toggleEmergencyPanel(); toggleMobileSidebar();" class="p-2 text-left hover:bg-on-primary/10 rounded flex items-center gap-base text-error-container"><span class="material-symbols-outlined">emergency</span> Emergency</button>
+            <a href="index.html" class="p-2 hover:bg-on-primary/10 rounded flex items-center gap-base"><span class="material-symbols-outlined">logout</span> Logout</a>
+        </nav>
+    </aside>
+
+    <!-- Dashboard Canvas -->
+    <div class="pt-24 pb-lg px-gutter max-w-container-max mx-auto">
+        
+        <!-- Live Patient Profile Details Panel -->
+        <!-- AngularJS Directives: ng-show -->
+        <section ng-show="showPatientDetails" class="mb-lg p-md bg-white rounded-xl border border-primary-fixed shadow-soft transition-all duration-300 animate-fade-slide">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md">
+                <div class="flex items-center gap-md">
+                    <!-- CSS avatar placeholder -->
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-tr {{ patient.bgGradient }} flex items-center justify-center font-bold text-white text-xl border border-primary/20 shadow-md">
+                        {{ patient.initials }}
+                    </div>
+                    <div>
+                        <h3 class="font-h3 text-primary text-base font-bold">{{ patient.name }}</h3>
+                        <p class="text-caption text-on-surface-variant text-xs">DOB: {{ patient.dob | date:'longDate' }} • Gender: {{ patient.gender }}</p>
+                    </div>
+                </div>
+                <div class="text-caption text-on-surface-variant bg-surface-container p-3 rounded-lg border border-outline-variant/30 text-xs">
+                    <p><strong>Mobile:</strong> +91 {{ patient.mobile }}</p>
+                    <p><strong>Home Village:</strong> {{ patient.village }}</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Header Section -->
+        <section class="mb-lg flex flex-col md:flex-row md:items-end justify-between gap-md">
+            <div>
+                <h2 class="font-h1 text-h1 text-primary">Good morning, {{ patient.name }}.</h2>
+                <p class="text-body-lg text-on-surface-variant">Here is your healthcare overview for today.</p>
+            </div>
+            
+            <!-- AngularJS Profile Switcher -->
+            <div class="flex items-center gap-sm bg-white p-2 rounded-xl border border-outline-variant shadow-sm">
+                <span class="material-symbols-outlined text-primary-container text-[20px]">group</span>
+                <select class="border-none focus:ring-0 font-label-md text-on-surface bg-transparent pr-8 cursor-pointer text-xs"
+                        ng-model="activeProfileIndex" ng-change="switchProfile()">
+                    <option ng-repeat="p in profiles" ng-value="$index">{{ p.name }} ({{ p.relationship }})</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Quick Actions Grid -->
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-md mb-lg">
+            <a href="healthcare.html#doctors-tab" class="flex flex-col items-center justify-center gap-sm bg-white p-6 rounded-xl shadow-sm border border-outline-variant hover:border-primary hover:shadow-md transition-all scale-98 group text-center">
+                <div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">medical_services</span>
+                </div>
+                <span class="font-label-md text-xs font-semibold">Consult Doctor</span>
+            </a>
+            <a href="healthcare.html" class="flex flex-col items-center justify-center gap-sm bg-white p-6 rounded-xl shadow-sm border border-outline-variant hover:border-primary hover:shadow-md transition-all scale-98 group text-center">
+                <div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">local_pharmacy</span>
+                </div>
+                <span class="font-label-md text-xs font-semibold">Find Pharmacy</span>
+            </a>
+            <a href="healthcare.html" class="flex flex-col items-center justify-center gap-sm bg-white p-6 rounded-xl shadow-sm border border-outline-variant hover:border-primary hover:shadow-md transition-all scale-98 group text-center">
+                <div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">event</span>
+                </div>
+                <span class="font-label-md text-xs font-semibold">Book Appointment</span>
+            </a>
+            <button ng-click="toggleEmergencyPanel()" class="flex flex-col items-center justify-center gap-sm bg-error-container p-6 rounded-xl shadow-sm border border-error hover:shadow-md transition-all scale-98 group text-center">
+                <div class="w-12 h-12 rounded-full bg-error flex items-center justify-center text-white">
+                    <span class="material-symbols-outlined">emergency</span>
+                </div>
+                <span class="font-label-md text-error font-bold text-xs">Emergency Help</span>
+            </button>
+        </section>
+
+        <!-- Emergency Panel (AngularJS Slide Down Animation) -->
+        <!-- AngularJS Directives: ng-show -->
+        <section ng-show="showEmergencyPanel" class="mb-lg p-md bg-error-container border border-error text-on-error-container rounded-xl shadow-md transition-all duration-300 animate-fade-slide">
+            <div class="flex justify-between items-center mb-md border-b border-error/20 pb-base">
+                <h3 class="font-h3 text-lg font-bold flex items-center gap-base"><span class="material-symbols-outlined text-error">emergency</span> Emergency Contacts</h3>
+                <button ng-click="toggleEmergencyPanel()" class="text-error font-bold"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-md">
+                <div ng-repeat="contact in emergencyContacts" class="bg-white/80 p-md rounded-lg border border-outline-variant/30 flex justify-between items-center animate-repeat-item">
+                    <div>
+                        <p class="font-semibold text-on-surface text-xs">{{ contact.name }}</p>
+                        <p class="text-base text-primary font-bold font-mono">{{ contact.number }}</p>
+                    </div>
+                    <a href="tel:{{ contact.number }}" class="p-2 bg-error text-white rounded-full flex items-center justify-center hover:opacity-90">
+                        <span class="material-symbols-outlined text-white text-[20px]">call</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feedback Banner for reminder additions -->
+        <div ng-show="feedbackMessage" class="mb-md p-sm bg-primary-fixed/30 border border-primary text-primary font-bold text-center rounded-lg text-xs animate-fade-slide">
+            {{ feedbackMessage }}
+        </div>
+
+        <!-- Main Bento Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+            
+            <!-- Left Column (8 cols) -->
+            <div class="lg:col-span-8 flex flex-col gap-gutter">
+                
+                <!-- Top Row: Appointments & Prescription -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+                    
+                    <!-- Upcoming Appointment -->
+                    <div class="bg-white p-md rounded-xl shadow-sm border border-outline-variant">
+                        <div class="flex justify-between items-start mb-md">
+                            <h3 class="font-h3 text-h3 text-on-surface text-base font-bold">Upcoming Appointment</h3>
+                            <span class="bg-primary-fixed text-primary px-3 py-1 rounded-full text-[10px] font-bold">
+                                {{ hasAppointment ? 'Confirmed' : 'No Bookings' }}
+                            </span>
+                        </div>
+                        
+                        <!-- Show if patient has appointment -->
+                        <!-- AngularJS Directives: ng-if -->
+                        <div ng-if="hasAppointment" class="animate-fade">
+                            <div class="flex items-center gap-md mb-md">
+                                <!-- CSS doctor avatar placeholder -->
+                                <div class="w-16 h-16 rounded-lg bg-gradient-to-tr {{ appointment.docGradient }} flex items-center justify-center font-bold text-white text-xl border border-outline-variant/30">
+                                    {{ appointment.docInitials }}
+                                </div>
+                                <div>
+                                    <p class="font-label-md text-on-surface font-bold text-sm">{{ appointment.docName }}</p>
+                                    <p class="text-caption text-on-surface-variant text-xs">{{ appointment.docSpecialty }}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-sm text-on-surface-variant mb-md text-xs font-semibold">
+                                <span class="material-symbols-outlined text-[18px]">calendar_month</span>
+                                <span>{{ appointment.date }} • {{ appointment.time }}</span>
+                            </div>
+                            <div class="flex gap-sm">
+                                <button ng-click="cancelAppointment(appointment)" class="flex-1 py-2 bg-error text-white rounded-lg font-label-md hover:bg-error/95 scale-98 text-xs font-bold">
+                                    Cancel
+                                </button>
+                                <a href="healthcare.html" class="flex-1 py-2 bg-surface-container border text-primary rounded-lg font-label-md text-center hover:bg-surface-container-high text-xs font-bold">
+                                    Reschedule
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Show if appointment was canceled -->
+                        <!-- AngularJS Directives: ng-if -->
+                        <div ng-if="!hasAppointment" class="py-lg text-center flex flex-col items-center gap-xs animate-fade">
+                            <span class="material-symbols-outlined text-outline text-[40px]">calendar_today</span>
+                            <p class="font-label-md text-on-surface-variant text-xs font-semibold">No upcoming appointments booked.</p>
+                            <a href="healthcare.html" class="mt-base px-md py-sm bg-primary text-on-primary rounded-lg font-label-md text-xs font-bold">
+                                Find a Doctor & Book Now
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Active Prescription -->
+                    <div class="bg-surface-container-low p-md rounded-xl border border-primary-fixed">
+                        <div class="flex justify-between items-start mb-md">
+                            <h3 class="font-h3 text-h3 text-on-surface text-base font-bold">Active Prescriptions</h3>
+                            <span class="material-symbols-outlined text-primary text-[24px]">description</span>
+                        </div>
+                        
+                        <div class="space-y-sm mb-md">
+                            <!-- Loop through prescriptions -->
+                            <!-- AngularJS Directives: ng-repeat -->
+                            <div ng-repeat="med in patient.prescriptions" class="flex items-center justify-between p-2 bg-white rounded-lg border border-outline-variant/30 animate-repeat-item">
+                                <span class="font-label-md text-on-surface text-xs font-bold">{{ med.name }}</span>
+                                <span class="text-caption bg-secondary-fixed text-primary px-2 py-0.5 rounded font-semibold text-[10px]">{{ med.dosage }}</span>
+                            </div>
+                            <div ng-if="patient.prescriptions.length == 0" class="py-md text-center text-caption text-on-surface-variant text-xs italic">
+                                No active prescriptions listed.
+                            </div>
+                        </div>
+                        <button ng-click="downloadPrescription()" class="w-full py-3 border border-primary text-primary rounded-lg font-label-md hover:bg-primary/5 transition-colors scale-98 text-xs font-bold">
+                            Download Prescription PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Medicine Reminder Timeline -->
+                <div class="bg-white p-md rounded-xl shadow-sm border border-outline-variant">
+                    <div class="flex justify-between items-center mb-lg border-b pb-sm">
+                        <h3 class="font-h3 text-h3 text-on-surface text-base font-bold">Medication Reminders</h3>
+                        <!-- Toggle Form to Add Reminder -->
+                        <button class="text-primary font-label-md hover:underline text-xs font-bold" ng-click="toggleReminderForm()">
+                            {{ showAddReminderForm ? 'Close Editor' : '+ Add Custom Medicine' }}
+                        </button>
+                    </div>
+
+                    <!-- Add Reminder Form -->
+                    <!-- AngularJS Directives: ng-show, ng-submit -->
+                    <form ng-show="showAddReminderForm" ng-submit="addReminder()" name="reminderForm" novalidate class="mb-lg p-md bg-surface-container rounded-lg border border-outline-variant/40 space-y-sm animate-fade-slide">
+                        <h4 class="font-label-md text-primary text-xs font-bold">New Medicine Entry</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-sm">
+                            <input type="text" ng-model="newMed.name" required placeholder="Medicine Name" class="p-2 text-xs border border-outline rounded" />
+                            <select ng-model="newMed.slot" required class="p-2 text-xs border border-outline rounded">
+                                <option value="">-- Dosage Time --</option>
+                                <option value="Morning">Morning (08:00 AM)</option>
+                                <option value="Afternoon">Afternoon (01:30 PM)</option>
+                                <option value="Night">Night (09:00 PM)</option>
+                            </select>
+                            <input type="text" ng-model="newMed.instruction" required placeholder="Instructions (e.g. After Food)" class="p-2 text-xs border border-outline rounded" />
+                        </div>
+                        <button type="submit" ng-disabled="reminderForm.$invalid" class="w-full bg-primary text-on-primary py-2 rounded font-label-md hover:bg-primary-container text-xs font-bold disabled:opacity-50">
+                            Save Medicine Reminder
+                        </button>
+                    </form>
+
+                    <!-- Reminders Checklist -->
+                    <div class="relative flex flex-col gap-lg pl-6 border-l-2 border-surface-container-high">
+                        <!-- Morning -->
+                        <div class="relative">
+                            <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full ring-4 ring-white"
+                                 ng-class="dosageStatuses.Morning ? 'bg-primary' : 'bg-outline-variant'"></div>
+                            <div class="flex items-center justify-between gap-md">
+                                <div>
+                                    <p class="font-label-md text-on-surface text-xs font-bold">Morning Dosage (08:00 AM)</p>
+                                    <div class="flex flex-wrap gap-xs mt-1">
+                                        <span ng-repeat="med in medicineList | filter:{slot:'Morning'}" class="bg-surface-container px-2 py-0.5 rounded text-caption flex items-center gap-xs text-[10px] font-semibold animate-repeat-item">
+                                            {{ med.name }} ({{ med.instruction }})
+                                            <span class="material-symbols-outlined text-[14px] text-error cursor-pointer font-bold ml-1" ng-click="removeReminder(med)">close</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <button ng-if="!dosageStatuses.Morning" ng-click="markDosageTaken('Morning')" class="bg-primary text-white text-[10px] px-3 py-1 rounded-full hover:bg-primary-container font-bold">
+                                    Mark Taken
+                                </button>
+                                <span ng-if="dosageStatuses.Morning" class="material-symbols-outlined text-primary text-[24px]">check_circle</span>
+                            </div>
+                        </div>
+
+                        <!-- Afternoon -->
+                        <div class="relative">
+                            <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full ring-4 ring-white"
+                                 ng-class="dosageStatuses.Afternoon ? 'bg-primary' : 'bg-outline-variant'"></div>
+                            <div class="flex items-center justify-between gap-md">
+                                <div>
+                                    <p class="font-label-md text-on-surface text-xs font-bold">Afternoon Dosage (01:30 PM)</p>
+                                    <div class="flex flex-wrap gap-xs mt-1">
+                                        <span ng-repeat="med in medicineList | filter:{slot:'Afternoon'}" class="bg-surface-container px-2 py-0.5 rounded text-caption flex items-center gap-xs text-[10px] font-semibold animate-repeat-item">
+                                            {{ med.name }} ({{ med.instruction }})
+                                            <span class="material-symbols-outlined text-[14px] text-error cursor-pointer font-bold ml-1" ng-click="removeReminder(med)">close</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <button ng-if="!dosageStatuses.Afternoon" ng-click="markDosageTaken('Afternoon')" class="bg-primary text-white text-[10px] px-3 py-1 rounded-full hover:bg-primary-container font-bold">
+                                    Mark Taken
+                                </button>
+                                <span ng-if="dosageStatuses.Afternoon" class="material-symbols-outlined text-primary text-[24px]">check_circle</span>
+                            </div>
+                        </div>
+
+                        <!-- Night -->
+                        <div class="relative">
+                            <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full ring-4 ring-white"
+                                 ng-class="dosageStatuses.Night ? 'bg-primary' : 'bg-outline-variant'"></div>
+                            <div class="flex items-center justify-between gap-md">
+                                <div>
+                                    <p class="font-label-md text-on-surface text-xs font-bold">Night Dosage (09:00 PM)</p>
+                                    <div class="flex flex-wrap gap-xs mt-1">
+                                        <span ng-repeat="med in medicineList | filter:{slot:'Night'}" class="bg-surface-container px-2 py-0.5 rounded text-caption flex items-center gap-xs text-[10px] font-semibold animate-repeat-item">
+                                            {{ med.name }} ({{ med.instruction }})
+                                            <span class="material-symbols-outlined text-[14px] text-error cursor-pointer font-bold ml-1" ng-click="removeReminder(med)">close</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <button ng-if="!dosageStatuses.Night" ng-click="markDosageTaken('Night')" class="bg-primary text-white text-[10px] px-3 py-1 rounded-full hover:bg-primary-container font-bold">
+                                    Mark Taken
+                                </button>
+                                <span ng-if="dosageStatuses.Night" class="material-symbols-outlined text-primary text-[24px]">check_circle</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button ng-click="resetDosageStatuses()" class="mt-md text-[10px] font-bold text-primary hover:underline flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-[14px]">restart_alt</span> Reset Daily Checklist
+                    </button>
+                </div>
+
+                <!-- Referral Progress -->
+                <div class="bg-white p-md rounded-xl shadow-sm border border-outline-variant">
+                    <h3 class="font-h3 text-h3 text-on-surface mb-lg text-base font-bold">Specialist Referral Progress</h3>
+                    <div class="flex items-center gap-base">
+                        <div class="flex-1">
+                            <div class="relative h-2 bg-surface-container rounded-full overflow-hidden mb-md">
+                                <div class="absolute top-0 left-0 h-full bg-primary transition-all duration-500" ng-style="{'width': (referralStep * 25) + '%'}"></div>
+                            </div>
+                            <div class="flex justify-between mt-sm text-center">
+                                <div class="flex-1 cursor-pointer" ng-click="setReferralStep(1)">
+                                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-caption font-bold mx-auto mb-1 transition-all"
+                                         ng-class="referralStep >= 1 ? 'bg-primary text-white scale-110' : 'bg-outline-variant text-on-surface-variant'">1</div>
+                                    <span class="text-caption text-[10px] font-semibold block" ng-class="{'text-primary font-bold': referralStep >= 1}">Initiated</span>
+                                </div>
+                                <div class="flex-1 cursor-pointer" ng-click="setReferralStep(2)">
+                                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-caption font-bold mx-auto mb-1 transition-all"
+                                         ng-class="referralStep >= 2 ? 'bg-primary text-white scale-110' : 'bg-outline-variant text-on-surface-variant'">2</div>
+                                    <span class="text-caption text-[10px] font-semibold block" ng-class="{'text-primary font-bold': referralStep >= 2}">Approved</span>
+                                </div>
+                                <div class="flex-1 cursor-pointer" ng-click="setReferralStep(3)">
+                                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-caption font-bold mx-auto mb-1 transition-all"
+                                         ng-class="referralStep >= 3 ? 'bg-primary text-white scale-110' : 'bg-outline-variant text-on-surface-variant'">3</div>
+                                    <span class="text-caption text-[10px] font-semibold block" ng-class="{'text-primary font-bold': referralStep >= 3}">In Progress</span>
+                                </div>
+                                <div class="flex-1 cursor-pointer" ng-click="setReferralStep(4)">
+                                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-caption font-bold mx-auto mb-1 transition-all"
+                                         ng-class="referralStep >= 4 ? 'bg-primary text-white scale-110' : 'bg-outline-variant text-on-surface-variant'">4</div>
+                                    <span class="text-caption text-[10px] font-semibold block" ng-class="{'text-primary font-bold': referralStep >= 4}">Completed</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column (4 cols) -->
+            <div class="lg:col-span-4 flex flex-col gap-gutter">
+                
+                <!-- Upcoming Health Camp Card -->
+                <div class="relative overflow-hidden rounded-xl h-64 shadow-sm border border-outline-variant group">
+                    <!-- Beautiful CSS representation of Camp visual banner -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary to-teal-800 flex flex-col justify-center items-center text-white p-md gap-xs">
+                        <span class="material-symbols-outlined text-[64px] opacity-40">campaign</span>
+                        <span class="text-caption font-bold tracking-widest uppercase text-xs">Village Health Camp</span>
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-primary/95 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 p-md text-white w-full">
+                        <span class="bg-secondary-container text-white px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider mb-2 inline-block">Free Event</span>
+                        <h4 class="font-h3 text-h3 mb-1 text-base font-bold">Elderly Eye Screening</h4>
+                        <p class="text-caption opacity-90 mb-md text-[10px]">Nalam Health Camp • Melur Village</p>
+                        
+                        <button ng-click="isRegisteredForCamp = !isRegisteredForCamp" class="px-6 py-2 rounded-lg font-label-md transition-colors scale-98 w-full text-center text-xs font-bold"
+                                ng-class="isRegisteredForCamp ? 'bg-primary-fixed text-primary font-bold' : 'bg-white text-primary hover:bg-surface-bright'">
+                            {{ isRegisteredForCamp ? 'Registered (✔ Token Sent)' : 'Register Free Now' }}
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Nearby Health Centres Card -->
+                <div class="bg-white p-md rounded-xl shadow-sm border border-outline-variant">
+                    <h3 class="font-h3 text-h3 text-on-surface mb-md text-base font-bold">Nearby Health Centres</h3>
+                    <div class="space-y-md">
+                        <!-- Directives: ng-repeat -->
+                        <div ng-repeat="center in nearbyCentres" class="flex items-start gap-sm p-2 hover:bg-surface-container rounded-lg transition-colors cursor-pointer animate-repeat-item">
+                            <div class="p-2 bg-primary/10 rounded-lg">
+                                <span class="material-symbols-outlined text-primary">local_hospital</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-label-md text-on-surface text-xs font-bold">{{ center.name }}</p>
+                                <p class="text-caption text-on-surface-variant text-[10px]">{{ center.distance }} km away • {{ center.hours }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health Tips Card -->
+                <!-- AngularJS Directives: ng-click -->
+                <div class="bg-primary p-md rounded-xl text-on-primary">
+                    <div class="flex items-center gap-sm mb-sm">
+                        <span class="material-symbols-outlined">lightbulb</span>
+                        <h4 class="font-label-md text-xs font-bold">Daily Health Tip</h4>
+                    </div>
+                    <p class="text-body-md mb-md italic text-xs">"{{ activeTip }}"</p>
+                    <div class="flex justify-between items-center border-t border-white/20 pt-base">
+                        <button ng-click="generateNextTip()" class="text-caption font-bold bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full transition-colors flex items-center gap-xs text-[10px]">
+                            <span class="material-symbols-outlined text-[16px]">autorenew</span> Next Health Tip
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Footer Shell -->
+    <footer class="w-full bg-surface-dim dark:bg-surface-container-lowest border-t border-outline-variant dark:border-outline py-lg pb-24 lg:pb-lg">
+        <div class="w-full px-gutter max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-md text-caption">
+            <div class="flex flex-col md:items-start items-center">
+                <h3 class="font-h3 text-h3 text-primary font-bold">Nalam360</h3>
+                <p class="text-on-surface-variant">© 2024 Nalam360 Healthcare. All rights reserved.</p>
+            </div>
+            <div class="flex flex-wrap justify-center gap-md">
+                <a class="text-on-surface-variant hover:text-secondary-container underline" href="#">Privacy Policy</a>
+                <a class="text-on-surface-variant hover:text-secondary-container underline" href="#">Terms of Service</a>
+                <a class="text-on-surface-variant hover:text-secondary-container underline" href="#">Help Center</a>
+            </div>
+        </div>
+    </footer>
+</main>
+
+<!-- Mobile Bottom Navigation Shell -->
+<nav class="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-white flex justify-around items-center border-t border-outline-variant z-50 shadow-lg">
+    <a class="flex flex-col items-center text-on-surface-variant" href="dashboard.html">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span class="text-[10px]">Home</span>
+    </a>
+    <a class="flex flex-col items-center text-on-surface-variant" href="healthcare.html">
+        <span class="material-symbols-outlined">map</span>
+        <span class="text-[10px]">Find Care</span>
+    </a>
+    <a class="flex flex-col items-center text-on-surface-variant" href="profile.html">
+        <span class="material-symbols-outlined">person</span>
+        <span class="text-[10px]">Profile</span>
+    </a>
+    <button class="flex flex-col items-center text-error" ng-click="toggleEmergencyPanel()">
+        <span class="material-symbols-outlined text-error">emergency</span>
+        <span class="text-[10px] font-bold">Emergency</span>
+    </button>
+</nav>
+
+<!-- AngularJS Core & Animations -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-animate.min.js"></script>
+
+<!-- Central app script -->
+<script src="app.js"></script>
+
+</body>
+</html>

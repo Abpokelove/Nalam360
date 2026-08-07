@@ -1,0 +1,295 @@
+/* Google Fonts & Material Icons */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+/* CSS Variables for Nalam360 Design System */
+:root {
+  --color-primary: #00645a;
+  --color-primary-container: #087f73;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #d6fff7;
+  --color-primary-fixed: #95f3e4;
+  --color-primary-fixed-dim: #78d7c8;
+
+  --color-secondary: #0058bb;
+  --color-secondary-container: #1f71e2;
+  --color-on-secondary: #ffffff;
+  --color-secondary-fixed: #d8e2ff;
+
+  --color-tertiary: #4d5b59;
+  --color-tertiary-container: #657471;
+  --color-on-tertiary: #ffffff;
+
+  --color-background: #e4fff9;
+  --color-surface: #e4fff9;
+  --color-surface-dim: #c2e0da;
+  --color-surface-bright: #e4fff9;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #dbfaf4;
+  --color-surface-container: #d5f4ee;
+  --color-surface-container-high: #d0efe8;
+  --color-surface-container-highest: #cae9e3;
+  --color-surface-variant: #cae9e3;
+
+  --color-on-background: #02201c;
+  --color-on-surface: #02201c;
+  --color-on-surface-variant: #3e4947;
+
+  --color-outline: #6e7977;
+  --color-outline-variant: #bdc9c6;
+
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --font-heading: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+/* Base Reset & Styling */
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  font-family: var(--font-body);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Material Symbols Adjustments */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+/* Custom Utilities */
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(220, 232, 228, 0.6);
+}
+
+.shadow-soft {
+  box-shadow: 0px 4px 20px rgba(23, 51, 47, 0.05);
+}
+
+.scale-98:active {
+  transform: scale(0.98);
+}
+
+/* Scrollbar Customization */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-outline-variant);
+  border-radius: 10px;
+}
+
+/* Utility Class to Hide Scrollbar */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Card Active States */
+.bento-card {
+  transition: transform 0.2s ease-in-out;
+}
+.bento-card:active {
+  transform: scale(0.98);
+}
+
+/* ==========================================================
+   ANGULARJS DIRECTIVE ANIMATIONS (CSS Transitions)
+   ========================================================== */
+
+/* ng-show / ng-hide animations */
+.animate-fade-slide {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 500px;
+  opacity: 1;
+  overflow: hidden;
+}
+
+.animate-fade-slide.ng-hide {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  border-width: 0 !important;
+  transform: translateY(-10px);
+}
+
+/* ng-repeat item transitions (list animations) */
+.animate-repeat-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-repeat-item.ng-enter {
+  opacity: 0;
+  transform: scale(0.95) translateY(10px);
+}
+
+.animate-repeat-item.ng-enter-active {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.animate-repeat-item.ng-leave {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.animate-repeat-item.ng-leave-active {
+  opacity: 0;
+  transform: scale(0.95) translateY(10px);
+  position: absolute; /* allows other list items to slide up smoothly */
+  width: 100%;
+}
+
+.animate-repeat-item.ng-move {
+  opacity: 0.5;
+}
+
+.animate-repeat-item.ng-move-active {
+  opacity: 1;
+}
+
+/* ng-if animations */
+.animate-fade {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.animate-fade.ng-enter {
+  opacity: 0;
+}
+
+.animate-fade.ng-enter-active {
+  opacity: 1;
+}
+
+.animate-fade.ng-leave {
+  opacity: 1;
+}
+
+.animate-fade.ng-leave-active {
+  opacity: 0;
+}
+
+/* Custom visual pulse for active verification status */
+.pulse-green {
+  animation: pulse-green-keyframes 2s infinite;
+}
+
+@keyframes pulse-green-keyframes {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 100, 90, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 100, 90, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 100, 90, 0);
+  }
+}
+
+/* CSS-Only Avatar Placeholder Styles */
+.avatar-css-placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0px 1px 2px rgba(0,0,0,0.2);
+  border-radius: 9999px;
+  background-size: 200% 200%;
+  animation: gradient-animation 5s ease infinite;
+}
+
+@keyframes gradient-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ==========================================================
+   ALIGNMENT & TYPOGRAPHY FALLBACKS (Resolves Overlapping)
+   ========================================================== */
+
+/* Fix general line spacing */
+body, p, span, select, input, label {
+  line-height: 1.5 !important;
+}
+
+/* Force headings style */
+.text-h1 {
+  font-size: 2.25rem !important;
+  line-height: 1.2 !important;
+  font-weight: 800 !important;
+  font-family: var(--font-heading) !important;
+}
+.text-h2 {
+  font-size: 1.75rem !important;
+  line-height: 1.3 !important;
+  font-weight: 700 !important;
+  font-family: var(--font-heading) !important;
+}
+.text-h3 {
+  font-size: 1.25rem !important;
+  line-height: 1.4 !important;
+  font-weight: 600 !important;
+  font-family: var(--font-heading) !important;
+}
+.text-caption {
+  font-size: 0.75rem !important;
+  line-height: 1.4 !important;
+}
+
+/* Custom Spacing Fallbacks */
+.space-y-xs > * + * {
+  margin-top: 6px !important;
+}
+.space-y-sm > * + * {
+  margin-top: 12px !important;
+}
+.space-y-md > * + * {
+  margin-top: 18px !important;
+}
+.space-y-lg > * + * {
+  margin-top: 24px !important;
+}
+
+.gap-xs {
+  gap: 6px !important;
+}
+.gap-sm {
+  gap: 12px !important;
+}
+.gap-md {
+  gap: 18px !important;
+}
+.gap-lg {
+  gap: 24px !important;
+}
+.gap-gutter {
+  gap: 24px !important;
+}
+
+/* Custom layout fixes for Referral elements */
+.referral-step-text {
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" class="light" ng-app="Nalam360App">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Nalam360 | Patient Registration</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <!-- Local CSS Reference -->
+    <link rel="stylesheet" href="index.css"/>
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#00645a",
+                        "primary-container": "#087f73",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#d6fff7",
+                        "primary-fixed": "#95f3e4",
+                        "primary-fixed-dim": "#78d7c8",
+                        "secondary": "#0058bb",
+                        "secondary-container": "#1f71e2",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#d8e2ff",
+                        "tertiary": "#4d5b59",
+                        "tertiary-container": "#657471",
+                        "background": "#e4fff9",
+                        "surface": "#e4fff9",
+                        "surface-dim": "#c2e0da",
+                        "surface-bright": "#e4fff9",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#dbfaf4",
+                        "surface-container": "#d5f4ee",
+                        "on-background": "#02201c",
+                        "on-surface": "#02201c",
+                        "on-surface-variant": "#3e4947",
+                        "outline": "#6e7977",
+                        "outline-variant": "#bdc9c6",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "16px",
+                        "xl": "24px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "base": "8px",
+                        "sm": "12px",
+                        "margin-mobile": "16px",
+                        "md": "24px",
+                        "gutter": "24px",
+                        "lg": "40px",
+                        "xl": "64px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Plus Jakarta Sans", "sans-serif"],
+                        "h2": ["Plus Jakarta Sans", "sans-serif"],
+                        "h3": ["Plus Jakarta Sans", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "caption": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "h1": ["2.5rem", { lineHeight: "1.2", fontWeight: "800" }],
+                        "h1-mobile": ["1.875rem", { lineHeight: "1.25", fontWeight: "800" }],
+                        "h2": ["1.75rem", { lineHeight: "1.3", fontWeight: "700" }],
+                        "h3": ["1.25rem", { lineHeight: "1.4", fontWeight: "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background min-h-screen flex flex-col justify-between text-on-surface font-body-md" ng-controller="PatientController">
+
+<!-- Top Bar -->
+<header class="w-full bg-surface/80 backdrop-blur h-16 flex justify-between items-center px-gutter border-b border-outline-variant/20">
+    <a class="font-h3 text-h3 font-bold text-primary" href="index.html">Nalam360</a>
+    <a href="index.html" class="flex items-center gap-xs text-primary font-label-md hover:underline text-xs">
+        <span class="material-symbols-outlined text-[18px]">arrow_back</span> Back to Home
+    </a>
+</header>
+
+<!-- Main Container -->
+<main class="flex-1 flex items-center justify-center py-xl px-gutter">
+    <div class="w-full max-w-[500px] bg-white rounded-xl p-lg shadow-lg border border-outline-variant/30 relative">
+        <div class="text-center mb-lg">
+            <h1 class="font-h2 text-h2 text-primary font-bold">Patient Registration</h1>
+            <p class="text-body-md text-on-surface-variant mt-xs text-xs">Create your rural health record account</p>
+        </div>
+
+        <!-- Form Validation Demonstration -->
+        <!-- AngularJS Directives: ng-submit -->
+        <form name="registerForm" ng-submit="submitRegistration()" novalidate class="space-y-md">
+            
+            <!-- Full Name -->
+            <div class="relative">
+                <label class="block font-label-md text-on-surface text-xs mb-xs">Full Name</label>
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-[20px]">person</span>
+                    <input type="text" name="fullName" ng-model="patient.name" 
+                           required ng-minlength="3" ng-pattern="/^[a-zA-Z\s]*$/"
+                           class="w-full pl-10 pr-10 py-2 rounded-lg border text-xs focus:ring-primary focus:border-primary text-body-md"
+                           ng-class="{'border-error': registerForm.fullName.$invalid && registerForm.fullName.$dirty, 'border-primary': registerForm.fullName.$valid}"
+                           placeholder="Enter your full name" />
+                    
+                    <span ng-show="registerForm.fullName.$valid" class="absolute right-3 top-1/2 -translate-y-1/2 text-green-600 font-bold text-sm">✔</span>
+                    <span ng-show="registerForm.fullName.$invalid && registerForm.fullName.$dirty" class="absolute right-3 top-1/2 -translate-y-1/2 text-error font-bold text-sm">✖</span>
+                </div>
+                <p ng-show="registerForm.fullName.$error.required && registerForm.fullName.$dirty" class="text-error text-[10px] mt-1">Full name is required.</p>
+                <p ng-show="registerForm.fullName.$error.minlength && registerForm.fullName.$dirty" class="text-error text-[10px] mt-1">Name must be at least 3 characters long.</p>
+                <p ng-show="registerForm.fullName.$error.pattern && registerForm.fullName.$dirty" class="text-error text-[10px] mt-1">Name can only contain letters and spaces.</p>
+            </div>
+
+            <!-- Date of Birth -->
+            <div class="relative">
+                <label class="block font-label-md text-on-surface text-xs mb-xs">Date of Birth</label>
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-[20px]">calendar_month</span>
+                    <input type="date" name="dob" ng-model="patient.dob" required
+                           class="w-full pl-10 pr-10 py-2 rounded-lg border text-xs focus:ring-primary focus:border-primary text-body-md"
+                           ng-class="{'border-error': registerForm.dob.$invalid && registerForm.dob.$dirty, 'border-primary': registerForm.dob.$valid}" />
+                    
+                    <span ng-show="registerForm.dob.$valid" class="absolute right-3 top-1/2 -translate-y-1/2 text-green-600 font-bold text-sm">✔</span>
+                    <span ng-show="registerForm.dob.$invalid && registerForm.dob.$dirty" class="absolute right-3 top-1/2 -translate-y-1/2 text-error font-bold text-sm">✖</span>
+                </div>
+                <p ng-show="registerForm.dob.$error.required && registerForm.dob.$dirty" class="text-error text-[10px] mt-1">Date of birth is required.</p>
+            </div>
+
+            <!-- Gender -->
+            <div class="relative">
+                <label class="block font-label-md text-on-surface text-xs mb-xs">Gender</label>
+                <div class="flex gap-lg p-2 border border-outline-variant/50 rounded-lg text-xs">
+                    <!-- AngularJS Directives: ng-model -->
+                    <label class="flex items-center gap-xs cursor-pointer">
+                        <input type="radio" name="gender" value="Male" ng-model="patient.gender" required />
+                        <span>Male</span>
+                    </label>
+                    <label class="flex items-center gap-xs cursor-pointer">
+                        <input type="radio" name="gender" value="Female" ng-model="patient.gender" required />
+                        <span>Female</span>
+                    </label>
+                    <label class="flex items-center gap-xs cursor-pointer">
+                        <input type="radio" name="gender" value="Other" ng-model="patient.gender" required />
+                        <span>Other</span>
+                    </label>
+                </div>
+                <p ng-show="registerForm.gender.$error.required && registerForm.gender.$dirty" class="text-error text-[10px] mt-1">Gender selection is required.</p>
+            </div>
+
+            <!-- Mobile Number -->
+            <div class="relative">
+                <label class="block font-label-md text-on-surface text-xs mb-xs">Mobile Number</label>
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-[20px]">call</span>
+                    <input type="text" name="mobile" ng-model="patient.mobile" 
+                           required ng-pattern="/^[0-9]{10}$/"
+                           class="w-full pl-10 pr-10 py-2 rounded-lg border text-xs focus:ring-primary focus:border-primary text-body-md"
+                           ng-class="{'border-error': registerForm.mobile.$invalid && registerForm.mobile.$dirty, 'border-primary': registerForm.mobile.$valid}"
+                           placeholder="Enter 10-digit mobile number" />
+                    
+                    <span ng-show="registerForm.mobile.$valid" class="absolute right-3 top-1/2 -translate-y-1/2 text-green-600 font-bold text-sm">✔</span>
+                    <span ng-show="registerForm.mobile.$invalid && registerForm.mobile.$dirty" class="absolute right-3 top-1/2 -translate-y-1/2 text-error font-bold text-sm">✖</span>
+                </div>
+                <p ng-show="registerForm.mobile.$error.required && registerForm.mobile.$dirty" class="text-error text-[10px] mt-1">Mobile number is required.</p>
+                <p ng-show="registerForm.mobile.$error.pattern && registerForm.mobile.$dirty" class="text-error text-[10px] mt-1">Must be exactly 10 digits.</p>
+            </div>
+
+            <!-- Village (using ng-options) -->
+            <div class="relative">
+                <label class="block font-label-md text-on-surface text-xs mb-xs">Village</label>
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-[20px]">location_on</span>
+                    <!-- AngularJS Directives: ng-options -->
+                    <select name="village" ng-model="patient.village" required
+                            ng-options="v for v in villages"
+                            class="w-full pl-10 pr-10 py-2 rounded-lg border text-xs focus:ring-primary focus:border-primary text-body-md appearance-none">
+                        <option value="">-- Choose Your Village --</option>
+                    </select>
+                    
+                    <span ng-show="registerForm.village.$valid" class="absolute right-3 top-1/2 -translate-y-1/2 text-green-600 font-bold text-sm">✔</span>
+                    <span ng-show="registerForm.village.$invalid && registerForm.village.$dirty" class="absolute right-3 top-1/2 -translate-y-1/2 text-error font-bold text-sm">✖</span>
+                </div>
+                <p ng-show="registerForm.village.$error.required && registerForm.village.$dirty" class="text-error text-[10px] mt-1">Village selection is required.</p>
+            </div>
+
+            <!-- AngularJS Directives: ng-disabled -->
+            <button type="submit" ng-disabled="registerForm.$invalid"
+                    class="w-full bg-primary text-on-primary py-2 rounded-lg font-bold hover:bg-primary-container transition-all scale-98 shadow-md text-xs disabled:bg-outline-variant/40 disabled:cursor-not-allowed">
+                Register
+            </button>
+
+            <!-- Reset Button -->
+            <button type="button" ng-click="resetForm('register')"
+                    class="w-full border border-outline-variant text-on-surface-variant py-2 rounded-lg font-label-md hover:bg-surface-container transition-all text-xs">
+                Reset Form
+            </button>
+        </form>
+
+        <div class="mt-md text-center text-caption font-label-md text-xs">
+            <span class="text-on-surface-variant">Already have an account?</span>
+            <a href="login.html" class="text-primary hover:underline font-bold ml-xs">Login here</a>
+        </div>
+    </div>
+</main>
+
+<!-- Lab Demonstration Card -->
+<section class="p-gutter bg-surface-container border-t border-outline-variant/30">
+    <div class="max-w-[500px] mx-auto bg-white p-md rounded-lg shadow-sm border border-outline-variant/20">
+        <!-- Collapsible Evaluator Header -->
+        <div class="flex justify-between items-center border-b border-primary/20 pb-2 mb-2">
+            <span class="font-h3 text-primary text-xs font-bold flex items-center gap-xs">
+                <span class="material-symbols-outlined text-primary text-[18px]">science</span> Lab Console
+            </span>
+            <button ng-click="showEvaluatorConsole = !showEvaluatorConsole" class="text-[10px] font-bold text-primary hover:underline">
+                {{ showEvaluatorConsole ? 'Hide' : 'Show' }}
+            </button>
+        </div>
+        
+        <div ng-show="showEvaluatorConsole" class="animate-fade-slide">
+            <h3 class="font-h3 text-h3 text-primary text-xs mb-xs font-bold font-bold font-bold">Live Patient Registration Preview</h3>
+            <p class="text-caption mb-sm text-xs"><strong>Status:</strong> Registering patient <span class="text-primary font-bold">{{ patient.name || '[Full Name]' | uppercase }}</span> of <span class="text-secondary font-bold">{{ patient.village || '[Village]' }}</span>.</p>
+            <pre class="bg-on-background text-[#95f3e4] p-1 text-[10px] rounded overflow-x-auto">{{ patient | json }}</pre>
+        </div>
+        <div ng-show="feedbackMessage" class="mt-sm p-sm bg-primary-fixed/20 text-primary rounded text-caption border border-primary-fixed font-bold text-xs animate-fade-slide">
+            {{ feedbackMessage }}
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="py-sm bg-surface-dim border-t border-outline-variant/30 text-center text-caption text-on-surface-variant text-xs">
+    © 2024 Nalam360 Healthcare. All rights reserved.
+</footer>
+
+<!-- AngularJS Core & Animations -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-animate.min.js"></script>
+
+<!-- Central app script -->
+<script src="app.js"></script>
+
+</body>
+</html>
