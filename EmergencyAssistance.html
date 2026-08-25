@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nalam360 | Emergency Assistance</title>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script src="app.js"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#193531",
+                    "surface-variant": "#cae9e3",
+                    "tertiary": "#4d5b59",
+                    "surface-dim": "#c2e0da",
+                    "primary-fixed": "#95f3e4",
+                    "surface-tint": "#006a60",
+                    "on-surface": "#02201c",
+                    "tertiary-fixed-dim": "#bacac6",
+                    "on-tertiary-container": "#eafaf6",
+                    "primary-container": "#087f73",
+                    "on-primary": "#ffffff",
+                    "surface-container-highest": "#cae9e3",
+                    "secondary-container": "#1f71e2",
+                    "surface-container": "#d5f4ee",
+                    "primary": "#00645a",
+                    "outline": "#6e7977",
+                    "on-tertiary-fixed": "#101e1c",
+                    "on-secondary-fixed-variant": "#004493",
+                    "on-primary-fixed": "#00201c",
+                    "inverse-on-surface": "#d8f7f1",
+                    "inverse-primary": "#78d7c8",
+                    "secondary": "#0058bb",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#dbfaf4",
+                    "outline-variant": "#bdc9c6",
+                    "on-surface-variant": "#3e4947",
+                    "tertiary-container": "#657471",
+                    "on-tertiary-fixed-variant": "#3b4a47",
+                    "surface": "#e4fff9",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed-variant": "#005048",
+                    "on-error-container": "#93000a",
+                    "surface-bright": "#e4fff9",
+                    "on-tertiary": "#ffffff",
+                    "background": "#e4fff9",
+                    "on-secondary-container": "#fefcff",
+                    "on-primary-container": "#d6fff7",
+                    "surface-container-high": "#d0efe8",
+                    "on-background": "#02201c",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed": "#d6e6e2",
+                    "secondary-fixed": "#d8e2ff",
+                    "error": "#D9363E",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "primary-fixed-dim": "#78d7c8",
+                    "on-secondary-fixed": "#001a41"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "sm": "12px",
+                    "container-max": "1280px",
+                    "base": "8px",
+                    "xl": "64px",
+                    "lg": "40px",
+                    "gutter": "24px",
+                    "md": "24px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "h1-mobile": ["Plus Jakarta Sans"],
+                    "h1": ["Plus Jakarta Sans"],
+                    "h3": ["Plus Jakarta Sans"],
+                    "caption": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "h2": ["Plus Jakarta Sans"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "h1-mobile": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "h1": ["40px", {"lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "h3": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "caption": ["12px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "30px", "fontWeight": "400"}],
+                    "h2": ["32px", {"lineHeight": "42px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+            vertical-align: middle;
+        }
+        .active-ring {
+            box-shadow: 0 0 0 4px rgba(217, 54, 62, 0.2);
+        }
+        .bento-card {
+            box-shadow: 0px 4px 20px rgba(23, 51, 47, 0.05);
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .bento-card:active {
+            transform: scale(0.96);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen" ng-app="nalam360" ng-controller="Nalam360Ctrl">
+<div class="px-gutter py-3 bg-surface/80 backdrop-blur-md sticky top-0 z-40 border-b border-outline-variant/30">
+    <div class="flex flex-wrap gap-2">
+        <a ng-repeat="page in pageLinks"
+           ng-href="{{page.url}}"
+           ng-class="page.url === currentPage ? 'bg-primary text-on-primary' : 'bg-surface-container text-on-surface hover:bg-primary-container hover:text-on-primary-container'"
+           class="px-3 py-2 rounded-lg font-label-md text-label-md transition-all">
+            {{page.name}}
+        </a>
+    </div>
+</div>
+<!-- Sidebar Navigation (JSON Mapping) -->
+<nav class="hidden lg:flex flex-col py-md gap-base fixed left-0 top-0 h-full w-[280px] bg-primary dark:bg-inverse-surface shadow-lg z-50">
+<div class="px-md mb-lg">
+<h2 class="font-h2 text-h2 text-on-primary">Nalam360</h2>
+<p class="font-label-md text-label-md text-on-primary/70">Patient Portal</p>
+</div>
+<div class="flex flex-col gap-1 overflow-y-auto flex-grow px-2">
+<!-- Active State: Emergency -->
+<a class="flex items-center gap-sm px-md py-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="HealthCamp.html">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-sm px-md py-4 bg-primary-container text-on-primary-container rounded-lg mx-2 transition-all" href="EmergencyAssistance.html">
+<span class="material-symbols-outlined">emergency</span>
+<span class="font-label-md text-label-md">Emergency</span>
+</a>
+<a class="flex items-center gap-sm px-md py-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="HealthCamp.html">
+<span class="material-symbols-outlined">medical_services</span>
+<span class="font-label-md text-label-md">Doctors</span>
+</a>
+<a class="flex items-center gap-sm px-md py-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="HealthCamp.html">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-md text-label-md">Find Healthcare</span>
+</a>
+</div>
+<div class="mt-auto px-2 pt-base border-t border-on-primary/10">
+<a class="flex items-center gap-sm px-md py-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="ProfileandSupport.html">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-sm px-md py-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="HealthCamp.html">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="lg:ml-[280px] p-margin-mobile md:p-gutter lg:p-lg min-h-screen">
+<header class="mb-lg flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div>
+<h1 class="font-h1-mobile md:font-h1 text-h1-mobile md:text-h1 text-error mb-2">Emergency Help</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">High-priority assistance. Tap a card below or use the quick first-aid guide.</p>
+</div>
+<div class="flex flex-col md:items-end gap-sm">
+<div class="bg-surface-container-high px-md py-base rounded-xl flex items-center gap-sm">
+<span class="flex h-3 w-3 bg-error rounded-full animate-pulse"></span>
+<span class="font-label-md text-label-md text-on-surface">Emergency Mode Active</span>
+</div>
+<div class="w-full md:w-[320px] bg-white rounded-xl border border-outline-variant px-3 py-2 flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-outline">search</span>
+<input class="w-full border-none focus:ring-0 bg-transparent text-body-md" ng-model="emergencySearch" placeholder="Search contacts or guides" type="text"/>
+</div>
+</div>
+</header>
+<!-- 1. Critical Action Grid (Asymmetric Bento Style) -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md mb-xl">
+<!-- CALL 112 -->
+<button class="bento-card relative overflow-hidden bg-error text-on-error p-gutter rounded-xl md:col-span-2 flex flex-col justify-between min-h-[220px] group" ng-click="emergencyStatus = 'Emergency 112 selected. Call immediately if this is urgent.'">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-[64px] opacity-20">call</span>
+<span class="bg-white/20 px-sm py-1 rounded-full font-label-md text-label-md uppercase tracking-wider">Immediate Response</span>
+</div>
+<div>
+<h2 class="font-h1-mobile text-h1-mobile font-extrabold mb-1">Call Emergency 112</h2>
+<p class="font-body-md text-body-md opacity-90">Instant connection to central emergency services.</p>
+</div>
+</button>
+<!-- FIND NEAREST HOSPITAL -->
+<button class="bento-card bg-surface-container-lowest border border-outline-variant p-gutter rounded-xl flex flex-col justify-between min-h-[220px]" ng-click="emergencyStatus = 'Hospital lookup opened. Use the nearest hospital information below.'">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-[48px] text-primary">local_hospital</span>
+</div>
+<div class="text-left">
+<h3 class="font-h3 text-h3 text-on-surface mb-1 leading-tight">Find Nearest Hospital</h3>
+<p class="font-caption text-caption text-on-surface-variant">View live map of clinics & ICUs.</p>
+</div>
+</button>
+<!-- CALL AMBULANCE -->
+<button class="bento-card bg-secondary-container text-on-secondary-container p-gutter rounded-xl flex flex-col justify-between min-h-[220px]" ng-click="emergencyStatus = 'Ambulance dispatch prepared.'">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-[48px]">emergency_share</span>
+</div>
+<div class="text-left">
+<h3 class="font-h3 text-h3 mb-1">Call Ambulance</h3>
+<p class="font-body-md text-body-md opacity-80">Direct dispatch for critical transport.</p>
+</div>
+</button>
+<!-- SHARE LOCATION -->
+<button class="bento-card bg-surface-container-low border border-outline-variant p-gutter rounded-xl flex flex-col justify-between min-h-[220px]" ng-click="emergencyStatus = 'Location sharing selected.'">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-[48px] text-on-surface-variant">location_on</span>
+</div>
+<div class="text-left">
+<h3 class="font-h3 text-h3 text-on-surface mb-1 leading-tight">Share My Location</h3>
+<p class="font-caption text-caption text-on-surface-variant">Send GPS coordinates to contacts.</p>
+</div>
+</button>
+</section>
+<div class="mb-lg bg-primary/10 border border-primary/20 rounded-xl p-md text-primary font-label-md">
+{{emergencyStatus}}
+</div>
+<!-- 2. Current Context Area & Map Hybrid -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-lg mb-xl">
+<div class="space-y-gutter">
+<div class="bg-surface-container-low p-gutter rounded-xl">
+<div class="flex items-center gap-sm mb-md border-b border-outline-variant pb-base">
+<span class="material-symbols-outlined text-primary">my_location</span>
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase">Your Current Location</h4>
+</div>
+<div class="flex flex-col gap-xs">
+<div class="relative w-full max-w-md">
+<select class="w-full rounded-xl border border-outline-variant bg-white px-4 py-3 pr-12 font-label-md text-label-md text-on-surface appearance-none focus:ring-2 focus:ring-primary focus:border-primary" ng-model="selectedEmergencyLocation" ng-options="location as (location.center + ' - ' + location.name) for location in emergencyLocations track by location.id" ng-change="selectEmergencyLocation(selectedEmergencyLocation)"></select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+</div>
+<p class="font-h2 text-h2 text-primary">{{selectedEmergencyLocation.name}}</p>
+<p class="font-caption text-caption text-outline font-mono">{{selectedEmergencyLocation.coords}}</p>
+</div>
+</div>
+<div class="bg-white p-gutter rounded-xl shadow-sm border border-outline-variant">
+<div class="flex justify-between items-start mb-md">
+<div>
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase mb-2">Nearest Emergency Center</h4>
+<p class="font-h3 text-h3 text-on-surface">{{selectedEmergencyLocation.center}}</p>
+</div>
+<div class="text-right">
+<span class="font-h2 text-h2 text-secondary block">{{selectedEmergencyLocation.distance}}</span>
+<span class="font-caption text-caption text-on-surface-variant">{{selectedEmergencyLocation.eta}}</span>
+</div>
+</div>
+<p class="text-caption text-on-surface-variant mb-md">{{selectedEmergencyLocation.emergencyNote}}</p>
+<button class="w-full bg-primary text-on-primary py-4 rounded-lg font-h3 text-h3 flex items-center justify-center gap-sm hover:opacity-90 transition-opacity" ng-click="emergencyStatus = selectedEmergencyLocation.actionText + ' for ' + selectedEmergencyLocation.center">
+<span class="material-symbols-outlined">directions_car</span>
+                        {{selectedEmergencyLocation.actionText}}
+                    </button>
+</div>
+</div>
+<!-- Contextual Map Display -->
+<div class="relative h-[300px] lg:h-full min-h-[300px] rounded-2xl overflow-hidden shadow-sm border border-outline-variant">
+<img class="absolute inset-0 z-0 h-full w-full object-cover bg-surface-dim" ng-src="{{selectedEmergencyLocation.mapImage}}" data-alt="A clean, minimalist map showing the selected emergency area and hospital icon. The style is professional and high-contrast, using the Nalam360 color palette of teals and blues."/>
+<div class="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-md px-md py-2 rounded-full shadow-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">satellite_alt</span>
+<span class="font-label-md text-label-md text-on-surface">High-Precision GPS Active</span>
+</div>
+</div>
+</section>
+<!-- 3. Emergency Contacts & 4. First Aid Guides -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+<!-- Emergency Contacts -->
+<div class="bg-surface-container-high/50 p-gutter rounded-2xl border border-outline-variant">
+<h4 class="font-h3 text-h3 text-on-surface mb-gutter flex items-center gap-sm">
+<span class="material-symbols-outlined">group</span>
+                    Emergency Contacts
+                </h4>
+<div class="mb-4 text-caption text-on-surface-variant">Services available nearby: {{selectedEmergencyLocation.services.join(', ')}}</div>
+<div class="space-y-base">
+<div ng-repeat="contact in emergencyContacts | filter:emergencySearch" class="bg-white p-md rounded-xl flex items-center justify-between border border-outline-variant">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full {{contact.color}} flex items-center justify-center font-bold">{{contact.initials}}</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">{{contact.name}}</p>
+<p class="font-body-md text-body-md text-on-surface-variant">{{contact.phone}}</p>
+</div>
+</div>
+<button class="w-12 h-12 rounded-full bg-secondary text-white flex items-center justify-center" ng-click="selectEmergencyContact(contact)">
+<span class="material-symbols-outlined">call</span>
+</button>
+</div>
+<button class="w-full border-2 border-dashed border-outline-variant p-md rounded-xl flex items-center justify-center gap-2 text-on-surface-variant hover:bg-white transition-colors mt-2">
+<span class="material-symbols-outlined">person_add</span>
+                        Add Emergency Contact
+                    </button>
+</div>
+</div>
+<!-- First Aid Quick Guides -->
+<div>
+<h4 class="font-h3 text-h3 text-on-surface mb-gutter flex items-center gap-sm">
+<span class="material-symbols-outlined">medical_information</span>
+                    First Aid Quick Guides
+                </h4>
+<div class="mb-4 flex flex-wrap gap-2">
+<span ng-repeat="service in selectedEmergencyLocation.services" class="px-3 py-1 rounded-full bg-primary/10 text-primary text-caption font-bold">{{service}}</span>
+</div>
+<div class="grid grid-cols-2 gap-base">
+<button ng-repeat="guide in firstAidGuides | filter:emergencySearch" class="bg-white p-md rounded-xl border border-outline-variant flex items-center gap-md hover:border-primary transition-colors text-left" ng-click="showGuide(guide)">
+<span class="material-symbols-outlined {{guide.iconClass}}" style="font-variation-settings: 'FILL' 1;">{{guide.icon}}</span>
+<span class="font-label-md text-label-md">{{guide.title}}</span>
+</button>
+</div>
+<div class="mt-base bg-primary-container/20 p-md rounded-xl border border-primary/20" ng-if="selectedGuide">
+<div class="flex justify-between items-start mb-2">
+<h5 class="font-h3 text-h3 text-primary">{{selectedGuide.title}} First Aid</h5>
+<button class="text-on-surface-variant" ng-click="selectedGuide = null"><span class="material-symbols-outlined">close</span></button>
+</div>
+<ul class="space-y-2 list-decimal list-inside font-body-md text-on-surface">
+<li ng-repeat="step in selectedGuide.steps">{{step}}</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- Footer Notice -->
+<footer class="mt-xl py-lg border-t border-outline-variant text-center">
+<p class="font-body-md text-body-md text-error font-bold mb-2">
+                Nalam360 does not replace emergency services.
+            </p>
+<p class="font-caption text-caption text-on-surface-variant uppercase tracking-widest">
+                Call 112 immediately in a life-threatening situation.
+            </p>
+<p class="font-caption text-caption text-on-surface-variant mt-lg opacity-60">
+                © 2024 Nalam360 Healthcare. All rights reserved. Rural Access Node #441
+            </p>
+</footer>
+</main>
+<!-- Overlay Interaction Script -->
+<script>
+        function showGuide(type) {
+            const display = document.getElementById('guide-display');
+            const title = document.getElementById('guide-title');
+            title.textContent = type + ' First Aid';
+            display.classList.remove('hidden');
+            
+            // Basic step logic (mock)
+            const list = display.querySelector('ul');
+            if(type === 'Bleeding') {
+                list.innerHTML = `<li>Apply firm, steady pressure with clean cloth.</li><li>Elevate the injured limb if possible.</li><li>Do not remove the cloth if it soaks through.</li>`;
+            } else if(type === 'Chest Pain') {
+                list.innerHTML = `<li>Have the person sit down and stay calm.</li><li>Loosen any tight clothing.</li><li>Ask if they take heart medication.</li>`;
+            } else {
+                list.innerHTML = `<li>Call for help immediately.</li><li>Keep the person still.</li><li>Monitor breathing until help arrives.</li>`;
+            }
+        }
+        
+        function hideGuide() {
+            document.getElementById('guide-display').classList.add('hidden');
+        }
+
+        // Haptic-like interaction simulation
+        document.querySelectorAll('.bento-card, button').forEach(button => {
+            button.addEventListener('click', () => {
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(50);
+                }
+            });
+        });
+    </script>
+</body></html>
+EmergencyAssistance.html

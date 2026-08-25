@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nalam360 | Patient Profile &amp; Support</title>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script src="app.js"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#193531",
+                    "surface-variant": "#cae9e3",
+                    "tertiary": "#4d5b59",
+                    "surface-dim": "#c2e0da",
+                    "primary-fixed": "#95f3e4",
+                    "surface-tint": "#006a60",
+                    "on-surface": "#02201c",
+                    "tertiary-fixed-dim": "#bacac6",
+                    "on-tertiary-container": "#eafaf6",
+                    "primary-container": "#087f73",
+                    "on-primary": "#ffffff",
+                    "surface-container-highest": "#cae9e3",
+                    "secondary-container": "#1f71e2",
+                    "surface-container": "#d5f4ee",
+                    "primary": "#00645a",
+                    "outline": "#6e7977",
+                    "on-tertiary-fixed": "#101e1c",
+                    "on-secondary-fixed-variant": "#004493",
+                    "on-primary-fixed": "#00201c",
+                    "inverse-on-surface": "#d8f7f1",
+                    "inverse-primary": "#78d7c8",
+                    "secondary": "#0058bb",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#dbfaf4",
+                    "outline-variant": "#bdc9c6",
+                    "on-surface-variant": "#3e4947",
+                    "tertiary-container": "#657471",
+                    "on-tertiary-fixed-variant": "#3b4a47",
+                    "surface": "#e4fff9",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed-variant": "#005048",
+                    "on-error-container": "#93000a",
+                    "surface-bright": "#e4fff9",
+                    "on-tertiary": "#ffffff",
+                    "background": "#e4fff9",
+                    "on-secondary-container": "#fefcff",
+                    "on-primary-container": "#d6fff7",
+                    "surface-container-high": "#d0efe8",
+                    "on-background": "#02201c",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed": "#d6e6e2",
+                    "secondary-fixed": "#d8e2ff",
+                    "error": "#ba1a1a",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "primary-fixed-dim": "#78d7c8",
+                    "on-secondary-fixed": "#001a41"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "sm": "12px",
+                    "container-max": "1280px",
+                    "base": "8px",
+                    "xl": "64px",
+                    "lg": "40px",
+                    "gutter": "24px",
+                    "md": "24px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "h1-mobile": ["Plus Jakarta Sans"],
+                    "h1": ["Plus Jakarta Sans"],
+                    "h3": ["Plus Jakarta Sans"],
+                    "caption": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "h2": ["Plus Jakarta Sans"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "h1-mobile": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "h1": ["40px", {"lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "h3": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "caption": ["12px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "30px", "fontWeight": "400"}],
+                    "h2": ["32px", {"lineHeight": "42px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #e4fff9;
+            color: #02201c;
+            overflow-x: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .card-shadow {
+            box-shadow: 0px 4px 20px rgba(23, 51, 47, 0.05);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(220, 232, 228, 0.5);
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md" ng-app="nalam360" ng-controller="Nalam360Ctrl">
+<div class="px-gutter py-3 bg-surface/80 backdrop-blur-md sticky top-0 z-40 border-b border-outline-variant/30">
+    <div class="flex flex-wrap gap-2">
+        <a ng-repeat="page in pageLinks"
+           ng-href="{{page.url}}"
+           ng-class="page.url === currentPage ? 'bg-primary text-on-primary' : 'bg-surface-container text-on-surface hover:bg-primary-container hover:text-on-primary-container'"
+           class="px-3 py-2 rounded-lg font-label-md text-label-md transition-all">
+            {{page.name}}
+        </a>
+    </div>
+</div>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-gutter h-16 bg-surface dark:bg-surface-container-high shadow-sm">
+<div class="flex items-center gap-base">
+<span class="font-h3 text-h3 font-bold text-primary dark:text-primary-fixed">Nalam360</span>
+</div>
+<div class="flex-1 max-w-md mx-lg hidden md:block">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-2 rounded-xl border-outline-variant bg-surface-container-low focus:ring-primary focus:border-primary" placeholder="Search doctors, records, or help..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md">Emergency</button>
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer">notifications</span>
+<span class="material-symbols-outlined cursor-pointer">location_on</span>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-primary">
+<img class="w-full h-full object-cover" data-alt="A warm, professional headshot of an Indian woman named Meena in her late 30s. She has a kind expression and is wearing traditional attire, set against a soft, clean healthcare-themed background with a minimalist teal and white color palette. The lighting is bright and natural, reflecting a trustworthy and accessible persona." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrG2zqKiWWk2A7OL08jJbKeNvoIeUYTEn7EwcCyzLUku74k80FR1F-TkqzJe4GOz3qiebFmNvKCVqcmFw7FW93HB7aZrR6s3ZkAPJj69auplXEeiOtiMDPWyeMB-0rkQW7RoqsNpIDLmm1sLhvCyx09ZiyVoXdvEwXxruEhqsd-jmymUUx4dFDsWyqfOHujlE5J7KLLrjCi9Up3RPHfIE-yzcMQHkb9UtL7jQkJHfKfMI-BYdzM-vlaQ"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex pt-16 min-h-screen">
+<!-- Side Navigation Bar -->
+<aside class="hidden lg:flex flex-col py-md gap-base fixed left-0 top-16 h-[calc(100vh-64px)] w-[280px] bg-primary dark:bg-inverse-surface shadow-lg text-on-primary">
+<div class="px-md mb-lg">
+<h2 class="font-h2 text-h2 text-on-primary">Patient Portal</h2>
+<p class="text-on-primary/70 font-caption text-caption">Rural Access Dashboard</p>
+</div>
+<nav class="flex-1 overflow-y-auto">
+<a class="flex items-center gap-md py-3 px-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="HealthCamp.html">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md py-3 px-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="HealthCamp.html">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-md text-label-md">Find Healthcare</span>
+</a>
+<a class="flex items-center gap-md py-3 px-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="HealthCamp.html">
+<span class="material-symbols-outlined">medical_services</span>
+<span class="font-label-md text-label-md">Doctors</span>
+</a>
+<a class="flex items-center gap-md py-3 px-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="ReferralsAndReminder.html">
+<span class="material-symbols-outlined">event</span>
+<span class="font-label-md text-label-md">Appointments</span>
+</a>
+<a class="flex items-center gap-md py-3 px-4 bg-primary-container text-on-primary-container rounded-lg mx-2 transition-all" href="ProfileandSupport.html">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+<a class="flex items-center gap-md py-3 px-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="ProfileandSupport.html">
+<span class="material-symbols-outlined">local_pharmacy</span>
+<span class="font-label-md text-label-md">Pharmacy</span>
+</a>
+<a class="flex items-center gap-md py-3 px-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="ProfileandSupport.html">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-md text-label-md">Prescriptions</span>
+</a>
+<a class="flex items-center gap-md py-3 px-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="HealthCamp.html">
+<span class="material-symbols-outlined">campaign</span>
+<span class="font-label-md text-label-md">Health Camps</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-on-primary/10 pt-base">
+<a class="flex items-center gap-md py-3 px-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="ProfileandSupport.html">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-md py-3 px-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="HealthCamp.html">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 lg:ml-[280px] p-gutter md:p-lg max-w-7xl mx-auto w-full">
+<header class="mb-lg">
+<h1 class="font-h2 text-h2 text-primary">Account &amp; Management</h1>
+<p class="text-on-surface-variant font-body-md">Manage your profile, family accounts, and get help.</p>
+</header>
+<!-- Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- 1. Patient Profile Card -->
+<section class="md:col-span-8 bg-surface-container-lowest rounded-2xl p-md card-shadow border border-outline-variant/30">
+<div class="flex flex-col sm:flex-row items-center sm:items-start gap-lg">
+<div class="relative">
+<div class="w-32 h-32 rounded-2xl border-4 border-surface-container-high shadow-md bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center text-4xl font-bold">
+{{patient.initials}}
+</div>
+<button ng-click="toggleProfileEditor()" class="absolute -bottom-2 -right-2 bg-primary text-white p-2 rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+</div>
+<div class="flex-1 w-full text-center sm:text-left">
+<div class="flex flex-col sm:flex-row justify-between items-center sm:items-start gap-base">
+<div>
+<h2 class="font-h3 text-h3">{{patient.name}}</h2>
+<div class="flex flex-wrap items-center gap-xs mt-xs">
+<span class="bg-primary/10 text-primary px-3 py-1 rounded-full font-label-md text-label-md">ID: {{patient.id}}</span>
+<span class="bg-surface-container text-on-surface-variant px-3 py-1 rounded-full font-label-md text-label-md">{{patient.status}}</span>
+</div>
+</div>
+<button ng-click="toggleProfileEditor()" class="bg-primary text-white px-gutter py-2 rounded-xl font-label-md hover:bg-primary-container transition-colors shadow-sm">Edit Profile</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-md mt-lg">
+<div class="rounded-xl bg-white/70 p-sm border border-outline-variant/30">
+<p class="text-on-surface-variant font-caption text-caption uppercase tracking-wider">Mobile Number</p>
+<p class="font-label-md text-label-md text-on-surface">{{patient.mobile}}</p>
+</div>
+<div class="rounded-xl bg-white/70 p-sm border border-outline-variant/30">
+<p class="text-on-surface-variant font-caption text-caption uppercase tracking-wider">Village</p>
+<p class="font-label-md text-label-md text-on-surface">{{patient.village}}</p>
+</div>
+<div class="rounded-xl bg-white/70 p-sm border border-outline-variant/30">
+<p class="text-on-surface-variant font-caption text-caption uppercase tracking-wider">Preferred Language</p>
+<p class="font-label-md text-label-md text-on-surface">{{patient.language}}</p>
+</div>
+<div class="rounded-xl bg-white/70 p-sm border border-outline-variant/30">
+<p class="text-on-surface-variant font-caption text-caption uppercase tracking-wider">Last Sync</p>
+<p class="font-label-md text-label-md text-on-surface">{{patient.lastSync}}</p>
+</div>
+</div>
+<div ng-if="profileSaveStatus" class="mt-lg p-sm rounded-xl bg-primary/10 text-primary font-label-md">
+{{profileSaveStatus}}
+</div>
+<form ng-if="showProfileEditor" class="mt-lg p-md bg-white/80 rounded-2xl border border-outline-variant/30 shadow-sm" ng-submit="saveProfile()">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div>
+<label class="font-caption text-caption text-on-surface-variant">Full Name</label>
+<input ng-model="profileForm.name" class="w-full mt-1 px-3 py-2 rounded-lg border border-outline-variant bg-surface-container-low" type="text"/>
+</div>
+<div>
+<label class="font-caption text-caption text-on-surface-variant">Mobile Number</label>
+<input ng-model="profileForm.mobile" class="w-full mt-1 px-3 py-2 rounded-lg border border-outline-variant bg-surface-container-low" type="text"/>
+</div>
+<div>
+<label class="font-caption text-caption text-on-surface-variant">Village</label>
+<input ng-model="profileForm.village" class="w-full mt-1 px-3 py-2 rounded-lg border border-outline-variant bg-surface-container-low" type="text"/>
+</div>
+<div>
+<label class="font-caption text-caption text-on-surface-variant">Preferred Language</label>
+<input ng-model="profileForm.language" class="w-full mt-1 px-3 py-2 rounded-lg border border-outline-variant bg-surface-container-low" type="text"/>
+</div>
+</div>
+<div class="mt-md flex justify-end gap-sm">
+<button class="bg-primary text-on-primary px-md py-2 rounded-lg" type="submit">Save</button>
+<button class="bg-surface-container text-on-surface px-md py-2 rounded-lg" ng-click="toggleProfileEditor()" type="button">Cancel</button>
+</div>
+</form>
+</div>
+</div>
+</section>
+<!-- 4. Settings & Accessibility -->
+<section class="md:col-span-4 space-y-md">
+<div class="bg-surface-container-high rounded-xl p-md card-shadow border border-outline-variant/30">
+<h3 class="font-h3 text-h3 mb-md flex items-center gap-base">
+<span class="material-symbols-outlined text-primary">accessibility_new</span>
+                            Settings
+                        </h3>
+<div class="space-y-sm">
+<div class="flex items-center justify-between p-sm bg-white/50 rounded-lg">
+<div>
+<p class="font-label-md text-label-md">Low-Data Mode</p>
+<p class="font-caption text-caption text-on-surface-variant">For slower connections</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input ng-model="settings.lowDataMode" checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex items-center justify-between p-sm bg-white/50 rounded-lg">
+<div>
+<p class="font-label-md text-label-md">Voice Navigation</p>
+<p class="font-caption text-caption text-on-surface-variant">Assistive guidance</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input ng-model="settings.voiceNavigation" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<button class="w-full flex items-center justify-between p-sm bg-white/50 rounded-lg hover:bg-white/80 transition-colors">
+<div>
+<p class="font-label-md text-label-md text-left">Language Switcher</p>
+<p class="font-caption text-caption text-on-surface-variant">Current: Tamil</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">translate</span>
+</button>
+</div>
+</div>
+</section>
+<!-- 2. Family Management -->
+<section class="md:col-span-12">
+<div class="flex items-center justify-between mb-md">
+<h3 class="font-h3 text-h3 flex items-center gap-base">
+<span class="material-symbols-outlined text-primary">groups</span>
+                            My Family Profiles
+                        </h3>
+<button class="text-primary font-label-md hover:underline">Manage All</button>
+</div>
+<div class="relative mb-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input ng-model="profileSearch" class="w-full pl-10 pr-4 py-2 rounded-xl border-outline-variant bg-surface-container-low focus:ring-primary focus:border-primary" placeholder="Search family profile..." type="text"/>
+</div>
+<div ng-if="familySaveStatus" class="mb-md p-sm rounded-xl bg-primary/10 text-primary font-label-md">
+{{familySaveStatus}}
+</div>
+<div class="flex overflow-x-auto pb-4 gap-md no-scrollbar">
+<div ng-repeat="member in filteredFamilyMembers()" ng-click="selectFamilyMember(member)" class="flex-shrink-0 w-40 p-md rounded-2xl card-shadow text-center cursor-pointer transition-all" ng-class="member.name === selectedFamilyMember.name ? 'bg-primary-container text-on-primary-container border-2 border-primary' : 'bg-white border border-outline-variant/30 hover:border-primary/50'">
+<div class="w-16 h-16 mx-auto rounded-full mb-sm border-2 border-white/60 bg-white/20 text-white flex items-center justify-center text-lg font-bold">
+{{member.initials}}
+</div>
+<p class="font-label-md text-label-md">{{member.name}}</p>
+<p class="font-caption text-caption" ng-class="member.name === selectedFamilyMember.name ? 'text-on-primary-container/90' : 'text-on-surface-variant'">{{member.relation}}</p>
+</div>
+<button class="flex-shrink-0 w-40 p-md bg-white rounded-2xl border-2 border-dashed border-outline-variant flex flex-col items-center justify-center gap-sm hover:border-primary hover:bg-primary/5 transition-all group cursor-pointer text-left" ng-click="openFamilyMemberForm()" type="button">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">add</span>
+</div>
+<p class="font-label-md text-label-md">Add Family Member</p>
+</button>
+</div>
+<div ng-if="showFamilyMemberForm" class="mt-md p-md rounded-2xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<div>
+<label class="font-caption text-caption text-on-surface-variant">Name</label>
+<input ng-model="familyMemberForm.name" class="w-full mt-1 px-3 py-2 rounded-lg border border-outline-variant bg-white" placeholder="Enter member name" type="text"/>
+</div>
+<div>
+<label class="font-caption text-caption text-on-surface-variant">Relation</label>
+<input ng-model="familyMemberForm.relation" class="w-full mt-1 px-3 py-2 rounded-lg border border-outline-variant bg-white" placeholder="e.g. Mother" type="text"/>
+</div>
+<div>
+<label class="font-caption text-caption text-on-surface-variant">Initials</label>
+<input ng-model="familyMemberForm.initials" class="w-full mt-1 px-3 py-2 rounded-lg border border-outline-variant bg-white" placeholder="Optional" type="text"/>
+</div>
+</div>
+<div class="mt-md flex justify-end gap-sm">
+<button class="bg-primary text-on-primary px-md py-2 rounded-lg" ng-click="addFamilyMember()" type="button">Add Member</button>
+<button class="bg-surface-container text-on-surface px-md py-2 rounded-lg" ng-click="cancelFamilyMemberForm()" type="button">Cancel</button>
+</div>
+</div>
+<div ng-if="selectedFamilyMember" class="mt-md p-sm rounded-2xl bg-surface-container-lowest border border-outline-variant/30">
+<p class="font-label-md text-label-md">Selected Profile</p>
+<p class="font-caption text-caption text-on-surface-variant">{{selectedFamilyMember.name}} • {{selectedFamilyMember.relation}}</p>
+</div>
+</section>
+<!-- 3. Health Wallet / Documents -->
+<section class="md:col-span-12 lg:col-span-5 space-y-md">
+<h3 class="font-h3 text-h3 flex items-center gap-base">
+<span class="material-symbols-outlined text-primary">folder_shared</span>
+                        Health Wallet
+                    </h3>
+<div class="grid grid-cols-1 gap-sm">
+<div ng-repeat="walletItem in healthWallet" class="flex items-center gap-md p-md bg-white rounded-xl card-shadow border border-outline-variant/30 hover:shadow-md transition-shadow cursor-pointer">
+<div class="w-12 h-12 rounded-lg {{walletItem.color}} flex items-center justify-center">
+<span class="material-symbols-outlined">{{walletItem.icon}}</span>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-label-md">{{walletItem.title}}</p>
+<p class="font-caption text-caption text-on-surface-variant">{{walletItem.subtitle}}</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- 5. Support & Help Center -->
+<section class="md:col-span-12 lg:col-span-7 space-y-md">
+<h3 class="font-h3 text-h3 flex items-center gap-base">
+<span class="material-symbols-outlined text-primary">support_agent</span>
+                        Support &amp; Help Center
+                    </h3>
+<div class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant/30 card-shadow">
+<div class="relative mb-lg">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input ng-model="supportSearch" class="w-full pl-10 pr-4 py-2 rounded-xl border-outline-variant bg-surface-container-low focus:ring-primary focus:border-primary" placeholder="Search FAQs..." type="text"/>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div ng-repeat="faq in supportFaqs | filter:supportSearch" class="p-sm border border-outline-variant rounded-lg hover:border-primary transition-colors cursor-pointer group">
+<p class="font-label-md text-label-md group-hover:text-primary">{{faq.question}}</p>
+<p class="font-caption text-caption text-on-surface-variant mt-xs">{{faq.answer}}</p>
+</div>
+</div>
+<div class="mt-lg p-md bg-primary rounded-xl text-on-primary flex flex-col sm:flex-row justify-between items-center gap-md">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+<span class="material-symbols-outlined">call</span>
+</div>
+<div>
+<p class="font-label-md text-label-md">Contact Rural Helpline</p>
+<p class="font-h3 text-h3">1800-345-7890</p>
+</div>
+</div>
+<button class="bg-white text-primary px-lg py-2 rounded-xl font-bold hover:bg-surface transition-colors active:scale-95">Call Now</button>
+</div>
+<div class="mt-md text-center">
+<a class="text-on-surface-variant font-caption text-caption hover:text-primary flex items-center justify-center gap-xs" href="EmergencyAssistance.html">
+<span class="material-symbols-outlined text-sm">bug_report</span>
+                                Report a Technical Issue
+                            </a>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer Integration -->
+<footer class="mt-xl w-full py-lg border-t border-outline-variant dark:border-outline">
+<div class="flex flex-col md:flex-row justify-between items-center gap-md">
+<p class="font-caption text-caption text-on-surface-variant">© 2024 Nalam360 Healthcare. All rights reserved.</p>
+<div class="flex gap-lg">
+<a class="font-caption text-caption text-on-surface-variant hover:text-secondary-container underline" href="HealthCamp.html">Privacy Policy</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-secondary-container underline" href="ProfileandSupport.html">Terms of Service</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-secondary-container underline" href="HealthAwareness.html">Help Center</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-secondary-container underline" href="EmergencyAssistance.html">Contact Support</a>
+</div>
+</div>
+</footer>
+</main>
+</div>
+<!-- Mobile Bottom Navigation (Visible only on mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface-container-high border-t border-outline-variant flex justify-around items-center py-sm z-50">
+<a class="flex flex-col items-center gap-xs text-on-surface-variant" href="HealthCamp.html">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-bold">Home</span>
+</a>
+<a class="flex flex-col items-center gap-xs text-on-surface-variant" href="ReferralsAndReminder.html">
+<span class="material-symbols-outlined">event</span>
+<span class="text-[10px] font-bold">Appointments</span>
+</a>
+<a class="flex flex-col items-center gap-xs text-on-surface-variant" href="ProfileandSupport.html">
+<span class="material-symbols-outlined">description</span>
+<span class="text-[10px] font-bold">Records</span>
+</a>
+<a class="flex flex-col items-center gap-xs text-primary" href="ProfileandSupport.html">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="text-[10px] font-bold">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction: Smooth scrolling for help section or toggles
+        document.querySelectorAll('.cursor-pointer').forEach(el => {
+            el.addEventListener('mousedown', () => {
+                el.style.transform = 'scale(0.98)';
+            });
+            el.addEventListener('mouseup', () => {
+                el.style.transform = 'scale(1)';
+            });
+            el.addEventListener('mouseleave', () => {
+                el.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body></html>

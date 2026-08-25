@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Health Awareness Library | Nalam360</title>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script src="app.js"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(220, 232, 228, 1);
+        }
+        .bento-item {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .bento-item:hover {
+            transform: translateY(-4px);
+        }
+        /* Custom scrollbar for library focus */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e4fff9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #006a60;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#001a41",
+                        "on-secondary-container": "#fefcff",
+                        "surface-dim": "#c2e0da",
+                        "inverse-on-surface": "#d8f7f1",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "primary-container": "#087f73",
+                        "tertiary-container": "#657471",
+                        "outline": "#6e7977",
+                        "surface-container": "#d5f4ee",
+                        "on-primary-fixed": "#00201c",
+                        "on-background": "#02201c",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#3e4947",
+                        "on-primary-fixed-variant": "#005048",
+                        "surface-variant": "#cae9e3",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#bdc9c6",
+                        "secondary": "#0058bb",
+                        "tertiary-fixed": "#d6e6e2",
+                        "inverse-surface": "#193531",
+                        "primary-fixed-dim": "#78d7c8",
+                        "surface": "#e4fff9",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-highest": "#cae9e3",
+                        "tertiary-fixed-dim": "#bacac6",
+                        "on-secondary": "#ffffff",
+                        "primary": "#00645a",
+                        "primary-fixed": "#95f3e4",
+                        "on-surface": "#02201c",
+                        "on-primary-container": "#d6fff7",
+                        "surface-container-high": "#d0efe8",
+                        "inverse-primary": "#78d7c8",
+                        "surface-tint": "#006a60",
+                        "background": "#e4fff9",
+                        "surface-bright": "#e4fff9",
+                        "on-tertiary-fixed-variant": "#3b4a47",
+                        "on-tertiary-container": "#eafaf6",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#1f71e2",
+                        "on-secondary-fixed-variant": "#004493",
+                        "tertiary": "#4d5b59",
+                        "surface-container-low": "#dbfaf4",
+                        "on-tertiary-fixed": "#101e1c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "sm": "12px",
+                        "md": "24px",
+                        "base": "8px",
+                        "xl": "64px",
+                        "xs": "4px",
+                        "lg": "40px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "caption": ["Inter"],
+                        "h1-mobile": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "h1": ["Plus Jakarta Sans"],
+                        "h2": ["Plus Jakarta Sans"],
+                        "h3": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "caption": ["12px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "h1-mobile": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "30px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "h1": ["40px", {"lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "h2": ["32px", {"lineHeight": "42px", "fontWeight": "700"}],
+                        "h3": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen" ng-app="nalam360" ng-controller="Nalam360Ctrl">
+<div class="px-gutter py-3 bg-surface/80 backdrop-blur-md sticky top-0 z-40 border-b border-outline-variant/30">
+    <div class="flex flex-wrap gap-2">
+        <a ng-repeat="page in pageLinks"
+           ng-href="{{page.url}}"
+           ng-class="page.url === currentPage ? 'bg-primary text-on-primary' : 'bg-surface-container text-on-surface hover:bg-primary-container hover:text-on-primary-container'"
+           class="px-3 py-2 rounded-lg font-label-md text-label-md transition-all">
+            {{page.name}}
+        </a>
+    </div>
+</div>
+<!-- Sidebar Navigation -->
+<aside class="hidden lg:flex flex-col py-md gap-base fixed left-0 top-0 h-full w-[280px] bg-primary dark:bg-inverse-surface shadow-lg z-50">
+<div class="px-gutter mb-lg">
+<h1 class="font-h2 text-h2 text-on-primary">Nalam360</h1>
+<p class="font-label-md text-label-md text-on-primary/70">Rural Access Portal</p>
+</div>
+<nav class="flex-1 flex flex-col gap-xs">
+<a class="flex items-center gap-sm px-gutter py-sm text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="HealthCamp.html">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-sm px-gutter py-sm text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="HealthCamp.html">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-md text-label-md">Find Healthcare</span>
+</a>
+<a class="flex items-center gap-sm px-gutter py-sm text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="HealthCamp.html">
+<span class="material-symbols-outlined">medical_services</span>
+<span class="font-label-md text-label-md">Doctors</span>
+</a>
+<a class="flex items-center gap-sm px-gutter py-sm text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="ReferralsAndReminder.html">
+<span class="material-symbols-outlined">event</span>
+<span class="font-label-md text-label-md">Appointments</span>
+</a>
+<!-- Awareness Tab - Active -->
+<a class="flex items-center gap-sm px-gutter py-sm bg-primary-container text-on-primary-container rounded-lg mx-2 transition-all duration-200" href="HealthAwareness.html">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-label-md text-label-md">Awareness</span>
+</a>
+<a class="flex items-center gap-sm px-gutter py-sm text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="HealthCamp.html">
+<span class="material-symbols-outlined">campaign</span>
+<span class="font-label-md text-label-md">Health Camps</span>
+</a>
+</nav>
+<div class="mt-auto px-gutter py-md border-t border-on-primary/10">
+<div class="flex items-center gap-sm mb-md">
+<img class="w-10 h-10 rounded-full border-2 border-on-primary/20" data-alt="A professional circular avatar portrait of a friendly healthcare worker in a clean clinic setting, soft natural lighting, warm and approachable expression, wearing a teal uniform, minimalist photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7S2dLAmrBpCK9lc255hZBtiM6P65-G5B4BFpL_kNnydV3dukl44ooRv3ImzQXQsDpHYtC48splMc8e7fhdlvqnrlaawf4FSaVbzjBcqZPyfaj2kuQqc8FAccKSvWYk2armB_wg1Y8BoGcuoIhEeAnLzRX_8AEUJEF3AExSDGzBPJLZhx4y-ImFx8vLDYXimOGTvouH8VylPEzZD9XKoybHXTiHNVDsvGZE7VWoG53pGmAzgJL53saLg"/>
+<div>
+<p class="font-label-md text-label-md text-on-primary">Patient Portal</p>
+<p class="font-caption text-caption text-on-primary/60">Verified User</p>
+</div>
+</div>
+<a class="flex items-center gap-sm px-gutter py-sm text-on-primary/80 hover:bg-on-primary/10 rounded-lg transition-all duration-200" href="ProfileandSupport.html">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-sm px-gutter py-sm text-on-primary/80 hover:bg-on-primary/10 rounded-lg transition-all duration-200" href="HealthCamp.html">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="lg:ml-[280px] min-h-screen relative">
+<!-- Header -->
+<header class="sticky top-0 z-40 bg-surface/80 backdrop-blur-md px-gutter h-20 flex justify-between items-center">
+<div>
+<h2 class="font-h3 text-h3 text-primary font-bold">{{awarenessText.headerTitle}}</h2>
+<p class="font-caption text-caption text-on-surface-variant">{{awarenessText.headerSubtitle}}</p>
+</div>
+<div class="flex items-center gap-base">
+<div class="hidden md:flex bg-surface-container-high rounded-full p-1 border border-outline-variant">
+<button class="px-4 py-1.5 rounded-full font-label-md text-label-md transition-colors" ng-class="awarenessLanguage === 'en' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:bg-surface-variant'" ng-click="setAwarenessLanguage('en')">English</button>
+<button class="px-4 py-1.5 rounded-full font-label-md text-label-md transition-colors" ng-class="awarenessLanguage === 'ta' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:bg-surface-variant'" ng-click="setAwarenessLanguage('ta')">தமிழ்</button>
+<button class="px-4 py-1.5 rounded-full font-label-md text-label-md transition-colors" ng-class="awarenessLanguage === 'hi' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:bg-surface-variant'" ng-click="setAwarenessLanguage('hi')">हिन्दी</button>
+</div>
+<div class="hidden md:flex items-center gap-2 bg-surface-container-high rounded-full px-3 py-2 border border-outline-variant min-w-[260px]">
+<span class="material-symbols-outlined text-outline">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-body-md" ng-model="awarenessSearch" ng-attr-placeholder="{{awarenessText.searchPlaceholder}}" type="text"/>
+</div>
+</div>
+</header>
+<div class="px-gutter py-lg max-w-[1200px] mx-auto space-y-lg">
+<!-- Category Chips -->
+<section>
+<div class="flex flex-wrap gap-base">
+<button class="px-md py-sm rounded-full font-label-md transition-all" ng-class="selectedCategory === 'All Topics' ? 'bg-primary text-on-primary shadow-md' : 'bg-surface-container-high text-on-surface hover:bg-primary-container hover:text-on-primary-container'" ng-click="filterAwarenessByCategory('All Topics')">{{awarenessText.allTopics}}</button>
+<button class="px-md py-sm rounded-full font-label-md transition-all" ng-class="selectedCategory === 'Nutrition' ? 'bg-primary text-on-primary shadow-md' : 'bg-surface-container-high text-on-surface hover:bg-primary-container hover:text-on-primary-container'" ng-click="filterAwarenessByCategory('Nutrition')">{{awarenessText.categories[0]}}</button>
+<button class="px-md py-sm rounded-full font-label-md transition-all" ng-class="selectedCategory === 'Hygiene' ? 'bg-primary text-on-primary shadow-md' : 'bg-surface-container-high text-on-surface hover:bg-primary-container hover:text-on-primary-container'" ng-click="filterAwarenessByCategory('Hygiene')">{{awarenessText.categories[1]}}</button>
+<button class="px-md py-sm rounded-full font-label-md transition-all" ng-class="selectedCategory === 'Vaccination' ? 'bg-primary text-on-primary shadow-md' : 'bg-surface-container-high text-on-surface hover:bg-primary-container hover:text-on-primary-container'" ng-click="filterAwarenessByCategory('Vaccination')">{{awarenessText.categories[2]}}</button>
+<button class="px-md py-sm rounded-full font-label-md transition-all" ng-class="selectedCategory === 'Seasonal Health' ? 'bg-primary text-on-primary shadow-md' : 'bg-surface-container-high text-on-surface hover:bg-primary-container hover:text-on-primary-container'" ng-click="filterAwarenessByCategory('Seasonal Health')">{{awarenessText.categories[3]}}</button>
+</div>
+</section>
+<!-- Featured Article Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Main Featured Card -->
+<div class="md:col-span-8 group bento-item glass-card rounded-xl overflow-hidden shadow-sm flex flex-col md:flex-row">
+<div class="md:w-1/2 h-64 md:h-full relative overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-700" data-alt="A friendly, high-quality illustration of a family resting safely under a mosquito net in a warm, suburban setting at dusk. The art style is modern, soft-textured, with a calming palette of teal, soft yellow, and deep green, emphasizing safety and preventative care in a healthcare context." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAqpTA_xAqH2DnmoqgRyR3Oq_LCcxIgO7TULG3-4E37coNcR29MroyEhOzfBaQ6W9FKCtQVxiG9VOok4h8JDLTv0C5sZQf8tJ3CrGYbg00PDybORu_rk2ZvueulugMFrxAF5xcRr-PkX3wvSTQJ8hc39fJL7j_E9gOyiwcC1cfHP4veOAnGGWh4FLbwcThui4yy4Yymx163Ki-XIjTCXv-UJj0WRm4OLACbR_FB_SD1X4-e_fOE7t87Iw')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+<div class="absolute bottom-4 left-4">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-caption font-semibold">Seasonal Health</span>
+</div>
+</div>
+<div class="md:w-1/2 p-md flex flex-col justify-center">
+<h3 class="font-h3 text-h3 text-primary mb-base">{{awarenessText.specialPanelTitle}}</h3>
+<p class="text-on-surface-variant font-body-md mb-md">{{awarenessText.specialPanelBody}}</p>
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-xs text-primary font-bold hover:underline">
+                                {{awarenessText.readMore}} <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-surface-container text-primary flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all" ng-click="setAwarenessArticle({key: 'dengue', title: awarenessText.cardMap.dengue.title, description: awarenessText.cardMap.dengue.description, content: awarenessText.cardMap.dengue.content, category: awarenessText.cardMap.dengue.category, image: awarenessCards[0].image})">
+<span class="material-symbols-outlined">volume_up</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Side Feature 1 -->
+<div class="md:col-span-4 bento-item bg-surface-container-low border border-outline-variant rounded-xl overflow-hidden flex flex-col">
+<img class="h-36 w-full object-cover" ng-src="{{awarenessCards[0].image}}" data-alt="{{awarenessText.cardMap.dengue.title}}"/>
+<div class="p-md flex flex-col flex-1">
+<span class="text-primary font-bold text-caption uppercase tracking-wider mb-xs">{{awarenessText.categories[0]}}</span>
+<h4 class="font-h3 text-h3 mb-sm">{{awarenessText.cardMap.dengue.title}}</h4>
+<p class="text-on-surface-variant font-body-md mb-md">{{awarenessText.cardMap.dengue.description}}</p>
+<div class="mt-auto flex justify-between items-center">
+<button class="text-primary font-semibold">{{awarenessText.learnBasics}}</button>
+<span class="material-symbols-outlined text-outline">description</span>
+</div>
+</div>
+</div>
+<!-- Side Feature 2 -->
+<div class="md:col-span-4 bento-item bg-surface-container-low border border-outline-variant rounded-xl overflow-hidden flex flex-col">
+<img class="h-36 w-full object-cover" ng-src="{{awarenessCards[3].image}}" data-alt="{{awarenessText.cardMap.vaccination.title}}"/>
+<div class="p-md flex flex-col flex-1">
+<span class="text-primary font-bold text-caption uppercase tracking-wider mb-xs">{{awarenessText.categories[2]}}</span>
+<h4 class="font-h3 text-h3 mb-sm">{{awarenessText.cardMap.vaccination.title}}</h4>
+<p class="text-on-surface-variant font-body-md mb-md">{{awarenessText.cardMap.vaccination.description}}</p>
+<div class="mt-auto flex justify-between items-center">
+<button class="text-primary font-semibold" ng-click="setAwarenessArticle({key: 'vaccination', title: awarenessText.cardMap.vaccination.title, description: awarenessText.cardMap.vaccination.description, content: awarenessText.cardMap.vaccination.content, category: awarenessText.cardMap.vaccination.category, image: awarenessCards[3].image})">{{awarenessText.readArticle}}</button>
+<span class="material-symbols-outlined text-outline">medical_services</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Awareness Cards Row -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<div ng-repeat="card in awarenessCards | filter:awarenessSearch" ng-if="selectedCategory === 'All Topics' || card.category === selectedCategory" class="glass-card rounded-xl p-base bento-item">
+<div class="h-40 rounded-lg mb-sm bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover" ng-src="{{card.image}}" data-alt="{{card.title}}"/>
+</div>
+<div class="px-xs py-xs">
+<span class="text-primary-container font-label-md text-caption block mb-xs">{{awarenessText.cardMap[card.key].category}}</span>
+<h4 class="font-label-md text-label-md text-on-surface font-bold mb-xs">{{card.title}}</h4>
+<p class="font-caption text-caption text-on-surface-variant mb-md">{{card.description}}</p>
+<div class="flex justify-between items-center">
+<button class="text-primary font-bold text-caption" ng-click="setAwarenessArticle(card)">{{awarenessText.readArticle}}</button>
+<span class="material-symbols-outlined text-on-surface-variant" data-weight="fill">volume_up</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Article Preview Section -->
+<section class="bg-surface-container-low rounded-2xl p-lg border border-outline-variant shadow-sm relative overflow-hidden">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32"></div>
+<div class="flex flex-col lg:flex-row gap-lg">
+<div class="lg:w-2/3">
+<div class="rounded-2xl overflow-hidden mb-md bg-surface-container-high border border-outline-variant/60">
+<img class="w-full h-56 object-cover" ng-src="{{featuredArticle.image || awarenessCards[0].image}}" data-alt="{{featuredArticle.title}}"/>
+</div>
+<div class="flex items-center gap-base mb-md">
+<span class="bg-primary-fixed text-on-primary-fixed px-3 py-1 rounded-full text-caption font-bold">{{awarenessText.featuredTag}}</span>
+<span class="text-on-surface-variant text-caption flex items-center gap-xs">
+<span class="material-symbols-outlined text-base">schedule</span> {{awarenessText.featuredTime}}
+                            </span>
+</div>
+<h2 class="font-h2 text-h2 text-primary mb-md" id="article-title">{{featuredArticle.title}}</h2>
+<p class="text-body-md text-on-surface-variant mb-lg leading-relaxed" id="article-content">
+                            {{featuredArticle.content}}
+                        </p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="p-md bg-green-50 border border-green-200 rounded-xl">
+<h5 class="font-bold text-green-800 flex items-center gap-xs mb-sm">
+<span class="material-symbols-outlined">check_circle</span> {{awarenessText.doLabel}}
+                                </h5>
+<ul class="space-y-xs text-green-900 text-caption font-medium">
+<li>• Drink ORS if feeling dizzy</li>
+<li>• Keep windows open for cross ventilation</li>
+<li>• Take cool showers twice a day</li>
+</ul>
+</div>
+<div class="p-md bg-red-50 border border-red-200 rounded-xl">
+<h5 class="font-bold text-red-800 flex items-center gap-xs mb-sm">
+<span class="material-symbols-outlined">cancel</span> {{awarenessText.dontLabel}}
+                                </h5>
+<ul class="space-y-xs text-red-900 text-caption font-medium">
+<li>• Drink extremely cold ice-water</li>
+<li>• Work outside in peak sun hours</li>
+<li>• Consume heavy, oily meals</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="lg:w-1/3 flex flex-col gap-md">
+<div class="bg-surface-container-highest p-md rounded-xl">
+<h5 class="font-bold text-primary mb-sm flex items-center gap-xs">
+<span class="material-symbols-outlined">verified</span> {{awarenessText.keyTakeaways}}
+                            </h5>
+<div class="space-y-md">
+<div class="flex gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex shrink-0 items-center justify-center font-bold">1</div>
+<p class="text-caption text-on-surface-variant">Stay hydrated constantly throughout the day.</p>
+</div>
+<div class="flex gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex shrink-0 items-center justify-center font-bold">2</div>
+<p class="text-caption text-on-surface-variant">Protect skin and head from direct UV rays.</p>
+</div>
+<div class="flex gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex shrink-0 items-center justify-center font-bold">3</div>
+<p class="text-caption text-on-surface-variant">Monitor children and elders for signs of exhaustion.</p>
+</div>
+</div>
+</div>
+<div class="bg-surface-dim p-md rounded-xl border border-outline-variant">
+<p class="text-caption text-on-surface-variant italic mb-xs">{{awarenessText.sourceLabel}}</p>
+<p class="font-bold text-on-surface text-caption">{{awarenessText.sourceText}}</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer -->
+<footer class="mt-xl py-lg px-gutter bg-surface-dim border-t border-outline-variant">
+<div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="text-center md:text-left">
+<h3 class="font-h3 text-h3 text-primary font-bold">{{awarenessText.footerTitle}}</h3>
+<p class="font-caption text-caption text-on-surface-variant">{{awarenessText.footerText}}</p>
+</div>
+<div class="flex gap-md">
+<a class="text-caption text-on-surface-variant hover:text-primary transition-colors" href="HealthCamp.html">Privacy Policy</a>
+<a class="text-caption text-on-surface-variant hover:text-primary transition-colors" href="ProfileandSupport.html">Terms of Service</a>
+<a class="text-caption text-on-surface-variant hover:text-primary transition-colors" href="HealthAwareness.html">Help Center</a>
+</div>
+</div>
+</footer>
+</main>
+<!-- Mobile Navigation -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface-container-high border-t border-outline-variant flex justify-around items-center h-16 z-50">
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-bold">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">event</span>
+<span class="text-[10px] font-bold">Appts</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined" data-weight="fill">menu_book</span>
+<span class="text-[10px] font-bold">Learn</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold">Profile</span>
+</button>
+</nav>
+</body></html>

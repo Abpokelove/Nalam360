@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nalam360 | Doctor-Patient Meeting</title>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script src="app.js"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        .scale-98:active {
+            transform: scale(0.98);
+        }
+        .video-container {
+            aspect-ratio: 16 / 9;
+        }
+        @media (max-width: 1024px) {
+            .video-container {
+                aspect-ratio: 4 / 3;
+            }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #bdc9c6;
+            border-radius: 10px;
+        }
+    </style>
+<!-- Tailwind Config Verbatim -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#fefcff",
+                    "surface-container-low": "#dbfaf4",
+                    "surface-tint": "#006a60",
+                    "tertiary-fixed": "#d6e6e2",
+                    "on-tertiary-fixed-variant": "#3b4a47",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed-dim": "#78d7c8",
+                    "outline-variant": "#bdc9c6",
+                    "on-tertiary-fixed": "#101e1c",
+                    "outline": "#6e7977",
+                    "on-secondary-fixed-variant": "#004493",
+                    "primary": "#00645a",
+                    "surface-container-high": "#d0efe8",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed-dim": "#bacac6",
+                    "on-surface": "#02201c",
+                    "on-primary-container": "#d6fff7",
+                    "background": "#e4fff9",
+                    "on-primary-fixed-variant": "#005048",
+                    "surface-bright": "#e4fff9",
+                    "surface": "#e4fff9",
+                    "on-surface-variant": "#3e4947",
+                    "tertiary": "#4d5b59",
+                    "on-primary-fixed": "#00201c",
+                    "surface-container-highest": "#cae9e3",
+                    "secondary-fixed": "#d8e2ff",
+                    "secondary-container": "#1f71e2",
+                    "on-error-container": "#93000a",
+                    "on-primary": "#ffffff",
+                    "inverse-primary": "#78d7c8",
+                    "tertiary-container": "#657471",
+                    "surface-dim": "#c2e0da",
+                    "on-secondary-fixed": "#001a41",
+                    "surface-variant": "#cae9e3",
+                    "surface-container": "#d5f4ee",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#193531",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#d8f7f1",
+                    "primary-fixed": "#95f3e4",
+                    "on-background": "#02201c",
+                    "secondary": "#0058bb",
+                    "primary-container": "#087f73",
+                    "on-tertiary-container": "#eafaf6",
+                    "error-container": "#ffdad6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "12px",
+                    "lg": "40px",
+                    "container-max": "1280px",
+                    "md": "24px",
+                    "xs": "4px",
+                    "base": "8px",
+                    "gutter": "24px",
+                    "xl": "64px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "h3": ["Plus Jakarta Sans"],
+                    "h2": ["Plus Jakarta Sans"],
+                    "h1-mobile": ["Plus Jakarta Sans"],
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "h1": ["Plus Jakarta Sans"],
+                    "body-lg": ["Inter"],
+                    "caption": ["Inter"]
+            },
+            "fontSize": {
+                    "h3": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "h2": ["32px", {"lineHeight": "42px", "fontWeight": "700"}],
+                    "h1-mobile": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "h1": ["40px", {"lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "30px", "fontWeight": "400"}],
+                    "caption": ["12px", {"lineHeight": "18px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased overflow-hidden" ng-app="nalam360" ng-controller="Nalam360Ctrl">
+<div class="px-gutter py-3 bg-surface/80 backdrop-blur-md sticky top-0 z-40 border-b border-outline-variant/30">
+    <div class="flex flex-wrap gap-2">
+        <a ng-repeat="page in pageLinks"
+           ng-href="{{page.url}}"
+           ng-class="page.url === currentPage ? 'bg-primary text-on-primary' : 'bg-surface-container text-on-surface hover:bg-primary-container hover:text-on-primary-container'"
+           class="px-3 py-2 rounded-lg font-label-md text-label-md transition-all">
+            {{page.name}}
+        </a>
+    </div>
+</div>
+<!-- Header / TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-gutter h-16 bg-surface shadow-sm border-b border-outline-variant/30">
+<div class="flex items-center gap-md">
+<span class="font-h3 text-h3 font-bold text-primary">Nalam360</span>
+<div class="h-6 w-[1px] bg-outline-variant"></div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Dr. Arul Mozhi</span>
+<span class="text-caption text-on-surface-variant flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-[#21965A] animate-pulse"></span>
+                    Live Meeting
+                </span>
+</div>
+</div>
+<div class="flex items-center gap-gutter">
+<div class="hidden md:flex flex-col items-end">
+<span class="font-label-md text-label-md font-bold text-primary" id="timer">12:45</span>
+<span class="text-caption text-on-surface-variant">Session Time</span>
+</div>
+<div class="flex items-center gap-2 bg-surface-container px-3 py-1.5 rounded-full">
+<span class="material-symbols-outlined text-[18px] text-[#21965A]">signal_cellular_alt</span>
+<span class="text-caption font-semibold">HD Quality</span>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">notifications</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-fixed">
+<img class="w-full h-full object-cover" data-alt="A professional close-up portrait of a young patient in a clean, brightly lit modern setting. The lighting is soft and high-key, reflecting a clinical but warm healthcare environment. The patient has a calm, reassuring expression. The color palette features soft teals and hospital whites, maintaining a trustworthy and professional healthcare aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDC01L9m3DpoW6YYItm3HoNbGklPNFrNLELazd3Q0QO33Tjbxm_1SZXV4rMxPkcvJBRKzueJ5MdvpkO1vn1m-qOhpat2FIfkG_AbeGT64sgBoUQYYUTO_JT8hOoqHZ8gM7Epq8RaRH4WKjsUtPNI6eMUP6xhYyzAaJFwp98SPEhwcsUh5uFxwfHW6a1woG5yz8UHjNGBY7bnwHY4GJSWu4K9Wbluv1F_aUNb7Pny521JTQbZaymKSXAgg"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="pt-16 h-screen flex flex-col lg:flex-row">
+<!-- Left: Video Call Area (Main Canvas) -->
+<section class="flex-1 bg-inverse-surface relative overflow-hidden flex flex-col">
+<div class="px-gutter pt-gutter pb-0">
+<div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-md text-white flex flex-col md:flex-row md:items-center md:justify-between gap-md">
+<div>
+<p class="text-caption uppercase tracking-widest text-white/70">Doctor - Patient Meeting</p>
+<h1 class="font-h2 text-h2">Dr. Arul Mozhi with {{patient.name}}</h1>
+<p class="text-caption text-white/70">Patient from {{patient.village}} • Preferred language: {{patient.language}}</p>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 rounded-full bg-white/15 text-caption">Follow-up Review</span>
+<span class="px-3 py-1 rounded-full bg-white/15 text-caption">Referral Discussion</span>
+<span class="px-3 py-1 rounded-full bg-white/15 text-caption">Prescription Update</span>
+</div>
+</div>
+</div>
+<!-- Doctor Main Feed -->
+<div class="relative flex-1 flex items-center justify-center bg-black/20">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover opacity-90" data-alt="A professional Indian female doctor in her 40s wearing a white lab coat and a stethoscope, sitting in a modern, brightly lit medical office with medical diplomas on the wall. The lighting is soft and flattering. High-definition video call aesthetic with a professional healthcare background. Soft teal accents consistent with the Nalam360 brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoxVg3eyZOCdbu3qtx_wjL3PYWAYFSaG5Tqn3vXTPcOJb2YMNFoz7U1XeWiY1piNWBqyUW_IrDBVqf5K0Ly8Gx3AJVJBgxsRxqudch6T6pphXo-OeKMmMxtfh1023wuIa_vxNPYqmybgYQ_2XfGiKmoWuouLo76lSGc6D-kPncQr5uDPvTtH13JwV4jtw-8IsRMPv8a6hxoQhL89FBgk_9jPEpZ5xDG7DGoNsoWM7MnuwU5_zGbIwiFg"/>
+</div>
+<!-- Patient PIP (Picture in Picture) -->
+<div class="absolute top- gutter right-gutter w-32 md:w-48 aspect-video bg-surface-container-highest rounded-xl border-2 border-primary/30 shadow-lg overflow-hidden z-20 group transition-transform hover:scale-105">
+<img class="w-full h-full object-cover" data-alt="A POV perspective of a patient in a home setting attending a medical video consultation. The lighting is natural from a nearby window. The patient is looking towards the camera with a calm expression. Background is a simple, tidy living room, emphasizing the rural accessibility and convenience of the telehealth platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdasy4DlEB35MwQTmwFtt4Url8-g_M3wrQ7c_xlPeMpCSkL24Z0CqLF7TRGTSAqylvHpuPJHx9xLYryHini1HjRwmqxW2YdDD_mgrP9GVjsPZMYn0lumVI9gnf9nwFYKVK4orvhyEnHbzlXye7O0PI3ewqskQsLBbsEi5f1i3l3_7Y7Y3WuTvBfEVMHwiruzwSf_3gwamD3aJr4aJPrCUYFyo0-zuybCuc8DvpBLFAIZVPNQ-0VOkC4g"/>
+<div class="absolute bottom-2 left-2 px-1.5 py-0.5 bg-black/50 backdrop-blur-md rounded text-[10px] text-white">You</div>
+</div>
+<!-- Call Quality Overlay (Low Bandwidth Scenario) -->
+<div class="absolute top-gutter left-gutter z-20 pointer-events-none">
+<div class="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+<span class="material-symbols-outlined text-[16px] text-primary-fixed">security</span>
+<span class="text-caption text-white font-medium">End-to-End Encrypted</span>
+</div>
+</div>
+</div>
+<!-- Control Bar -->
+<div class="h-24 bg-inverse-surface border-t border-white/10 flex items-center justify-center px-gutter gap-4 md:gap-8 z-30">
+<button class="flex flex-col items-center gap-1 group">
+<div class="w-12 h-12 rounded-full bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-all scale-98">
+<span class="material-symbols-outlined text-white">mic</span>
+</div>
+<span class="text-[10px] text-white/70 uppercase tracking-widest font-bold">Mute</span>
+</button>
+<button class="flex flex-col items-center gap-1 group">
+<div class="w-12 h-12 rounded-full bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-all scale-98">
+<span class="material-symbols-outlined text-white">videocam</span>
+</div>
+<span class="text-[10px] text-white/70 uppercase tracking-widest font-bold">Camera</span>
+</button>
+<button class="flex flex-col items-center gap-1 group">
+<div class="w-12 h-12 rounded-full bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-all scale-98">
+<span class="material-symbols-outlined text-white">description</span>
+</div>
+<span class="text-[10px] text-white/70 uppercase tracking-widest font-bold">Reports</span>
+</button>
+<div class="h-10 w-[1px] bg-white/10 mx-2"></div>
+<button class="flex flex-col items-center gap-1 group">
+<div class="w-12 h-12 rounded-full bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-all scale-98">
+<span class="material-symbols-outlined text-white">forum</span>
+</div>
+<span class="text-[10px] text-white/70 uppercase tracking-widest font-bold">Chat</span>
+</button>
+<button class="flex flex-col items-center gap-1 group">
+<div class="w-12 h-12 rounded-full bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-all scale-98">
+<span class="material-symbols-outlined text-white">volume_up</span>
+</div>
+<span class="text-[10px] text-white/70 uppercase tracking-widest font-bold">Audio</span>
+</button>
+<div class="h-10 w-[1px] bg-white/10 mx-2"></div>
+<button class="flex flex-col items-center gap-1 group" ng-click="endConsultation()">
+<div class="w-14 h-14 rounded-full bg-error hover:bg-[#93000a] flex items-center justify-center transition-all scale-98 shadow-xl">
+<span class="material-symbols-outlined text-white text-[28px]">call_end</span>
+</div>
+<span class="text-[10px] text-white/70 uppercase tracking-widest font-bold">End Meeting</span>
+</button>
+</div>
+</section>
+<!-- Right: Tabbed Info Panel -->
+<aside class="w-full lg:w-[400px] bg-surface-container border-l border-outline-variant flex flex-col h-full lg:h-auto">
+<!-- Tabs -->
+<nav class="flex border-b border-outline-variant bg-surface">
+<button class="flex-1 py-4 text-label-md font-bold border-b-2 transition-all tab-btn" ng-class="activeTab === 'reports' ? 'text-primary border-primary' : 'text-on-surface-variant border-transparent hover:text-primary'" ng-click="switchTab('reports')">Reports</button>
+<button class="flex-1 py-4 text-label-md font-bold border-b-2 transition-all tab-btn" ng-class="activeTab === 'notes' ? 'text-primary border-primary' : 'text-on-surface-variant border-transparent hover:text-primary'" ng-click="switchTab('notes')">Doctor's Notes</button>
+<button class="flex-1 py-4 text-label-md font-bold border-b-2 transition-all tab-btn" ng-class="activeTab === 'summary' ? 'text-primary border-primary' : 'text-on-surface-variant border-transparent hover:text-primary'" ng-click="switchTab('summary')">Summary</button>
+</nav>
+<!-- Tab Content -->
+<div class="flex-1 overflow-y-auto custom-scrollbar p-gutter">
+<!-- Shared Reports Tab Content -->
+<div class="tab-content space-y-4" id="tab-reports" ng-show="activeTab === 'reports'">
+<div class="flex justify-between items-center mb-2">
+<h4 class="font-label-md text-on-surface">Meeting Notes ({{referralItems.length}})</h4>
+<button class="text-caption text-primary font-bold hover:underline">Upload New</button>
+</div>
+<div ng-repeat="item in referralItems" class="bg-surface p-sm rounded-xl border border-outline-variant flex items-center gap-3 hover:shadow-md transition-shadow cursor-pointer group">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-on-surface leading-tight">{{item.title}}</p>
+<p class="text-caption text-on-surface-variant">{{item.detail}}</p>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary">visibility</span>
+</div>
+<!-- Shared Report Notification -->
+<div class="bg-secondary/10 p-md rounded-xl border border-secondary/20 flex flex-col gap-3">
+<p class="text-caption text-secondary font-bold uppercase tracking-wider">Live Action</p>
+<p class="font-label-md text-on-surface">Doctor is currently reviewing <span class="text-secondary font-bold">{{referralItems[0].title}}</span> with {{patient.name}}</p>
+<div class="flex gap-2">
+<button class="bg-secondary text-white px-3 py-1.5 rounded-lg text-caption font-bold hover:bg-secondary-container transition-colors" ng-click="switchTab('summary')">View Meeting Summary</button>
+</div>
+</div>
+</div>
+<!-- Doctor's Notes Tab Content (Hidden initially) -->
+<div class="tab-content space-y-4" id="tab-notes" ng-show="activeTab === 'notes'">
+<div class="bg-surface-container-lowest p-md rounded-xl border-l-4 border-primary shadow-sm">
+<p class="text-caption text-primary font-bold mb-2">ONGOING OBSERVATIONS</p>
+<ul class="space-y-3">
+<li ng-repeat="note in notes" class="flex items-start gap-2">
+<span class="material-symbols-outlined text-primary text-sm mt-1">check_circle</span>
+<span class="text-body-md text-on-surface">{{note}}</span>
+</li>
+</ul>
+</div>
+<div class="flex flex-col gap-2">
+<p class="text-caption text-on-surface-variant italic text-center">Notes are being updated in real-time by Dr. Mozhi</p>
+<div class="flex justify-center">
+<div class="flex gap-1">
+<div class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce [animation-delay:0.2s]"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce [animation-delay:0.4s]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Appointment Summary Tab Content (Hidden initially) -->
+<div class="tab-content space-y-4" id="tab-summary" ng-show="activeTab === 'summary'">
+<div class="space-y-4">
+<div class="bg-surface p-md rounded-xl border border-outline-variant">
+<h5 class="font-label-md text-on-surface-variant uppercase mb-3">Appointment Details</h5>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold">ID</p>
+<p class="text-body-md font-semibold text-on-surface">#NLM-9920</p>
+</div>
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold">Type</p>
+<p class="text-body-md font-semibold text-on-surface">Follow-up</p>
+</div>
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold">Time</p>
+<p class="text-body-md font-semibold text-on-surface">10:30 AM</p>
+</div>
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold">Wait Time</p>
+<p class="text-body-md font-semibold text-primary">0 min</p>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-high p-md rounded-xl">
+<h5 class="font-label-md text-primary uppercase mb-3">Next Steps</h5>
+<p class="text-body-md text-on-surface mb-3">After this meeting, a digital prescription will be generated and sent to your preferred local pharmacy.</p>
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined">local_pharmacy</span>
+<span class="font-bold">Village Pharmacy - Unit 4</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Chat Footer (Right Panel) -->
+<div class="p-gutter border-t border-outline-variant bg-surface">
+<div class="flex items-center gap-2 bg-surface-container px-3 py-2 rounded-xl border border-outline-variant focus-within:border-primary transition-all">
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-body-md placeholder:text-on-surface-variant" placeholder="Type a message..." type="text"/>
+<button class="material-symbols-outlined text-primary hover:scale-110 transition-transform">send</button>
+</div>
+</div>
+</aside>
+</main>
+<!-- Success Overlay (Initially Hidden) -->
+<div class="fixed inset-0 bg-inverse-surface/90 z-[100] flex items-center justify-center p-md" id="call-end-overlay" ng-show="callEnded">
+<div class="bg-surface max-w-md w-full rounded-2xl p-xl text-center space-y-6 shadow-2xl">
+<div class="w-20 h-20 bg-surface-container-low rounded-full flex items-center justify-center mx-auto text-primary">
+<span class="material-symbols-outlined text-[48px] fill-icon">task_alt</span>
+</div>
+<div>
+<h2 class="font-h2 text-h2 text-primary">Consultation Ended</h2>
+<p class="text-body-lg text-on-surface-variant mt-2">Your session with Dr. Arul Mozhi has concluded successfully.</p>
+</div>
+<div class="bg-surface-container p-md rounded-xl text-left space-y-2">
+<div class="flex justify-between items-center">
+<span class="text-caption font-bold text-on-surface-variant">DURATION</span>
+<span class="text-body-md font-bold text-on-surface">18m 42s</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-caption font-bold text-on-surface-variant">PRESCRIPTION</span>
+<span class="text-body-md font-bold text-secondary">Processing...</span>
+</div>
+</div>
+<button class="w-full bg-primary text-white font-bold py-4 rounded-xl hover:bg-primary-container transition-all scale-98 shadow-lg" ng-click="closeConsultationOverlay()">Leave Meeting</button>
+</div>
+</div>
+<script>
+        // Simple Timer Logic
+        let seconds = 765; // 12:45
+        const timerElement = document.getElementById('timer');
+        setInterval(() => {
+            seconds++;
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            timerElement.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+        }, 1000);
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            // Update buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('text-primary', 'border-primary');
+                btn.classList.add('text-on-surface-variant', 'border-transparent');
+            });
+            const activeBtn = document.querySelector(`[data-tab="${tabId}"]`);
+            activeBtn.classList.add('text-primary', 'border-primary');
+            activeBtn.classList.remove('text-on-surface-variant', 'border-transparent');
+
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+        }
+
+        // Call Ending Animation
+        document.querySelector('.bg-error').addEventListener('click', () => {
+            const overlay = document.getElementById('call-end-overlay');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('animate-in', 'fade-in', 'zoom-in', 'duration-300');
+        });
+
+        // Mic/Video Toggles (Visual only)
+        document.querySelectorAll('button div').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if(this.closest('.bg-error')) return;
+                const icon = this.querySelector('.material-symbols-outlined');
+                if (this.classList.contains('bg-white/10')) {
+                    this.classList.remove('bg-white/10');
+                    this.classList.add('bg-error');
+                    if (icon.textContent === 'mic') icon.textContent = 'mic_off';
+                    if (icon.textContent === 'videocam') icon.textContent = 'videocam_off';
+                } else {
+                    this.classList.remove('bg-error');
+                    this.classList.add('bg-white/10');
+                    if (icon.textContent === 'mic_off') icon.textContent = 'mic';
+                    if (icon.textContent === 'videocam_off') icon.textContent = 'videocam';
+                }
+            });
+        });
+    </script>
+</body></html>
