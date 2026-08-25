@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <body>
+        <div ng-app="addList" ng-controller="ctrl">
+            <input ng-model="item">
+            <li ng-repeat="item in items">{{item|currency}} </li>
+           <button ng-click="add()">Add</button>
+        </div>
+    </body>
+    <script>
+        var app=angular.module('addList',[]);
+        app.controller('ctrl',function($scope){
+            $scope.items=[];
+            $scope.add=function(){
+                $scope.items.push($scope.item);
+            }
+
+        })
+
+    </script>
+</html>
