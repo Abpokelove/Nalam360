@@ -1,1 +1,10 @@
 hi bro
+
+prompt to add my pages
+
+in the navbar add these
+referrals
+appointments
+doctor search
+
+then link then to the respective file
