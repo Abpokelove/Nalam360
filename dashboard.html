@@ -115,6 +115,26 @@
             <span class="material-symbols-outlined">person</span>
             <span class="font-label-md">My Profile</span>
         </a>
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="HealthCamp.html">
+            <span class="material-symbols-outlined">campaign</span>
+            <span class="font-label-md">Health Camps</span>
+        </a>
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="ReferralsAndReminder.html">
+            <span class="material-symbols-outlined">event</span>
+            <span class="font-label-md">Appointments</span>
+        </a>
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="HealthAwareness.html">
+            <span class="material-symbols-outlined">menu_book</span>
+            <span class="font-label-md">Health Awareness</span>
+        </a>
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="EmergencyAssistance.html">
+            <span class="material-symbols-outlined">emergency</span>
+            <span class="font-label-md">Emergency</span>
+        </a>
+        <a class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all duration-200" href="ProfileandSupport.html">
+            <span class="material-symbols-outlined">support_agent</span>
+            <span class="font-label-md">Support</span>
+        </a>
         <button class="flex items-center gap-sm p-3 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 text-left w-[calc(100%-16px)] transition-all duration-200" ng-click="toggleEmergencyPanel()">
             <span class="material-symbols-outlined text-error-container">emergency</span>
             <span class="font-label-md text-error-container">Emergency Contacts</span>
@@ -176,9 +196,15 @@
             <button ng-click="toggleMobileSidebar()"><span class="material-symbols-outlined">close</span></button>
         </div>
         <nav class="flex-1 flex flex-col gap-2 px-2 text-white">
-            <a href="dashboard.html" class="p-2 hover:bg-on-primary/10 rounded flex items-center gap-base"><span class="material-symbols-outlined">dashboard</span> Home</a>
+            <a href="dashboard.html" class="p-2 hover:bg-on-primary/10 rounded flex items-center gap-base"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
             <a href="healthcare.html" class="p-2 hover:bg-on-primary/10 rounded flex items-center gap-base"><span class="material-symbols-outlined">map</span> Find Care</a>
-            <button ng-click="toggleEmergencyPanel(); toggleMobileSidebar();" class="p-2 text-left hover:bg-on-primary/10 rounded flex items-center gap-base text-error-container"><span class="material-symbols-outlined">emergency</span> Emergency</button>
+            <a href="HealthCamp.html" class="p-2 hover:bg-on-primary/10 rounded flex items-center gap-base"><span class="material-symbols-outlined">campaign</span> Health Camps</a>
+            <a href="ReferralsAndReminder.html" class="p-2 hover:bg-on-primary/10 rounded flex items-center gap-base"><span class="material-symbols-outlined">event</span> Appointments</a>
+            <a href="HealthAwareness.html" class="p-2 hover:bg-on-primary/10 rounded flex items-center gap-base"><span class="material-symbols-outlined">menu_book</span> Awareness</a>
+            <a href="EmergencyAssistance.html" class="p-2 hover:bg-on-primary/10 rounded flex items-center gap-base"><span class="material-symbols-outlined">emergency</span> Emergency</a>
+            <a href="profile.html" class="p-2 hover:bg-on-primary/10 rounded flex items-center gap-base"><span class="material-symbols-outlined">person</span> Profile</a>
+            <a href="ProfileandSupport.html" class="p-2 hover:bg-on-primary/10 rounded flex items-center gap-base"><span class="material-symbols-outlined">support_agent</span> Support</a>
+            <button ng-click="toggleEmergencyPanel(); toggleMobileSidebar();" class="p-2 text-left hover:bg-on-primary/10 rounded flex items-center gap-base text-error-container"><span class="material-symbols-outlined">emergency</span> Emergency Contacts</button>
             <a href="index.html" class="p-2 hover:bg-on-primary/10 rounded flex items-center gap-base"><span class="material-symbols-outlined">logout</span> Logout</a>
         </nav>
     </aside>

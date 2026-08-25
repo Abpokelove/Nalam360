@@ -1,5 +1,6 @@
 // <!-- AngularJS Module -->
 var app = angular.module("Nalam360App", ["ngAnimate"]);
+var legacyApp = angular.module("nalam360", ["Nalam360App"]);
 
 // <!-- AngularJS Service -->
 app.factory("HealthcareService", function() {
@@ -62,8 +63,56 @@ app.factory("HealthcareService", function() {
 });
 
 // <!-- AngularJS Controller -->
+app.controller("Nalam360Ctrl", ["$scope", "$controller", function($scope, $controller) {
+    $controller("PatientController", { $scope: $scope });
+}]);
+
 // <!-- Dependency Injection -->
 app.controller("PatientController", ["$scope", "HealthcareService", "$filter", "$timeout", "$interval", function($scope, HealthcareService, $filter, $timeout, $interval) {
+
+    $scope.pageLinks = [
+        { name: "Dashboard", url: "dashboard.html" },
+        { name: "Find Healthcare", url: "healthcare.html" },
+        { name: "Doctors", url: "healthcare.html#doctors-tab" },
+        { name: "Health Camps", url: "HealthCamp.html" },
+        { name: "Appointments", url: "ReferralsAndReminder.html" },
+        { name: "Awareness", url: "HealthAwareness.html" },
+        { name: "Emergency", url: "EmergencyAssistance.html" },
+        { name: "Profile", url: "profile.html" },
+        { name: "Support", url: "ProfileandSupport.html" }
+    ];
+
+    var updateCurrentPage = function() {
+        var path = window.location.pathname.split('/').pop() || "index.html";
+        $scope.currentPage = path + (window.location.hash || "");
+    };
+
+    updateCurrentPage();
+    window.addEventListener("hashchange", updateCurrentPage);
+
+    $scope.toggleSidebar = function() {
+        $scope.mobileSidebarOpen = !$scope.mobileSidebarOpen;
+    };
+
+    $scope.downloadPrescription = function() {
+        var prescriptionText = "Nalam360 Patient Prescription\n\n" +
+            "Patient: " + ($scope.patient ? $scope.patient.name : "Unknown") + "\n" +
+            "Village: " + ($scope.patient ? $scope.patient.village : "N/A") + "\n\n" +
+            "Active medicines:\n" +
+            (($scope.patient && $scope.patient.prescriptions && $scope.patient.prescriptions.length)
+                ? $scope.patient.prescriptions.map(function(item) { return "- " + item.name + " - " + item.dosage; }).join("\n")
+                : "No active prescriptions listed.");
+
+        var blob = new Blob([prescriptionText], { type: "text/plain;charset=utf-8" });
+        var fileUrl = URL.createObjectURL(blob);
+        var downloadLink = document.createElement("a");
+        downloadLink.href = fileUrl;
+        downloadLink.download = "nalam360-prescription.txt";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        URL.revokeObjectURL(fileUrl);
+    };
 
     // 1. Data Initialization & Multi-Profile Synchronization (via LocalStorage)
     var defaultProfiles = [
