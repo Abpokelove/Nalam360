@@ -86,7 +86,8 @@
         }
     </script>
 </head>
-<body class="bg-background font-body-md text-on-surface overflow-x-hidden" ng-controller="PatientController">
+<body class="bg-background font-body-md text-on-surface overflow-x-hidden ng-cloak" ng-controller="PatientController" nalam-page>
+<div nalam-navigation></div>
 
 <!-- SideNavBar Shell -->
 <aside class="fixed left-0 top-0 h-full w-[280px] bg-primary dark:bg-inverse-surface hidden lg:flex flex-col py-md gap-base shadow-lg z-[60] transition-all duration-200 ease-in-out">
@@ -247,6 +248,28 @@
                         ng-model="activeProfileIndex" ng-change="switchProfile()">
                     <option ng-repeat="p in profiles" ng-value="$index">{{ p.name }} ({{ p.relationship }})</option>
                 </select>
+            </div>
+        </section>
+
+        <section class="mb-lg grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-md p-md bg-surface-container-low rounded-xl border border-outline-variant shadow-soft" nalam-page>
+            <div>
+                <p class="text-caption uppercase tracking-widest text-primary font-bold">Angular workspace</p>
+                <h3 class="font-h3 text-primary font-bold">Live binding lab</h3>
+                <p class="text-caption text-on-surface-variant mt-xs">Shared factory data, injected service state, custom filter output and directive state.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-sm text-caption">
+                <div class="bg-white p-sm rounded-lg border border-outline-variant/50">
+                    <span class="text-on-surface-variant">Service profile</span>
+                    <strong class="block text-primary">{{ activeProfileFromService ? 'Connected' : 'New profile' }}</strong>
+                </div>
+                <div class="bg-white p-sm rounded-lg border border-outline-variant/50">
+                    <span class="text-on-surface-variant">Custom filter</span>
+                    <strong class="block text-primary">{{ patient.name | nalamInitials }}</strong>
+                </div>
+                <label class="col-span-2 flex items-center gap-sm bg-white p-sm rounded-lg border border-outline-variant/50 cursor-pointer">
+                    <input type="checkbox" ng-model="directivesDemo.showBanner" class="text-primary focus:ring-primary">
+                    <span>Directive binding: show workspace status</span>
+                </label>
             </div>
         </section>
 

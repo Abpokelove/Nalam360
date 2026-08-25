@@ -1,10 +1,13 @@
 <!doctype html>
-<html lang="en" ng-app="nalamApp">
+<html lang="en" ng-app="Nalam360App">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Referrals & Reminders | Nalam360</title>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-animate.min.js"></script>
+  <script src="app.js"></script>
+  <link rel="stylesheet" href="index.css">
   <style>
     :root { --primary: #00796b; --bg-color: #f4f6f8; --dark: #263238; --light: #ffffff; --shadow: 0 4px 6px rgba(0,0,0,0.05); }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
@@ -34,7 +37,8 @@
     input { width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px; }
   </style>
 </head>
-<body class="app-page" ng-controller="ReminderController as vm">
+<body class="app-page ng-cloak" ng-controller="ReminderController as vm" nalam-page>
+  <div nalam-navigation></div>
   <div class="page-shell">
     <main class="page-main">
       <header class="page-heading">
@@ -122,34 +126,5 @@
     </div>
   </div>
 
-  <script>
-    angular.module('nalamApp', [])
-    .controller('ReminderController', function() {
-        var vm = this;
-        vm.isModalOpen = false;
-        vm.newReminder = { text: '', time: null };
-
-        vm.reminders = [
-            { time: "8:00 AM", text: "Morning medication", status: "Done", cssClass: "status" },
-            { time: "2:00 PM", text: "Drink water / lunch", status: "Upcoming", cssClass: "status warn" },
-            { time: "7:30 PM", text: "Prepare reports", status: "Upcoming", cssClass: "status warn" }
-        ];
-
-        vm.openModal = function() { vm.isModalOpen = true; };
-        
-        vm.closeModal = function() { 
-            vm.isModalOpen = false; 
-            vm.newReminder = { text: '', time: null }; 
-        };
-
-        vm.addReminder = function() {
-            if(vm.newReminder.text) {
-                var timeStr = vm.newReminder.time ? vm.newReminder.time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "TBD";
-                vm.reminders.push({ time: timeStr, text: vm.newReminder.text, status: "Upcoming", cssClass: "status warn" });
-                vm.closeModal();
-            }
-        };
-    });
-  </script>
 </body>
 </html>

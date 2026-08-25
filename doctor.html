@@ -1,10 +1,13 @@
 <!doctype html>
-<html lang="en" ng-app="nalamApp">
+<html lang="en" ng-app="Nalam360App">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Doctors | Nalam360</title>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-animate.min.js"></script>
+  <script src="app.js"></script>
+  <link rel="stylesheet" href="index.css">
   <style>
     :root { --primary: #00796b; --primary-hover: #004d40; --bg-color: #f4f6f8; --dark: #263238; --light: #ffffff; --shadow: 0 4px 6px rgba(0,0,0,0.05); }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
@@ -26,7 +29,8 @@
     .btn.ghost { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
   </style>
 </head>
-<body class="app-page" ng-controller="DoctorController as vm">
+<body class="app-page ng-cloak" ng-controller="DoctorController as vm" nalam-page>
+  <div nalam-navigation></div>
   <div class="page-shell">
     <main class="page-main">
       <header class="page-heading">
@@ -58,7 +62,7 @@
 
       <section class="grid-2" style="margin-top:1.5rem">
         <article class="card doctor-card" ng-repeat="doc in vm.doctors | filter:vm.searchQuery | filter:{speciality: vm.specialityFilter}">
-          <figure class="doctor-photo" aria-label="Portrait placeholder">{{doc.initials}}</figure>
+          <figure class="doctor-photo" aria-label="Portrait placeholder">{{doc.name | nalamInitials}}</figure>
           <div>
             <span class="status">Verified</span>
             <h2>{{doc.name}}</h2>
@@ -74,19 +78,5 @@
     </main>
   </div>
 
-  <script>
-    angular.module('nalamApp', [])
-    .controller('DoctorController', function() {
-        var vm = this;
-        vm.searchQuery = '';
-        vm.specialityFilter = '';
-        vm.doctors = [
-            { name: "Dr. Ananya Rao", initials: "AR", speciality: "General medicine", exp: "12 years", langs: "Tamil, English, Hindi", next: "Today, 4:30 PM" },
-            { name: "Dr. Karthik Selvan", initials: "KS", speciality: "Paediatrics", exp: "9 years", langs: "Tamil, English", next: "Tomorrow, 10:00 AM" },
-            { name: "Dr. Priya Menon", initials: "PM", speciality: "Women's health", exp: "15 years", langs: "Tamil, English, Malayalam", next: "Today, 6:00 PM" },
-            { name: "Dr. Vignesh Babu", initials: "VB", speciality: "Dermatology", exp: "8 years", langs: "Tamil, English, Telugu", next: "Tomorrow, 11:30 AM" }
-        ];
-    });
-  </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app="nalamApp">
+<html lang="en" ng-app="Nalam360App">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,6 +7,9 @@
   
   <!-- AngularJS CDN -->
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-animate.min.js"></script>
+  <script src="app.js"></script>
+  <link rel="stylesheet" href="index.css">
 
   <style>
     :root {
@@ -53,7 +56,8 @@
   </style>
 </head>
 
-<body class="app-page" ng-controller="AppointmentController as vm">
+<body class="app-page ng-cloak" ng-controller="AppointmentController as vm" nalam-page>
+  <div nalam-navigation></div>
   <div class="container">
     <main class="page-main">
       <header class="page-heading">
@@ -148,42 +152,5 @@
     </div>
   </div>
 
-  <script>
-    angular.module('nalamApp', [])
-    .controller('AppointmentController', function() {
-      var vm = this;
-
-      // Initial Form Model
-      vm.booking = {
-        careType: '',
-        date: null,
-        time: null,
-        people: 1,
-        reason: '',
-        language: 'Tamil'
-      };
-
-      vm.isSubmitted = false;
-
-      vm.submitBooking = function() {
-        vm.isSubmitted = true;
-      };
-
-      vm.closeModal = function() {
-        vm.isSubmitted = false;
-      };
-
-      vm.resetForm = function() {
-        vm.booking = {
-          careType: '',
-          date: null,
-          time: null,
-          people: 1,
-          reason: '',
-          language: 'Tamil'
-        };
-      };
-    });
-  </script>
 </body>
 </html>

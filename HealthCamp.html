@@ -5,10 +5,12 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Health Camps | Nalam360</title>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-animate.min.js"></script>
 <script src="app.js"></script>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="index.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <!-- Tailwind Configuration -->
 <script id="tailwind-config">
@@ -130,17 +132,8 @@
         }
     </style>
 </head>
-<body class="bg-background text-on-background font-body-md min-h-screen overflow-x-hidden" ng-app="nalam360" ng-controller="Nalam360Ctrl">
-<div class="px-gutter py-3 bg-surface/80 backdrop-blur-md sticky top-0 z-40 border-b border-outline-variant/30">
-    <div class="flex flex-wrap gap-2">
-        <a ng-repeat="page in pageLinks"
-           ng-href="{{page.url}}"
-           ng-class="page.url === currentPage ? 'bg-primary text-on-primary' : 'bg-surface-container text-on-surface hover:bg-primary-container hover:text-on-primary-container'"
-           class="px-3 py-2 rounded-lg font-label-md text-label-md transition-all">
-            {{page.name}}
-        </a>
-    </div>
-</div>
+<body class="bg-background text-on-background font-body-md min-h-screen overflow-x-hidden ng-cloak" ng-app="nalam360" ng-controller="Nalam360Ctrl" nalam-page>
+<div nalam-navigation></div>
 <!-- TopNavBar -->
 <nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-gutter h-16 bg-surface shadow-sm lg:pl-[280px]">
 <div class="flex items-center gap-base">
@@ -167,22 +160,22 @@
 </div>
 </nav>
 <!-- SideNavBar -->
-<aside class="fixed left-0 top-0 h-full w-[280px] bg-primary dark:bg-inverse-surface z-[60] flex flex-col py-md gap-base transition-transform -translate-x-full lg:translate-x-0" id="sidebar">
+<aside class="app-sidebar fixed left-0 top-0 h-full w-[280px] bg-primary dark:bg-inverse-surface z-[60] flex flex-col py-md gap-base transition-transform -translate-x-full lg:translate-x-0" id="sidebar">
 <div class="px-md mb-lg">
 <h2 class="font-h2 text-h2 text-on-primary">Patient Portal</h2>
 <p class="text-on-primary/70 font-label-md">Rural Access</p>
 </div>
 <div class="flex-1 flex flex-col gap-xs overflow-y-auto custom-scrollbar">
 <!-- Nav Items Mapping -->
-<a class="flex items-center gap-md px-md py-3 mx-2 text-on-primary/80 hover:bg-on-primary/10 rounded-lg transition-all duration-200" href="HealthCamp.html">
+<a class="flex items-center gap-md px-md py-3 mx-2 text-on-primary/80 hover:bg-on-primary/10 rounded-lg transition-all duration-200" href="dashboard.html">
 <span class="material-symbols-outlined">dashboard</span>
 <span class="font-label-md">Dashboard</span>
 </a>
-<a class="flex items-center gap-md px-md py-3 mx-2 text-on-primary/80 hover:bg-on-primary/10 rounded-lg transition-all duration-200" href="HealthCamp.html">
+<a class="flex items-center gap-md px-md py-3 mx-2 text-on-primary/80 hover:bg-on-primary/10 rounded-lg transition-all duration-200" href="healthcare.html">
 <span class="material-symbols-outlined">map</span>
 <span class="font-label-md">Find Healthcare</span>
 </a>
-<a class="flex items-center gap-md px-md py-3 mx-2 text-on-primary/80 hover:bg-on-primary/10 rounded-lg transition-all duration-200" href="HealthCamp.html">
+<a class="flex items-center gap-md px-md py-3 mx-2 text-on-primary/80 hover:bg-on-primary/10 rounded-lg transition-all duration-200" href="healthcare.html#doctors-tab">
 <span class="material-symbols-outlined">medical_services</span>
 <span class="font-label-md">Doctors</span>
 </a>

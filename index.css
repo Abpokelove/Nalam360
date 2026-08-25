@@ -56,6 +56,33 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Keep Angular templates hidden until their bindings are ready. */
+[ng-cloak], .ng-cloak {
+  display: none !important;
+}
+
+body {
+  animation: page-enter 0.45s ease-out both;
+}
+
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.app-sidebar {
+  animation: sidebar-enter 0.5s 0.08s ease-out both;
+}
+
+@keyframes sidebar-enter {
+  from { opacity: 0; transform: translateX(-18px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body, .app-sidebar { animation: none; }
+}
+
 /* Material Symbols Adjustments */
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
@@ -98,6 +125,74 @@ body {
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.nalam-navigation {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 70;
+  display: flex;
+  width: 280px;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem 0.75rem;
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+  box-shadow: 0 12px 30px rgba(2, 32, 28, 0.2);
+  animation: sidebar-enter 0.45s ease-out both;
+}
+
+.nalam-navigation__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.5rem 0.75rem 1rem;
+}
+
+.nalam-navigation__brand strong { font-size: 1.35rem; }
+.nalam-navigation__brand span { color: rgba(255, 255, 255, 0.7); font-size: 0.8rem; }
+.nalam-navigation__links { display: flex; flex: 1; flex-direction: column; gap: 0.25rem; overflow-y: auto; }
+.nalam-navigation a, .nalam-navigation button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.75rem;
+  border: 0;
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  color: rgba(255, 255, 255, 0.82);
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+.nalam-navigation a:hover, .nalam-navigation button:hover,
+.nalam-navigation a.is-active { color: var(--color-on-primary); background: rgba(149, 243, 228, 0.2); transform: translateX(2px); }
+.nalam-navigation__footer { display: flex; flex-direction: column; gap: 0.25rem; border-top: 1px solid rgba(255, 255, 255, 0.12); padding-top: 0.75rem; }
+.nalam-navigation__footer button { color: var(--color-error-container); }
+.nalam-menu-button { display: none; }
+.nalam-nav-backdrop { display: none; }
+.legacy-navigation { display: none !important; }
+body > aside, body > nav { display: none !important; }
+main > aside[ng-show="mobileSidebarOpen"] { display: none !important; }
+
+@media (min-width: 1024px) {
+  body.app-page { padding-left: 280px !important; }
+}
+
+@media (max-width: 1023px) {
+  body.app-page { padding-left: 1rem !important; }
+  .nalam-navigation { transform: translateX(-105%); transition: transform 0.3s ease; }
+  .nalam-navigation.is-open { transform: translateX(0); }
+  .nalam-menu-button {
+    position: fixed; top: 0.75rem; left: 0.75rem; z-index: 75; display: inline-flex;
+    align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem;
+    border: 0; border-radius: 0.75rem; color: var(--color-on-primary); background: var(--color-primary);
+    box-shadow: 0 4px 14px rgba(2, 32, 28, 0.2); cursor: pointer;
+  }
+  .nalam-nav-backdrop { position: fixed; inset: 0; z-index: 65; display: block; background: rgba(2, 32, 28, 0.48); backdrop-filter: blur(3px); }
 }
 
 /* Card Active States */

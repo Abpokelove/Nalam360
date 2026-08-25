@@ -62,13 +62,129 @@ app.factory("HealthcareService", function() {
     };
 });
 
+app.service("NalamSessionService", ["$window", function($window) {
+    this.getActiveProfile = function() {
+        var profiles = angular.fromJson($window.localStorage.getItem("nalam_profiles") || "[]");
+        var index = parseInt($window.localStorage.getItem("nalam_active_index") || "0", 10);
+        return profiles[index] || null;
+    };
+
+    this.saveValue = function(key, value) {
+        $window.localStorage.setItem(key, angular.toJson(value));
+    };
+}]);
+
+app.controller("AppointmentController", ["$window", function($window) {
+    var vm = this;
+    vm.booking = { careType: "", date: null, time: null, people: 1, reason: "", language: "Tamil" };
+    vm.isSubmitted = false;
+
+    vm.submitBooking = function() { vm.isSubmitted = true; };
+    vm.closeModal = function() { vm.isSubmitted = false; };
+    vm.resetForm = function() {
+        vm.booking = { careType: "", date: null, time: null, people: 1, reason: "", language: "Tamil" };
+    };
+}]);
+
+app.controller("DoctorController", ["HealthcareService", function(HealthcareService) {
+    var vm = this;
+    vm.searchQuery = "";
+    vm.specialityFilter = "";
+    vm.doctors = HealthcareService.getDoctors().map(function(doctor) {
+        return {
+            name: doctor.name,
+            initials: doctor.initials,
+            speciality: doctor.specialty,
+            exp: doctor.exp + " years",
+            langs: "Tamil, English",
+            next: doctor.available ? "Today, 4:30 PM" : "Tomorrow, 10:00 AM"
+        };
+    });
+}]);
+
+app.controller("ReminderController", ["NalamSessionService", function(NalamSessionService) {
+    var vm = this;
+    vm.isModalOpen = false;
+    vm.newReminder = { text: "", time: null };
+    vm.reminders = [
+        { time: "8:00 AM", text: "Morning medication", status: "Done", cssClass: "status" },
+        { time: "2:00 PM", text: "Drink water / lunch", status: "Upcoming", cssClass: "status warn" },
+        { time: "7:30 PM", text: "Prepare reports", status: "Upcoming", cssClass: "status warn" }
+    ];
+    vm.profileReady = !!NalamSessionService.getActiveProfile();
+
+    vm.openModal = function() { vm.isModalOpen = true; };
+    vm.closeModal = function() {
+        vm.isModalOpen = false;
+        vm.newReminder = { text: "", time: null };
+    };
+    vm.addReminder = function() {
+        if (vm.newReminder.text) {
+            vm.reminders.push({
+                time: vm.newReminder.time || "TBD",
+                text: vm.newReminder.text,
+                status: "Upcoming",
+                cssClass: "status warn"
+            });
+            vm.closeModal();
+        }
+    };
+}]);
+
+app.filter("nalamInitials", function() {
+    return function(value) {
+        if (!value) return "NA";
+        return value.split(/\s+/).map(function(word) { return word.charAt(0); }).join("").substring(0, 2).toUpperCase();
+    };
+});
+
+app.directive("nalamPage", ["NalamSessionService", function(NalamSessionService) {
+    return {
+        restrict: "A",
+        link: function(scope, element) {
+            element.addClass("nalam-page-ready");
+            element.attr("data-profile", NalamSessionService.getActiveProfile() ? "ready" : "new");
+        }
+    };
+}]);
+
+app.directive("nalamNavigation", function() {
+    return {
+        restrict: "A",
+        template:
+            '<button class="nalam-menu-button" type="button" aria-label="Open navigation" ng-click="navOpen = true"><span class="material-symbols-outlined">menu</span></button>' +
+            '<div class="nalam-nav-backdrop" ng-if="navOpen" ng-click="navOpen = false"></div>' +
+            '<aside class="nalam-navigation" ng-class="{\'is-open\': navOpen}">' +
+                '<div class="nalam-navigation__brand"><strong>Nalam360</strong><span>Patient Portal</span></div>' +
+                '<nav class="nalam-navigation__links" aria-label="Patient portal navigation">' +
+                    '<a ng-repeat="page in pageLinks" ng-href="{{page.url}}" ng-class="{\'is-active\': currentPage === page.url}" ng-click="navOpen = false"><span class="material-symbols-outlined">{{page.icon}}</span><span>{{page.name}}</span></a>' +
+                '</nav>' +
+                '<div class="nalam-navigation__footer"><button type="button" ng-click="toggleEmergencyPanel(); navOpen = false"><span class="material-symbols-outlined">emergency</span><span>Emergency Contacts</span></button><a href="index.html"><span class="material-symbols-outlined">logout</span><span>Logout</span></a></div>' +
+            '</aside>',
+        link: function(scope) {
+            scope.navOpen = false;
+            scope.pageLinks = [
+                { name: "Dashboard", url: "dashboard.html", icon: "dashboard" },
+                { name: "Find Healthcare", url: "healthcare.html", icon: "map" },
+                { name: "Doctors", url: "healthcare.html#doctors-tab", icon: "medical_services" },
+                { name: "Health Camps", url: "HealthCamp.html", icon: "campaign" },
+                { name: "Appointments", url: "ReferralsAndReminder.html", icon: "event" },
+                { name: "Awareness", url: "HealthAwareness.html", icon: "menu_book" },
+                { name: "Emergency", url: "EmergencyAssistance.html", icon: "emergency" },
+                { name: "Profile", url: "profile.html", icon: "person" },
+                { name: "Support", url: "ProfileandSupport.html", icon: "support_agent" }
+            ];
+        }
+    };
+});
+
 // <!-- AngularJS Controller -->
 app.controller("Nalam360Ctrl", ["$scope", "$controller", function($scope, $controller) {
     $controller("PatientController", { $scope: $scope });
 }]);
 
 // <!-- Dependency Injection -->
-app.controller("PatientController", ["$scope", "HealthcareService", "$filter", "$timeout", "$interval", function($scope, HealthcareService, $filter, $timeout, $interval) {
+app.controller("PatientController", ["$scope", "HealthcareService", "NalamSessionService", "$filter", "$timeout", "$interval", function($scope, HealthcareService, NalamSessionService, $filter, $timeout, $interval) {
 
     $scope.pageLinks = [
         { name: "Dashboard", url: "dashboard.html" },
@@ -89,6 +205,7 @@ app.controller("PatientController", ["$scope", "HealthcareService", "$filter", "
 
     updateCurrentPage();
     window.addEventListener("hashchange", updateCurrentPage);
+    $scope.activeProfileFromService = NalamSessionService.getActiveProfile();
 
     $scope.toggleSidebar = function() {
         $scope.mobileSidebarOpen = !$scope.mobileSidebarOpen;
@@ -214,8 +331,84 @@ app.controller("PatientController", ["$scope", "HealthcareService", "$filter", "
     $scope.villages = HealthcareService.getVillages();
     $scope.doctors = HealthcareService.getDoctors();
     $scope.hospitals = HealthcareService.getHospitals();
-    $scope.emergencyContacts = HealthcareService.getEmergencyContacts();
+    $scope.emergencyContacts = HealthcareService.getEmergencyContacts().map(function(contact, index) {
+        return angular.extend(contact, {
+            phone: contact.number,
+            initials: contact.name.split(/\s+/).map(function(word) { return word.charAt(0); }).join("").substring(0, 2),
+            color: index % 2 ? "bg-secondary text-white" : "bg-primary-fixed text-primary"
+        });
+    });
     $scope.healthCamps = HealthcareService.getHealthCamps();
+
+    $scope.campFilters = { village: "All Villages", search: "", campType: "All Types" };
+    $scope.healthCamps = $scope.healthCamps.map(function(camp) {
+        return angular.extend(camp, {
+            badge: camp.slots > 0 ? "Open for registration" : "Fully booked",
+            coverage: camp.location,
+            place: camp.location,
+            tags: [camp.type, camp.village],
+            status: camp.slots > 0 ? "Register Free Now" : "Join waitlist",
+            image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=80"
+        });
+    });
+    $scope.filteredCamps = function() {
+        var filters = $scope.campFilters;
+        return $scope.healthCamps.filter(function(camp) {
+            var matchesVillage = filters.village === "All Villages" || camp.village === filters.village;
+            var matchesType = filters.campType === "All Types" || camp.type === filters.campType;
+            var query = (filters.search || "").toLowerCase();
+            return matchesVillage && matchesType && (!query || (camp.title + " " + camp.location).toLowerCase().indexOf(query) !== -1);
+        });
+    };
+
+    $scope.awarenessLanguage = "en";
+    $scope.selectedCategory = "All Topics";
+    $scope.awarenessSearch = "";
+    $scope.awarenessText = {
+        headerTitle: "Health Awareness Library", headerSubtitle: "Practical guidance for healthier village communities.",
+        searchPlaceholder: "Search health topics...", allTopics: "All Topics", categories: ["Nutrition", "Hygiene", "Vaccination", "Seasonal Health"],
+        specialPanelTitle: "Prevent seasonal illness", specialPanelBody: "Learn simple ways to protect your family during changing weather.", readMore: "Read more", learnBasics: "Learn basics", readArticle: "Read article", featuredTag: "Featured guide", featuredTime: "5 min read", doLabel: "Do", dontLabel: "Avoid", keyTakeaways: "Key takeaways", sourceLabel: "Source", sourceText: "Nalam360 Community Health Team", footerTitle: "Trusted health information", footerText: "Clear, local, practical advice for every family.",
+        cardMap: {
+            dengue: { title: "Protect against dengue", description: "Reduce mosquito breeding around your home.", category: "Seasonal Health", content: "Remove standing water, use screens and seek care for persistent fever." },
+            vaccination: { title: "Vaccination basics", description: "Keep children and adults protected with timely vaccines.", category: "Vaccination", content: "Keep your family vaccination records updated and ask your health worker about due dates." }
+        }
+    };
+    $scope.awarenessCards = [
+        { key: "dengue", category: "Seasonal Health", title: "Protect against dengue", description: "Reduce mosquito breeding around your home.", image: "https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=900&q=80" },
+        { key: "nutrition", category: "Nutrition", title: "Build a balanced plate", description: "Use local grains, greens and pulses for daily nutrition.", image: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=900&q=80" },
+        { key: "hygiene", category: "Hygiene", title: "Clean hands, safer homes", description: "Wash hands before meals and after outdoor work.", image: "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?auto=format&fit=crop&w=900&q=80" },
+        { key: "vaccination", category: "Vaccination", title: "Vaccination basics", description: "Keep children and adults protected with timely vaccines.", image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=900&q=80" }
+    ];
+    $scope.featuredArticle = angular.copy($scope.awarenessCards[0]);
+    $scope.setAwarenessLanguage = function(language) { $scope.awarenessLanguage = language; };
+    $scope.filterAwarenessByCategory = function(category) { $scope.selectedCategory = category; };
+    $scope.setAwarenessArticle = function(article) { $scope.featuredArticle = article; };
+
+    $scope.emergencyLocations = [
+        { id: 1, name: "Hosur Emergency Zone", center: "Civil Hospital Hosur", coords: "12.7409 N, 77.8253 E", distance: "2.4 km", eta: "8 min", emergencyNote: "Open 24/7 with ambulance support.", actionText: "Get directions", services: ["Ambulance", "Trauma care", "Pharmacy"], mapImage: "https://images.unsplash.com/photo-1524666041070-9d87656c25bb?auto=format&fit=crop&w=900&q=80" },
+        { id: 2, name: "Melur Emergency Zone", center: "Nalam PHC Center Melur", coords: "10.0324 N, 78.3398 E", distance: "0.8 km", eta: "4 min", emergencyNote: "Primary care and rapid referral available.", actionText: "Get directions", services: ["First aid", "Ambulance", "Observation"], mapImage: "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=900&q=80" }
+    ];
+    $scope.selectedEmergencyLocation = $scope.emergencyLocations[0];
+    $scope.selectEmergencyLocation = function(location) { $scope.selectedEmergencyLocation = location; };
+    $scope.firstAidGuides = [{ title: "Bleeding", icon: "healing", iconClass: "text-error", steps: ["Apply firm pressure with clean cloth.", "Keep the injured area raised.", "Call 112 if bleeding continues."] }, { title: "Burns", icon: "local_fire_department", iconClass: "text-error", steps: ["Cool under clean running water.", "Remove tight items near the burn.", "Do not apply oils or creams."] }];
+    $scope.selectedGuide = null;
+    $scope.showGuide = function(guide) { $scope.selectedGuide = guide; };
+    $scope.selectEmergencyContact = function(contact) { $scope.emergencyStatus = "Calling " + contact.name + " at " + contact.phone + "."; };
+
+    $scope.patient.id = $scope.patient.id || "NALAM-" + ($scope.activeProfileIndex + 1).toString().padStart(3, "0");
+    $scope.patient.status = $scope.patient.status || "Verified patient";
+    $scope.patient.language = $scope.patient.language || "Tamil";
+    $scope.patient.lastSync = $scope.patient.lastSync || "Just now";
+    $scope.profileForm = angular.copy($scope.patient);
+    $scope.showProfileEditor = false;
+    $scope.profileSaveStatus = "";
+    $scope.toggleProfileEditor = function() { $scope.showProfileEditor = !$scope.showProfileEditor; };
+
+    $scope.activeTab = "reports";
+    $scope.referralItems = [{ title: "Blood test report", detail: "Uploaded 18 Jul 2026" }, { title: "Specialist referral", detail: "Reviewed by Dr. Mozhi" }];
+    $scope.notes = ["Blood pressure is improving.", "Continue current medication schedule.", "Follow up after laboratory review."];
+    $scope.switchTab = function(tab) { $scope.activeTab = tab; };
+    $scope.endConsultation = function() { window.location.href = "ReferralsAndReminder.html"; };
     
     // Add registration state indicator to camps dynamically
     angular.forEach($scope.healthCamps, function(camp) {
@@ -227,10 +420,20 @@ app.controller("PatientController", ["$scope", "HealthcareService", "$filter", "
         localStorage.setItem("nalam_active_index", $scope.activeProfileIndex);
         $scope.patient = $scope.profiles[$scope.activeProfileIndex];
         $scope.patient.dob = new Date($scope.patient.dob);
+        $scope.patient.id = $scope.patient.id || "NALAM-" + ($scope.activeProfileIndex + 1).toString().padStart(3, "0");
+        $scope.patient.status = $scope.patient.status || "Verified patient";
+        $scope.patient.language = $scope.patient.language || "Tamil";
+        $scope.patient.lastSync = $scope.patient.lastSync || "Just now";
+        $scope.profileForm = angular.copy($scope.patient);
         $scope.generateNextTip(); // Refresh Tip relative to new profile
     };
 
     $scope.saveProfile = function() {
+        if ($scope.profileForm && $scope.showProfileEditor) {
+            $scope.patient = angular.extend($scope.patient, $scope.profileForm);
+            $scope.showProfileEditor = false;
+            $scope.profileSaveStatus = "Profile updated successfully.";
+        }
         if ($scope.patient.name) {
             // Update initials dynamically
             var words = $scope.patient.name.split(' ');

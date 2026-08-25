@@ -5,10 +5,12 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Nalam360 | Patient Profile &amp; Support</title>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-animate.min.js"></script>
 <script src="app.js"></script>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="index.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
@@ -124,17 +126,8 @@
         }
     </style>
 </head>
-<body class="font-body-md text-body-md" ng-app="nalam360" ng-controller="Nalam360Ctrl">
-<div class="px-gutter py-3 bg-surface/80 backdrop-blur-md sticky top-0 z-40 border-b border-outline-variant/30">
-    <div class="flex flex-wrap gap-2">
-        <a ng-repeat="page in pageLinks"
-           ng-href="{{page.url}}"
-           ng-class="page.url === currentPage ? 'bg-primary text-on-primary' : 'bg-surface-container text-on-surface hover:bg-primary-container hover:text-on-primary-container'"
-           class="px-3 py-2 rounded-lg font-label-md text-label-md transition-all">
-            {{page.name}}
-        </a>
-    </div>
-</div>
+<body class="font-body-md text-body-md ng-cloak" ng-app="nalam360" ng-controller="Nalam360Ctrl" nalam-page>
+<div nalam-navigation></div>
 <!-- Top Navigation Bar -->
 <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-gutter h-16 bg-surface dark:bg-surface-container-high shadow-sm">
 <div class="flex items-center gap-base">
@@ -159,21 +152,21 @@
 </header>
 <div class="flex pt-16 min-h-screen">
 <!-- Side Navigation Bar -->
-<aside class="hidden lg:flex flex-col py-md gap-base fixed left-0 top-16 h-[calc(100vh-64px)] w-[280px] bg-primary dark:bg-inverse-surface shadow-lg text-on-primary">
+<aside class="app-sidebar hidden lg:flex flex-col py-md gap-base fixed left-0 top-16 h-[calc(100vh-64px)] w-[280px] bg-primary dark:bg-inverse-surface shadow-lg text-on-primary">
 <div class="px-md mb-lg">
 <h2 class="font-h2 text-h2 text-on-primary">Patient Portal</h2>
 <p class="text-on-primary/70 font-caption text-caption">Rural Access Dashboard</p>
 </div>
 <nav class="flex-1 overflow-y-auto">
-<a class="flex items-center gap-md py-3 px-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="HealthCamp.html">
+<a class="flex items-center gap-md py-3 px-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="dashboard.html">
 <span class="material-symbols-outlined">dashboard</span>
 <span class="font-label-md text-label-md">Dashboard</span>
 </a>
-<a class="flex items-center gap-md py-3 px-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="HealthCamp.html">
+<a class="flex items-center gap-md py-3 px-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="healthcare.html">
 <span class="material-symbols-outlined">map</span>
 <span class="font-label-md text-label-md">Find Healthcare</span>
 </a>
-<a class="flex items-center gap-md py-3 px-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="HealthCamp.html">
+<a class="flex items-center gap-md py-3 px-4 text-on-primary/80 hover:bg-on-primary/10 rounded-lg mx-2 transition-all" href="healthcare.html#doctors-tab">
 <span class="material-symbols-outlined">medical_services</span>
 <span class="font-label-md text-label-md">Doctors</span>
 </a>
