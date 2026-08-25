@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en" ng-app="nalamApp">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Referrals & Reminders | Nalam360</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <style>
+    :root { --primary: #00796b; --bg-color: #f4f6f8; --dark: #263238; --light: #ffffff; --shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--dark); padding: 2rem 1rem; line-height: 1.6; }
+    .page-shell { max-width: 1000px; margin: auto; }
+    .page-heading { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .eyebrow { text-transform: uppercase; font-size: 0.8rem; color: var(--primary); font-weight: bold; }
+    h1, h2 { color: var(--primary); }
+    .muted { color: #666; font-size: 0.9rem; }
+    .card { background: var(--light); padding: 1.5rem; border-radius: 8px; box-shadow: var(--shadow); margin-bottom: 1.5rem; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    .btn { background: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; text-decoration: none; font-weight: bold; }
+    .btn.ghost { background: transparent; color: var(--primary); border: 1px solid var(--primary); margin-left: 0.5rem; }
+    progress { width: 100%; height: 10px; margin: 1rem 0; }
+    ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+    ul.list { list-style: none; }
+    ul.list li { padding: 0.8rem 0; border-bottom: 1px solid #eee; }
+    .status { background: #e8f5e9; color: #2e7d32; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold; float: right; }
+    .status.warn { background: #fff3e0; color: #e65100; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { padding: 0.8rem; border: 1px solid #ddd; text-align: left; }
+    th { background: #f9f9f9; }
+    .modal-backdrop { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;}
+    .modal { background: white; padding: 2rem; border-radius: 8px; max-width: 420px; width: 90%; }
+    .field { margin-bottom: 1rem; }
+    .field label { display: block; font-weight: 500; margin-bottom: 0.3rem; }
+    input { width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px; }
+  </style>
+</head>
+<body class="app-page" ng-controller="ReminderController as vm">
+  <div class="page-shell">
+    <main class="page-main">
+      <header class="page-heading">
+        <div>
+          <p class="eyebrow">Care continuity</p>
+          <h1>Referrals & reminders</h1>
+          <p class="muted">Track referrals and manage the reminders shared by your care team.</p>
+        </div>
+        <button class="btn" ng-click="vm.openModal()">Add reminder</button>
+      </header>
+      
+      <section class="grid-2">
+        <article class="card">
+          <span class="status">In progress</span>
+          <h2>District hospital referral</h2>
+          <p><strong>Step 3 of 4</strong></p>
+          <p class="muted">Referred by Dr. Ananya Rao for a specialist review.</p>
+          <progress value="3" max="4"></progress>
+          <ol>
+            <li>Referral created</li>
+            <li>Documents reviewed</li>
+            <li>Appointment scheduled</li>
+            <li>Visit completed</li>
+          </ol>
+          <a class="btn ghost" href="#">View appointment</a>
+        </article>
+        
+        <aside class="card">
+          <h2>Today&rsquo;s reminders</h2>
+          <ul class="list">
+            <li ng-repeat="item in vm.reminders">
+              <strong>{{item.time}}</strong><br>
+              {{item.text}} <span class="{{item.cssClass}}">{{item.status}}</span>
+            </li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="card" style="margin-top:1.5rem">
+        <h2>Referral history</h2>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Referral</th>
+              <th scope="col">Created</th>
+              <th scope="col">Facility</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Specialist review</td>
+              <td rowspan="2">18 Jul 2026</td>
+              <td>District Hospital</td>
+              <td>Scheduled</td>
+            </tr>
+            <tr>
+              <td>Laboratory reports</td>
+              <td>Diagnostic Centre</td>
+              <td>Received</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" ng-show="vm.isModalOpen">
+    <div class="modal">
+      <h2>Create a reminder</h2>
+      <form ng-submit="vm.addReminder()" novalidate style="margin-top: 1rem;">
+        <div class="field">
+          <label for="reminder-title">Reminder</label>
+          <input id="reminder-title" type="text" ng-model="vm.newReminder.text" required>
+        </div>
+        <div class="field">
+          <label for="reminder-time">Time</label>
+          <input id="reminder-time" type="time" ng-model="vm.newReminder.time" required>
+        </div>
+        <div style="margin-top: 1.5rem;">
+          <button class="btn" type="submit">Save reminder</button>
+          <button class="btn ghost" type="button" ng-click="vm.closeModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    angular.module('nalamApp', [])
+    .controller('ReminderController', function() {
+        var vm = this;
+        vm.isModalOpen = false;
+        vm.newReminder = { text: '', time: null };
+
+        vm.reminders = [
+            { time: "8:00 AM", text: "Morning medication", status: "Done", cssClass: "status" },
+            { time: "2:00 PM", text: "Drink water / lunch", status: "Upcoming", cssClass: "status warn" },
+            { time: "7:30 PM", text: "Prepare reports", status: "Upcoming", cssClass: "status warn" }
+        ];
+
+        vm.openModal = function() { vm.isModalOpen = true; };
+        
+        vm.closeModal = function() { 
+            vm.isModalOpen = false; 
+            vm.newReminder = { text: '', time: null }; 
+        };
+
+        vm.addReminder = function() {
+            if(vm.newReminder.text) {
+                var timeStr = vm.newReminder.time ? vm.newReminder.time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "TBD";
+                vm.reminders.push({ time: timeStr, text: vm.newReminder.text, status: "Upcoming", cssClass: "status warn" });
+                vm.closeModal();
+            }
+        };
+    });
+  </script>
+</body>
+</html>

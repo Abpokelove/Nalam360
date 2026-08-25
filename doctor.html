@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en" ng-app="nalamApp">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Doctors | Nalam360</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <style>
+    :root { --primary: #00796b; --primary-hover: #004d40; --bg-color: #f4f6f8; --dark: #263238; --light: #ffffff; --shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--dark); padding: 2rem 1rem; line-height: 1.6; }
+    .page-shell { max-width: 1000px; margin: auto; }
+    .eyebrow { text-transform: uppercase; font-size: 0.8rem; color: var(--primary); font-weight: bold; }
+    h1 { color: var(--primary); margin-bottom: 0.5rem; }
+    .muted { color: #666; font-size: 0.9rem; margin-bottom: 1rem; }
+    .card { background: var(--light); padding: 1.5rem; border-radius: 8px; box-shadow: var(--shadow); margin-bottom: 1.5rem; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .field label { display: block; font-weight: 500; margin-bottom: 0.3rem; }
+    input, select { width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    .doctor-card { display: flex; gap: 1rem; align-items: flex-start; }
+    .doctor-photo { background: #e0f2f1; color: var(--primary); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold; font-size: 1.2rem; }
+    .status { background: #e8f5e9; color: #2e7d32; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+    .actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
+    .btn { background: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; text-decoration: none; font-weight: bold; font-size: 0.9rem;}
+    .btn.ghost { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+  </style>
+</head>
+<body class="app-page" ng-controller="DoctorController as vm">
+  <div class="page-shell">
+    <main class="page-main">
+      <header class="page-heading">
+        <p class="eyebrow">Verified care team</p>
+        <h1>Doctor directory</h1>
+        <p class="muted">Choose a clinician by speciality, language and availability.</p>
+      </header>
+      
+      <section class="card">
+        <form>
+          <div class="form-grid">
+            <div class="field">
+              <label for="doctor-search">Search doctors</label>
+              <input id="doctor-search" type="search" ng-model="vm.searchQuery" placeholder="Name or speciality">
+            </div>
+            <div class="field">
+              <label for="speciality">Speciality</label>
+              <select id="speciality" ng-model="vm.specialityFilter">
+                <option value="">All specialities</option>
+                <option value="General medicine">General medicine</option>
+                <option value="Paediatrics">Paediatrics</option>
+                <option value="Women's health">Women&rsquo;s health</option>
+                <option value="Dermatology">Dermatology</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <section class="grid-2" style="margin-top:1.5rem">
+        <article class="card doctor-card" ng-repeat="doc in vm.doctors | filter:vm.searchQuery | filter:{speciality: vm.specialityFilter}">
+          <figure class="doctor-photo" aria-label="Portrait placeholder">{{doc.initials}}</figure>
+          <div>
+            <span class="status">Verified</span>
+            <h2>{{doc.name}}</h2>
+            <p>{{doc.speciality}} &middot; {{doc.exp}}</p>
+            <p class="muted">{{doc.langs}} &middot; Next: {{doc.next}}</p>
+            <div class="actions">
+              <a class="btn ghost" href="#">View profile</a>
+              <a class="btn" href="#">Book now</a>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    angular.module('nalamApp', [])
+    .controller('DoctorController', function() {
+        var vm = this;
+        vm.searchQuery = '';
+        vm.specialityFilter = '';
+        vm.doctors = [
+            { name: "Dr. Ananya Rao", initials: "AR", speciality: "General medicine", exp: "12 years", langs: "Tamil, English, Hindi", next: "Today, 4:30 PM" },
+            { name: "Dr. Karthik Selvan", initials: "KS", speciality: "Paediatrics", exp: "9 years", langs: "Tamil, English", next: "Tomorrow, 10:00 AM" },
+            { name: "Dr. Priya Menon", initials: "PM", speciality: "Women's health", exp: "15 years", langs: "Tamil, English, Malayalam", next: "Today, 6:00 PM" },
+            { name: "Dr. Vignesh Babu", initials: "VB", speciality: "Dermatology", exp: "8 years", langs: "Tamil, English, Telugu", next: "Tomorrow, 11:30 AM" }
+        ];
+    });
+  </script>
+</body>
+</html>

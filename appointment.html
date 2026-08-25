@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en" ng-app="nalamApp">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Book Appointment | Nalam360</title>
+  
+  <!-- AngularJS CDN -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #00796b;
+      --primary-hover: #004d40;
+      --secondary: #e0f2f1;
+      --dark: #263238;
+      --light: #ffffff;
+      --bg-color: #f4f6f8;
+      --shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--dark); line-height: 1.6; padding: 2rem 1rem; }
+    
+    .container { max-width: 900px; margin: 0 auto; }
+    .page-heading { margin-bottom: 1.5rem; }
+    .page-heading h1 { color: var(--primary); margin-top: 0.2rem; }
+    .eyebrow { text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; color: var(--primary); font-weight: bold; }
+    .muted { color: #666; font-size: 0.9rem; }
+    
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+    .card { background: var(--light); padding: 1.5rem; border-radius: 8px; box-shadow: var(--shadow); }
+    
+    fieldset { border: none; }
+    legend { font-size: 1.2rem; font-weight: bold; color: var(--primary); margin-bottom: 1rem; }
+    
+    .field { margin-bottom: 1rem; }
+    label { display: block; margin-bottom: 0.3rem; font-weight: 500; }
+    input, select, textarea { width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    
+    .choices { display: flex; gap: 1rem; margin: 1rem 0; }
+    .actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
+    
+    .btn { background: var(--primary); color: white; border: none; padding: 0.75rem 1.2rem; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s; text-decoration: none; text-align: center; }
+    .btn:hover { background: var(--primary-hover); }
+    .btn.ghost { background: transparent; color: var(--dark); border: 1px solid #ccc; }
+    .btn.ghost:hover { background: #eee; }
+    
+    /* Modal / Dialog Backdrop */
+    .modal-backdrop { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
+    .modal { background: white; padding: 2rem; border-radius: 8px; max-width: 420px; width: 90%; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+  </style>
+</head>
+
+<body class="app-page" ng-controller="AppointmentController as vm">
+  <div class="container">
+    <main class="page-main">
+      <header class="page-heading">
+        <p class="eyebrow">Care scheduling</p>
+        <h1>Book an appointment</h1>
+        <p class="muted">Select your preferred care type, date and time.</p>
+      </header>
+
+      <section class="grid-2">
+        <!-- Appointment Form with AngularJS Submission -->
+        <form class="card" ng-submit="vm.submitBooking()" novalidate>
+          <fieldset>
+            <legend>Appointment details</legend>
+            
+            <div class="field">
+              <label for="care-type">Care type</label>
+              <select id="care-type" ng-model="vm.booking.careType" required>
+                <option value="">Choose care type</option>
+                <option>Video consultation</option>
+                <option>Clinic visit</option>
+                <option>Follow-up visit</option>
+              </select>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="appointment-date">Date</label>
+                <input id="appointment-date" type="date" ng-model="vm.booking.date" required>
+              </div>
+              <div class="field">
+                <label for="appointment-time">Time</label>
+                <input id="appointment-time" type="time" ng-model="vm.booking.time" required>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="people">People attending</label>
+              <input id="people" type="number" min="1" max="3" ng-model="vm.booking.people" required>
+            </div>
+
+            <div class="field">
+              <label for="reason">Reason for visit</label>
+              <textarea id="reason" ng-model="vm.booking.reason" minlength="10" required placeholder="Briefly describe what you would like help with."></textarea>
+            </div>
+
+            <div class="choices">
+              <label><input type="radio" ng-model="vm.booking.language" value="Tamil" required> Tamil</label>
+              <label><input type="radio" ng-model="vm.booking.language" value="English"> English</label>
+            </div>
+          </fieldset>
+
+          <div class="actions">
+            <button class="btn" type="submit">Confirm booking</button>
+            <button class="btn ghost" type="button" ng-click="vm.resetForm()">Reset</button>
+          </div>
+        </form>
+
+        <!-- Summary Side Card -->
+        <aside class="card">
+          <h2>Your selection</h2>
+          <p><strong>Doctor:</strong> Dr. Ananya Rao</p>
+          <p><strong>Service:</strong> General Medicine</p>
+          <p><strong>Fee:</strong> &#8377;600</p>
+          <p class="muted">Payment, if required, is handled only after booking confirmation.</p>
+          
+          <hr style="margin: 1rem 0; border: none; border-top: 1px solid #eee;">
+
+          <h3>Live Summary</h3>
+          <p><strong>Type:</strong> {{vm.booking.careType || 'Not selected'}}</p>
+          <p><strong>Language:</strong> {{vm.booking.language}}</p>
+
+          <h3 style="margin-top: 1rem;">Before your visit</h3>
+          <ul style="padding-left: 1.2rem;">
+            <li>Keep recent reports nearby</li>
+            <li>Join from a quiet location</li>
+            <li>For emergencies, use emergency services</li>
+          </ul>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <!-- AngularJS Modal -->
+  <div class="modal-backdrop" ng-show="vm.isSubmitted">
+    <div class="modal">
+      <h2>Appointment requested</h2>
+      <p style="margin-top: 0.5rem;">Your <strong>{{vm.booking.careType}}</strong> appointment has been recorded.</p>
+      <div class="actions">
+        <button class="btn" ng-click="vm.closeModal()">Back to dashboard</button>
+        <button class="btn ghost" ng-click="vm.closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    angular.module('nalamApp', [])
+    .controller('AppointmentController', function() {
+      var vm = this;
+
+      // Initial Form Model
+      vm.booking = {
+        careType: '',
+        date: null,
+        time: null,
+        people: 1,
+        reason: '',
+        language: 'Tamil'
+      };
+
+      vm.isSubmitted = false;
+
+      vm.submitBooking = function() {
+        vm.isSubmitted = true;
+      };
+
+      vm.closeModal = function() {
+        vm.isSubmitted = false;
+      };
+
+      vm.resetForm = function() {
+        vm.booking = {
+          careType: '',
+          date: null,
+          time: null,
+          people: 1,
+          reason: '',
+          language: 'Tamil'
+        };
+      };
+    });
+  </script>
+</body>
+</html>
