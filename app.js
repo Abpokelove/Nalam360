@@ -1,67 +1,35 @@
-// <!-- AngularJS Module -->
-var app = angular.module("Nalam360App", ["ngAnimate"]);
-var legacyApp = angular.module("nalam360", ["Nalam360App"]);
+(function () {
+  'use strict';
 
-// <!-- AngularJS Service -->
-app.factory("HealthcareService", function() {
-    var data = {
-        doctors: [
-            { id: 1, name: "Dr. Anitha Raghavan", specialty: "General Physician", village: "Melur", exp: 12, fee: 250, available: true, initials: "AR", bgGradient: "from-teal-500 to-emerald-600" },
-            { id: 2, name: "Dr. Rajesh Kumar", specialty: "Pediatrician", village: "Karur", exp: 8, fee: 300, available: false, initials: "RK", bgGradient: "from-blue-500 to-indigo-600" },
-            { id: 3, name: "Dr. Karthik Raja", specialty: "Cardiologist", village: "Hosur", exp: 15, fee: 500, available: true, initials: "KR", bgGradient: "from-red-500 to-rose-600" },
-            { id: 4, name: "Dr. Priyadarshini M.", specialty: "Gynaecologist", village: "Alanganallur", exp: 10, fee: 350, available: true, initials: "PM", bgGradient: "from-pink-500 to-purple-600" },
-            { id: 5, name: "Dr. Syed Ibrahim", specialty: "Dermatologist", village: "Sivakasi", exp: 6, fee: 280, available: true, initials: "SI", bgGradient: "from-orange-500 to-amber-600" },
-            { id: 6, name: "Dr. Ganesan A.", specialty: "Orthopaedic", village: "Pollachi", exp: 18, fee: 450, available: false, initials: "GA", bgGradient: "from-cyan-500 to-teal-600" }
-        ],
-        hospitals: [
-            { name: "Civil Hospital Hosur", distance: 2.4, village: "Hosur", hours: "Open 24/7", phone: "04344-222012", rating: "4.5" },
-            { name: "Nalam PHC Center Melur", distance: 0.8, village: "Melur", hours: "Closes 6 PM", phone: "94432-10876", rating: "4.2" },
-            { name: "Community Care Unit Karur", distance: 4.1, village: "Karur", hours: "Open 24/7", phone: "98765-43210", rating: "4.0" },
-            { name: "Sivakasi Mission Hospital", distance: 1.5, village: "Sivakasi", hours: "Open 24/7", phone: "04562-234567", rating: "4.7" }
-        ],
-        medicines: [
-            { name: "Metformin 500mg", type: "Diabetes", slot: "Morning", instruction: "After Food", price: 45.00 },
-            { name: "Atorvastatin 20mg", type: "Cholesterol", slot: "Night", instruction: "Bedtime", price: 82.50 },
-            { name: "Paracetamol 650mg", type: "Fever", slot: "Afternoon", instruction: "As Needed (Post Lunch)", price: 15.00 },
-            { name: "Amoxicillin 500mg", type: "Antibiotic", slot: "Morning", instruction: "Thrice Daily", price: 120.00 },
-            { name: "Ibuprofen 400mg", type: "Pain Relief", slot: "Night", instruction: "After Food", price: 35.00 },
-            { name: "Omeprazole 20mg", type: "Acidity", slot: "Morning", instruction: "Before Food", price: 50.00 }
-        ],
-        villages: ["Melur", "Karur", "Alanganallur", "Hosur", "Kovilpatti", "Sivakasi", "Pollachi", "Tenkasi", "Periyakulam"],
-        emergencyContacts: [
-            { name: "Ambulance Response", number: "108" },
-            { name: "Nalam Toll-Free", number: "1800-360-360" },
-            { name: "Hosur GH Emergency", number: "04344-222013" },
-            { name: "Karur PHC Hotline", number: "94432-10878" },
-            { name: "Poison Control Cell", number: "1800-222-1222" }
-        ],
-        healthTips: [
-            "Staying hydrated is key for metabolic health. Aim for at least 8 glasses of water today.",
-            "Walking for 30 minutes daily can significantly reduce blood pressure and cardiac risks.",
-            "Wash hands thoroughly with soap before meals to prevent intestinal infections.",
-            "Including green leafy vegetables increases iron levels and effectively fights anemia.",
-            "Check your blood sugar levels regularly if you are on prescribed diabetic medication.",
-            "Limit salt intake to under 5 grams daily to keep blood pressure in a healthy range.",
-            "Protect your eyes from harsh sunlight. Take breaks if working on screens or fields.",
-            "Ensure 7 to 8 hours of restful sleep every night to rebuild and repair muscle tissue."
-        ],
-        healthCamps: [
-            { id: 1, title: "Free Eye Screening Camp", date: "Oct 24, 2024", location: "Community Center, Melur Village", org: "Nalam360 & VisionCare", slots: 12, type: "Eye Camp", initials: "EC", bgGradient: "from-teal-600 to-emerald-700" },
-            { id: 2, title: "Village Wellness Day", date: "Oct 26, 2024", location: "Panchayat Office, Karur", org: "Govt. Health Mission", slots: 0, type: "Free Check-up", initials: "WC", bgGradient: "from-blue-600 to-indigo-700" },
-            { id: 3, title: "Pediatric Wellness Camp", date: "Nov 05, 2024", location: "Sivakasi Union School", org: "Nalam360 Pediatrics", slots: 25, type: "Vaccination", initials: "PC", bgGradient: "from-purple-600 to-pink-700" }
-        ]
-    };
+  var app = angular.module('Nalam360App', ['ngAnimate']);
+
+  app.factory('ApiFactory', ['$http', function ($http) {
+    function request(method, url, data) {
+      var token = window.localStorage.getItem('nalam_token');
+      return $http({ method: method, url: url, data: data, headers: token ? { Authorization: 'Bearer ' + token } : {} }).then(function (response) { return response.data; });
+    }
     return {
-        getDoctors: function() { return data.doctors; },
-        getHospitals: function() { return data.hospitals; },
-        getMedicines: function() { return data.medicines; },
-        getVillages: function() { return data.villages; },
-        getEmergencyContacts: function() { return data.emergencyContacts; },
-        getHealthTips: function() { return data.healthTips; },
-        getHealthCamps: function() { return data.healthCamps; }
+      register: function (data) { return request('POST', '/api/auth/register', data); },
+      login: function (data) { return request('POST', '/api/auth/login', data); },
+      me: function () { return request('GET', '/api/auth/me'); },
+      updateProfile: function (data) { return request('PUT', '/api/auth/me', data); },
+      doctors: function () { return request('GET', '/api/doctors'); },
+      createDoctor: function (data) { return request('POST', '/api/doctors', data); },
+      updateDoctor: function (id, data) { return request('PUT', '/api/doctors/' + id, data); },
+      deleteDoctor: function (id) { return request('DELETE', '/api/doctors/' + id); },
+      appointments: function () { return request('GET', '/api/appointments'); },
+      createAppointment: function (data) { return request('POST', '/api/appointments', data); },
+      updateAppointment: function (id, data) { return request('PUT', '/api/appointments/' + id, data); },
+      deleteAppointment: function (id) { return request('DELETE', '/api/appointments/' + id); },
+      reminders: function () { return request('GET', '/api/reminders'); },
+      createReminder: function (data) { return request('POST', '/api/reminders', data); },
+      updateReminder: function (id, data) { return request('PUT', '/api/reminders/' + id, data); },
+      deleteReminder: function (id) { return request('DELETE', '/api/reminders/' + id); },
+      summary: function () { return request('GET', '/api/admin/summary'); }
     };
-});
+  }]);
 
+<<<<<<< Updated upstream
 app.service("NalamSessionService", ["$window", function($window) {
     this.getActiveProfile = function() {
         var profiles = angular.fromJson($window.localStorage.getItem("nalam_profiles") || "[]");
@@ -198,12 +166,74 @@ app.controller("PatientController", ["$scope", "HealthcareService", "NalamSessio
         { name: "Emergency", url: "EmergencyAssistance.html" },
         { name: "Profile", url: "profile.html" },
         { name: "Support", url: "ProfileandSupport.html" }
-    ];
-
-    var updateCurrentPage = function() {
-        var path = window.location.pathname.split('/').pop() || "index.html";
-        $scope.currentPage = path + (window.location.hash || "");
+=======
+  app.service('AuthService', ['$window', '$q', 'ApiFactory', function ($window, $q, ApiFactory) {
+    var state = { user: null, token: $window.localStorage.getItem('nalam_token') };
+    function headers() {
+      return state.token ? { Authorization: 'Bearer ' + state.token } : {};
+    }
+    return {
+      state: state,
+      headers: headers,
+      login: function (credentials) { return ApiFactory.login(credentials).then(function (result) { state.user = result.user; state.token = result.token; $window.localStorage.setItem('nalam_token', result.token); return result; }); },
+      register: function (data) { return ApiFactory.register(data); },
+      restore: function () { return state.token ? ApiFactory.me().then(function (result) { state.user = result.user; return result.user; }) : $q.reject(); },
+      logout: function () { state.user = null; state.token = null; $window.localStorage.removeItem('nalam_token'); $window.location.href = 'login.html'; },
+      isLoggedIn: function () { return !!state.token && !!state.user; }
     };
+  }]);
+
+  app.service('NotificationService', ['$timeout', function ($timeout) {
+    var state = { message: '', type: 'success' };
+    return { state: state, show: function (message, type) { state.message = message; state.type = type || 'success'; $timeout(function () { state.message = ''; }, 3500); } };
+  }]);
+
+  app.filter('statusLabel', function () { return function (value) { return String(value || '').replace(/^./, function (letter) { return letter.toUpperCase(); }); }; });
+  app.filter('initials', function () { return function (value) { return String(value || 'Nalam').split(' ').map(function (part) { return part.charAt(0); }).join('').substring(0, 2).toUpperCase(); }; });
+  app.filter('length', function () { return function (value) { return value ? value.length : 0; }; });
+  app.directive('statusPill', function () { return { restrict: 'E', scope: { value: '@' }, template: '<span class="status-pill" ng-class="value">{{ value | statusLabel }}</span>' }; });
+
+  app.controller('AppController', ['$scope', '$location', 'AuthService', 'NotificationService', function ($scope, $location, AuthService, NotificationService) {
+    $scope.auth = AuthService;
+    $scope.notice = NotificationService.state;
+    $scope.mobileOpen = false;
+    $scope.page = (window.location.pathname.split('/').pop() || 'index.html').replace('.html', '');
+    if ($scope.page !== 'index' && $scope.page !== 'login' && $scope.page !== 'register' && !AuthService.state.token) {
+      window.location.href = 'login.html';
+      return;
+    }
+    if (AuthService.state.token) {
+      AuthService.restore().catch(function () {
+        AuthService.logout();
+      });
+    }
+    $scope.navItems = [
+      { label: 'Overview', icon: 'dashboard', page: 'dashboard', roles: ['patient', 'admin'] },
+      { label: 'Find care', icon: 'medical_services', page: 'healthcare', roles: ['patient', 'admin'] },
+      { label: 'Appointments', icon: 'event', page: 'appointment', roles: ['patient', 'admin'] },
+      { label: 'Medication', icon: 'medication', page: 'referrals', roles: ['patient', 'admin'] },
+      { label: 'Health camps', icon: 'campaign', page: 'HealthCamp', roles: ['patient', 'admin'] },
+      { label: 'Emergency', icon: 'emergency', page: 'EmergencyAssistance', roles: ['patient', 'admin'] },
+      { label: 'Profile', icon: 'person', page: 'profile', roles: ['patient', 'admin'] },
+      { label: 'Admin workspace', icon: 'admin_panel_settings', page: 'doctor', roles: ['admin'] }
+>>>>>>> Stashed changes
+    ];
+    $scope.isVisible = function (item) { return !$scope.auth.state.user || item.roles.indexOf($scope.auth.state.user.role) !== -1; };
+    $scope.isActive = function (item) { return $scope.page.toLowerCase() === item.page.toLowerCase(); };
+    $scope.go = function (page) { window.location.href = page + '.html'; };
+    $scope.logout = function () { AuthService.logout(); };
+    $scope.toggleMobile = function () { $scope.mobileOpen = !$scope.mobileOpen; };
+  }]);
+
+  app.controller('AuthController', ['$scope', '$timeout', 'AuthService', 'NotificationService', function ($scope, $timeout, AuthService, NotificationService) {
+    $scope.form = {};
+    $scope.loading = false;
+    $scope.submitLogin = function () {
+      if (!$scope.loginForm.$valid) return;
+      $scope.loading = true;
+      AuthService.login($scope.form).then(function (result) { window.location.href = result.user.role === 'admin' ? 'doctor.html' : 'dashboard.html'; }, function (error) { NotificationService.show((error.data && error.data.message) || 'Login failed.', 'error'); }).finally(function () { $scope.loading = false; });
+    };
+<<<<<<< Updated upstream
 
     updateCurrentPage();
     window.addEventListener("hashchange", updateCurrentPage);
@@ -211,92 +241,51 @@ app.controller("PatientController", ["$scope", "HealthcareService", "NalamSessio
 
     $scope.toggleSidebar = function() {
         $scope.mobileSidebarOpen = !$scope.mobileSidebarOpen;
+=======
+    $scope.submitRegister = function () {
+      if (!$scope.registerForm.$valid) return;
+      $scope.loading = true;
+      AuthService.register($scope.form).then(function () { NotificationService.show('Account created. Please login.', 'success'); $timeout(function () { window.location.href = 'login.html'; }, 800); }, function (error) { NotificationService.show((error.data && error.data.message) || 'Registration failed.', 'error'); }).finally(function () { $scope.loading = false; });
+>>>>>>> Stashed changes
     };
+  }]);
 
-    $scope.downloadPrescription = function() {
-        var prescriptionText = "Nalam360 Patient Prescription\n\n" +
-            "Patient: " + ($scope.patient ? $scope.patient.name : "Unknown") + "\n" +
-            "Village: " + ($scope.patient ? $scope.patient.village : "N/A") + "\n\n" +
-            "Active medicines:\n" +
-            (($scope.patient && $scope.patient.prescriptions && $scope.patient.prescriptions.length)
-                ? $scope.patient.prescriptions.map(function(item) { return "- " + item.name + " - " + item.dosage; }).join("\n")
-                : "No active prescriptions listed.");
+  app.controller('DashboardController', ['$scope', '$q', 'ApiFactory', 'AuthService', 'NotificationService', function ($scope, $q, ApiFactory, AuthService, NotificationService) {
+    $scope.loading = true; $scope.appointments = []; $scope.reminders = [];
+    $q.all([ApiFactory.appointments(), ApiFactory.reminders()]).then(function (data) { $scope.appointments = data[0]; $scope.reminders = data[1]; }, function () { NotificationService.show('Could not load your dashboard data.', 'error'); }).finally(function () { $scope.loading = false; });
+    $scope.user = AuthService.state.user;
+    $scope.toggleReminder = function (item) { ApiFactory.updateReminder(item._id, { completed: !item.completed }).then(function (updated) { item.completed = updated.completed; NotificationService.show('Medication status updated.'); }, function () { NotificationService.show('Could not update medication.', 'error'); }); };
+  }]);
 
-        var blob = new Blob([prescriptionText], { type: "text/plain;charset=utf-8" });
-        var fileUrl = URL.createObjectURL(blob);
-        var downloadLink = document.createElement("a");
-        downloadLink.href = fileUrl;
-        downloadLink.download = "nalam360-prescription.txt";
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-        URL.revokeObjectURL(fileUrl);
-    };
+  app.controller('HealthcareController', ['$scope', '$q', 'ApiFactory', 'NotificationService', function ($scope, $q, ApiFactory, NotificationService) {
+    $scope.loading = true; $scope.doctors = []; $scope.search = ''; $scope.selected = null; $scope.booking = {};
+    ApiFactory.doctors().then(function (data) { $scope.doctors = data; }, function () { NotificationService.show('Could not load doctors.', 'error'); }).finally(function () { $scope.loading = false; });
+    $scope.openBooking = function (doctor) { $scope.selected = doctor; $scope.booking = {}; };
+    $scope.book = function () { if (!$scope.bookingForm.$valid) return; ApiFactory.createAppointment({ doctorId: $scope.selected._id, date: $scope.booking.date, time: $scope.booking.time }).then(function () { NotificationService.show('Appointment booked successfully.'); $scope.selected = null; }, function (error) { NotificationService.show((error.data && error.data.message) || 'Booking failed.', 'error'); }); };
+  }]);
 
-    // 1. Data Initialization & Multi-Profile Synchronization (via LocalStorage)
-    var defaultProfiles = [
-        {
-            name: "Arun",
-            relationship: "Self",
-            dob: new Date("1998-06-15"),
-            gender: "Male",
-            mobile: "9876543210",
-            village: "Hosur",
-            initials: "A",
-            bgGradient: "from-teal-500 to-emerald-600",
-            prescriptions: [
-                { name: "Metformin 500mg", dosage: "Twice daily" },
-                { name: "Atorvastatin 20mg", dosage: "Bedtime" }
-            ]
-        },
-        {
-            name: "Meena P.",
-            relationship: "Mother",
-            dob: new Date("1964-08-15"),
-            gender: "Female",
-            mobile: "9876543211",
-            village: "Hosur",
-            initials: "MP",
-            bgGradient: "from-blue-500 to-cyan-600",
-            prescriptions: [
-                { name: "Amlodipine 5mg", dosage: "Once daily (Morning)" }
-            ]
-        },
-        {
-            name: "Anita S.",
-            relationship: "Sister",
-            dob: new Date("1991-11-22"),
-            gender: "Female",
-            mobile: "9876543212",
-            village: "Karur",
-            initials: "AS",
-            bgGradient: "from-purple-500 to-indigo-600",
-            prescriptions: []
-        }
-    ];
+  app.controller('AppointmentController', ['$scope', 'ApiFactory', 'NotificationService', function ($scope, ApiFactory, NotificationService) {
+    $scope.loading = true; $scope.appointments = [];
+    ApiFactory.appointments().then(function (data) { $scope.appointments = data; }, function () { NotificationService.show('Could not load appointments.', 'error'); }).finally(function () { $scope.loading = false; });
+    $scope.cancel = function (item) { if (!window.confirm('Cancel this appointment?')) return; ApiFactory.updateAppointment(item._id, { status: 'cancelled' }).then(function () { item.status = 'cancelled'; NotificationService.show('Appointment cancelled.'); }, function () { NotificationService.show('Could not cancel appointment.', 'error'); }); };
+  }]);
 
-    // Load or initialize profiles in localStorage (reset if old Meena data is found as Self profile)
-    if (!localStorage.getItem("nalam_profiles") || localStorage.getItem("nalam_profiles").indexOf("Arun") === -1) {
-        localStorage.setItem("nalam_profiles", angular.toJson(defaultProfiles));
-        localStorage.setItem("nalam_active_index", "0");
-    }
-    
-    // Load patient profiles
-    $scope.profiles = angular.fromJson(localStorage.getItem("nalam_profiles"));
-    
-    // Active Profile index
-    $scope.activeProfileIndex = parseInt(localStorage.getItem("nalam_active_index") || "0", 10);
-    if ($scope.activeProfileIndex >= $scope.profiles.length) {
-        $scope.activeProfileIndex = 0;
-    }
-    $scope.patient = $scope.profiles[$scope.activeProfileIndex];
-    $scope.patient.dob = new Date($scope.patient.dob);
+  app.controller('ReminderController', ['$scope', 'ApiFactory', 'NotificationService', function ($scope, ApiFactory, NotificationService) {
+    $scope.loading = true; $scope.reminders = []; $scope.form = {};
+    ApiFactory.reminders().then(function (data) { $scope.reminders = data; }, function () { NotificationService.show('Could not load reminders.', 'error'); }).finally(function () { $scope.loading = false; });
+    $scope.create = function () { if (!$scope.reminderForm.$valid) return; ApiFactory.createReminder($scope.form).then(function (item) { $scope.reminders.unshift(item); $scope.form = {}; $scope.reminderForm.$setPristine(); NotificationService.show('Reminder added.'); }, function () { NotificationService.show('Could not add reminder.', 'error'); }); };
+    $scope.remove = function (item) { if (!window.confirm('Delete this reminder?')) return; ApiFactory.deleteReminder(item._id).then(function () { $scope.reminders.splice($scope.reminders.indexOf(item), 1); NotificationService.show('Reminder deleted.'); }, function () { NotificationService.show('Could not delete reminder.', 'error'); }); };
+  }]);
 
-    // Persist profile changes globally
-    $scope.saveProfile = function() {
-        localStorage.setItem("nalam_profiles", angular.toJson($scope.profiles));
-    };
+  app.controller('AdminController', ['$scope', '$q', 'ApiFactory', 'NotificationService', function ($scope, $q, ApiFactory, NotificationService) {
+    $scope.loading = true; $scope.doctors = []; $scope.summary = {}; $scope.form = {}; $scope.editing = null;
+    $q.all([ApiFactory.doctors(), ApiFactory.summary()]).then(function (data) { $scope.doctors = data[0]; $scope.summary = data[1]; }, function (error) { NotificationService.show((error.data && error.data.message) || 'Admin data unavailable.', 'error'); }).finally(function () { $scope.loading = false; });
+    $scope.save = function () { if (!$scope.doctorForm.$valid) return; var action = $scope.editing ? ApiFactory.updateDoctor($scope.editing._id, $scope.form) : ApiFactory.createDoctor($scope.form); action.then(function (item) { if ($scope.editing) { $scope.doctors[$scope.doctors.indexOf($scope.editing)] = item; } else { $scope.doctors.push(item); } $scope.form = {}; $scope.editing = null; NotificationService.show('Doctor saved.'); }, function () { NotificationService.show('Could not save doctor.', 'error'); }); };
+    $scope.edit = function (item) { $scope.editing = item; $scope.form = angular.copy(item); };
+    $scope.remove = function (item) { if (!window.confirm('Delete this doctor?')) return; ApiFactory.deleteDoctor(item._id).then(function () { $scope.doctors.splice($scope.doctors.indexOf(item), 1); NotificationService.show('Doctor deleted.'); }, function () { NotificationService.show('Could not delete doctor.', 'error'); }); };
+  }]);
 
+<<<<<<< Updated upstream
     // Load active appointments list
     var initialAppointments = [
         {
@@ -767,3 +756,7 @@ app.controller("PatientController", ["$scope", "HealthcareService", "NalamSessio
     };
 
 }]);
+=======
+  app.controller('ProfileController', ['$scope', 'ApiFactory', 'AuthService', 'NotificationService', function ($scope, ApiFactory, AuthService, NotificationService) { $scope.user = angular.copy(AuthService.state.user); $scope.saved = false; $scope.save = function () { ApiFactory.updateProfile($scope.user).then(function (result) { AuthService.state.user = result.user; $scope.user = angular.copy(result.user); $scope.saved = true; NotificationService.show('Profile updated successfully.'); }, function (error) { NotificationService.show((error.data && error.data.message) || 'Profile update failed.', 'error'); }); }; }]);
+})();
+>>>>>>> Stashed changes
