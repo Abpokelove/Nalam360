@@ -9,7 +9,7 @@
   <script src="app.js"></script>
   <link rel="stylesheet" href="index.css">
   <style>
-    :root { --primary: #00796b; --primary-hover: #004d40; --bg-color: #f4f6f8; --dark: #263238; --light: #ffffff; --shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    :root { --primary: #00796b; --bg-color: #f4f6f8; --dark: #263238; --light: #ffffff; --shadow: 0 4px 6px rgba(0,0,0,0.05); }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
     body { background-color: var(--bg-color); color: var(--dark); padding: 2rem 1rem; line-height: 1.6; }
     .page-shell { max-width: 1000px; margin: auto; }
@@ -38,7 +38,6 @@
         <h1>Doctor directory</h1>
         <p class="muted">Choose a clinician by speciality, language and availability.</p>
       </header>
-      
       <section class="card">
         <form>
           <div class="form-grid">
@@ -59,11 +58,10 @@
           </div>
         </form>
       </section>
-
       <section class="grid-2" style="margin-top:1.5rem">
         <article class="card doctor-card" ng-repeat="doc in vm.doctors | filter:vm.searchQuery | filter:{speciality: vm.specialityFilter}">
           <figure class="doctor-photo" aria-label="Portrait placeholder">{{doc.name | nalamInitials}}</figure>
-          <div> 
+          <div>
             <span class="status">Verified</span>
             <h2>{{doc.name}}</h2>
             <p>{{doc.speciality}} &middot; {{doc.exp}}</p>
@@ -77,6 +75,5 @@
       </section>
     </main>
   </div>
-
 </body>
 </html>

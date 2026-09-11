@@ -166,9 +166,10 @@ app.directive("nalamNavigation", function() {
             scope.pageLinks = [
                 { name: "Dashboard", url: "dashboard.html", icon: "dashboard" },
                 { name: "Find Healthcare", url: "healthcare.html", icon: "map" },
-                { name: "Doctors", url: "healthcare.html#doctors-tab", icon: "medical_services" },
+                { name: "Doctors", url: "doctors.html", icon: "medical_services" },
                 { name: "Health Camps", url: "HealthCamp.html", icon: "campaign" },
                 { name: "Appointments", url: "ReferralsAndReminder.html", icon: "event" },
+                { name: "Referrals", url: "referrals.html", icon: "share" },
                 { name: "Awareness", url: "HealthAwareness.html", icon: "menu_book" },
                 { name: "Emergency", url: "EmergencyAssistance.html", icon: "emergency" },
                 { name: "Profile", url: "profile.html", icon: "person" },
@@ -189,9 +190,10 @@ app.controller("PatientController", ["$scope", "HealthcareService", "NalamSessio
     $scope.pageLinks = [
         { name: "Dashboard", url: "dashboard.html" },
         { name: "Find Healthcare", url: "healthcare.html" },
-        { name: "Doctors", url: "healthcare.html#doctors-tab" },
+        { name: "Doctors", url: "doctors.html" },
         { name: "Health Camps", url: "HealthCamp.html" },
         { name: "Appointments", url: "ReferralsAndReminder.html" },
+        { name: "Referrals", url: "referrals.html" },
         { name: "Awareness", url: "HealthAwareness.html" },
         { name: "Emergency", url: "EmergencyAssistance.html" },
         { name: "Profile", url: "profile.html" },
