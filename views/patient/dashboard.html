@@ -1,0 +1,196 @@
+<!-- PATIENT DASHBOARD VIEW (CONTENT ONLY) -->
+<div class="page-container">
+
+  <!-- Welcome Header Banner -->
+  <div class="card" style="background: linear-gradient(135deg, var(--primary), var(--primary-container)); color: white; margin-bottom: 1.75rem; border: none;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <span style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.9; font-weight: 700;">
+          Patient Care Workspace
+        </span>
+        <h1 style="font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; margin-top: 0.2rem;">
+          Good day, {{ user.name }}
+        </h1>
+        <p style="font-size: 0.95rem; opacity: 0.95; margin-top: 0.25rem;">
+          Connected Primary Health Unit: <strong>{{ user.village }} Village</strong>
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <a href="#/patient/healthcare" class="btn" style="background: rgba(255,255,255,0.2); color: white; backdrop-filter: blur(4px);">
+          <span class="material-symbols-outlined">search</span>
+          <span>Find Doctor</span>
+        </a>
+        <a href="#/patient/reminders" class="btn" style="background: white; color: var(--primary);">
+          <span class="material-symbols-outlined">add_task</span>
+          <span>Add Reminder</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State Indicator -->
+  <loading-spinner message="Loading your dashboard overview..." ng-if="loading"></loading-spinner>
+
+  <!-- Error State Alert -->
+  <div class="state-error" ng-if="!loading && error">
+    <span class="material-symbols-outlined">error</span>
+    <span ng-bind="error"></span>
+  </div>
+
+  <!-- Main Dashboard Content -->
+  <div ng-if="!loading && !error">
+
+    <!-- Summary Metrics Bar -->
+    <div class="grid-4" style="margin-bottom: 2rem;">
+      <div class="card metric-card">
+        <div class="metric-icon teal">
+          <span class="material-symbols-outlined">event_available</span>
+        </div>
+        <div>
+          <div class="metric-value">{{ appointments.length }}</div>
+          <div class="metric-label">Scheduled Visits</div>
+        </div>
+      </div>
+
+      <div class="card metric-card">
+        <div class="metric-icon blue">
+          <span class="material-symbols-outlined">medication</span>
+        </div>
+        <div>
+          <div class="metric-value">{{ reminders.length }}</div>
+          <div class="metric-label">Daily Prescriptions</div>
+        </div>
+      </div>
+
+      <div class="card metric-card">
+        <div class="metric-icon emerald">
+          <span class="material-symbols-outlined">check_circle</span>
+        </div>
+        <div>
+          <div class="metric-value">{{ getCompletedRemindersCount() }}</div>
+          <div class="metric-label">Doses Completed Today</div>
+        </div>
+      </div>
+
+      <div class="card metric-card">
+        <div class="metric-icon amber">
+          <span class="material-symbols-outlined">location_on</span>
+        </div>
+        <div>
+          <div class="metric-value" style="font-size: 1.2rem; font-weight: 700;">{{ user.village }}</div>
+          <div class="metric-label">Local Health Sector</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Real-Time Patient Vitals & Telemetry Monitor -->
+    <div class="card" style="margin-bottom: 2rem; background: #0f172a; border-color: #1e293b; color: white;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span class="material-symbols-outlined" style="color: #10b981; font-size: 1.5rem;">monitor_heart</span>
+          <div>
+            <h3 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: white;">Real-Time Cardiac Rhythm Telemetry</h3>
+            <p style="font-size: 0.82rem; color: #94a3b8;">Continuous electrocardiogram signal feed & pulse waveform monitor</p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block; box-shadow: 0 0 8px #10b981;"></span>
+          <span style="font-size: 0.82rem; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.05em;">Live Telemetry</span>
+        </div>
+      </div>
+
+      <vitals-canvas></vitals-canvas>
+
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #1e293b; text-align: center;">
+        <div>
+          <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Heart Rate</div>
+          <div style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: #10b981;">72 <span style="font-size: 0.75rem; color: #94a3b8;">BPM</span></div>
+          <meter min="40" max="140" low="60" high="100" optimum="72" value="72" style="margin-top: 0.35rem; height: 6px;"></meter>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Blood Pressure</div>
+          <div style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: #38bdf8;">120/80 <span style="font-size: 0.75rem; color: #94a3b8;">mmHg</span></div>
+          <meter min="90" max="180" low="110" high="140" optimum="120" value="120" style="margin-top: 0.35rem; height: 6px;"></meter>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Oxygen Saturation</div>
+          <div style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: #34d399;">98% <span style="font-size: 0.75rem; color: #94a3b8;">SpO2</span></div>
+          <meter min="70" max="100" low="90" high="95" optimum="98" value="98" style="margin-top: 0.35rem; height: 6px;"></meter>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Respiration</div>
+          <div style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: #fbbf24;">16 <span style="font-size: 0.75rem; color: #94a3b8;">RPM</span></div>
+          <meter min="10" max="30" low="12" high="20" optimum="16" value="16" style="margin-top: 0.35rem; height: 6px;"></meter>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Upcoming Appointments Widget -->
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+          <h3 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700;">Upcoming Appointments</h3>
+          <a href="#/patient/appointments" style="font-size: 0.85rem; font-weight: 600;">View All Schedule →</a>
+        </div>
+
+        <empty-state icon="event_busy" title="No appointments scheduled" desc="You have no upcoming doctor visits. Search nearby doctors to book an appointment." ng-if="appointments.length === 0"></empty-state>
+
+        <div style="display: flex; flex-direction: column; gap: 0.85rem;" ng-if="appointments.length > 0">
+          <div class="card" style="padding: 1rem; border-color: var(--surface-border-light); background: var(--surface-muted);" ng-repeat="item in appointments | limitTo:3">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <h4 style="font-weight: 700; font-size: 1rem; color: var(--text-main);" ng-bind="item.doctorName">Dr. Arumugam K.</h4>
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">
+                  {{ item.specialty }} · {{ item.date }} at {{ item.time }}
+                </div>
+                <div style="font-size: 0.78rem; color: var(--text-light); margin-top: 0.2rem;">
+                  Token: <strong>{{ item.token }}</strong>
+                </div>
+              </div>
+              <status-pill value="{{ item.status }}"></status-pill>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Today's Medication Tracker Widget -->
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+          <h3 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700;">Medication Tracker</h3>
+          <a href="#/patient/reminders" style="font-size: 0.85rem; font-weight: 600;">Manage Tracker →</a>
+        </div>
+
+        <empty-state icon="medication_liquid" title="No medication reminders" desc="Keep your daily prescriptions on track by adding a medicine reminder." ng-if="reminders.length === 0"></empty-state>
+
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;" ng-if="reminders.length > 0">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.85rem; background: var(--surface-muted); border-radius: var(--radius-md); border: 1px solid var(--surface-border-light);" ng-repeat="rem in reminders | limitTo:4">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <button class="btn" style="padding: 0.3rem 0.5rem; border-radius: 50%; border: 1px solid var(--surface-border);" ng-class="{'btn-primary': rem.completed, 'btn-soft': !rem.completed}" ng-click="toggleReminder(rem)">
+                <span class="material-symbols-outlined" style="font-size: 1.1rem;">{{ rem.completed ? 'check' : 'radio_button_unchecked' }}</span>
+              </button>
+              <div>
+                <div style="font-weight: 700; font-size: 0.95rem;" ng-style="{'text-decoration': rem.completed ? 'line-through' : 'none', 'opacity': rem.completed ? 0.6 : 1}">{{ rem.name }}</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">{{ rem.slot }} · {{ rem.instruction }}</div>
+              </div>
+            </div>
+            <status-pill value="{{ rem.completed ? 'completed' : 'upcoming' }}"></status-pill>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Emergency Quick Hotline Banner -->
+    <div class="card" style="margin-top: 1.75rem; background: var(--error-bg); border-color: rgba(220, 38, 38, 0.3); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div style="display: flex; align-items: center; gap: 0.85rem;">
+        <span class="material-symbols-outlined" style="font-size: 2rem; color: var(--error);">contact_phone</span>
+        <div>
+          <h4 style="font-weight: 700; color: var(--error);">Medical Emergency Help Hotline</h4>
+          <p style="font-size: 0.88rem; color: var(--text-main);">Dial <strong>108 Ambulance</strong> or <strong>112 Emergency Services</strong></p>
+        </div>
+      </div>
+      <a href="#/patient/emergency" class="btn btn-danger">Emergency Hotlines</a>
+    </div>
+
+  </div>
+</div>

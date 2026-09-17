@@ -1,0 +1,87 @@
+<!-- DOCTOR PROFILE & SUPPORT VIEW -->
+<div class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-header-title">Doctor Profile & Settings</h1>
+      <p class="page-header-subtitle">Manage doctor credentials, primary medical center, and consultation availability</p>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+        <div class="avatar-circle" style="width: 56px; height: 56px; font-size: 1.4rem; background: var(--secondary-subtle); color: var(--secondary-dark);">
+          {{ user.name | initials }}
+        </div>
+        <div>
+          <h2 style="font-size: 1.25rem; font-weight: 700;" ng-bind="user.name">Dr. Anbarasan M.</h2>
+          <div style="font-size: 0.85rem; color: var(--text-muted);">
+            Specialty: <strong>General Medicine & Cardiology</strong> · Center: <strong>Melur PHC</strong>
+          </div>
+        </div>
+      </div>
+
+      <form name="profileFormNg" ng-submit="saveProfile()" novalidate>
+        <div class="form-group">
+          <label>Doctor Full Name</label>
+          <input type="text" class="form-control" ng-model="user.name" required/>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Assigned Medical Center</label>
+            <select class="form-control" ng-model="user.village" required>
+              <option ng-repeat="v in villagesList" value="{{ v }}">{{ v }} Primary Health Center</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Mobile Contact</label>
+            <input type="text" class="form-control" ng-model="user.mobile"/>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem;" ng-disabled="profileFormNg.$invalid || saving">
+          <span class="spinner" style="width: 16px; height: 16px; border-width: 2px;" ng-if="saving"></span>
+          <span>{{ saving ? 'Saving Profile...' : 'Save Profile Changes' }}</span>
+        </button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3 style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; margin-bottom: 0.4rem;">Nalam360 Doctor Desk</h3>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+        Contact the chief medical officer or submit administrative requests for camp scheduling.
+      </p>
+
+      <form name="supportFormNg" ng-submit="submitSupportTicket()" novalidate style="margin-bottom: 1.5rem;">
+        <div class="form-group">
+          <label>Subject</label>
+          <input type="text" class="form-control" placeholder="e.g. Schedule Emergency Camp in Melur" ng-model="supportForm.subject" required/>
+        </div>
+
+        <div class="form-group">
+          <label>Administrative Request / Message</label>
+          <textarea class="form-control" rows="3" placeholder="Describe doctor request..." ng-model="supportForm.message" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-soft" ng-disabled="supportFormNg.$invalid">
+          <span class="material-symbols-outlined">send</span>
+          <span>Submit Doctor Request</span>
+        </button>
+      </form>
+
+      <div style="border-top: 1px dashed var(--surface-border); padding-top: 1rem;">
+        <div style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.35rem;">
+          Development Testing Control
+        </div>
+        <button type="button" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.35rem 0.75rem; border-color: var(--surface-border);" ng-click="resetDevelopmentState()">
+          <span class="material-symbols-outlined" style="font-size: 1rem;">restart_alt</span>
+          <span>Reset App State (Restart Onboarding)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

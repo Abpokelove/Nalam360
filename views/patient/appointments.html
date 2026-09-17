@@ -1,0 +1,68 @@
+<!-- PATIENT APPOINTMENTS VIEW (CONTENT ONLY) -->
+<div class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-header-title">My Appointments</h1>
+      <p class="page-header-subtitle">Track your upcoming consultations and visit history</p>
+    </div>
+    <a href="#/patient/healthcare" class="btn btn-primary">
+      <span class="material-symbols-outlined">add</span>
+      <span>New Appointment</span>
+    </a>
+  </div>
+
+  <loading-spinner message="Loading appointment schedule..." ng-if="loading"></loading-spinner>
+
+  <div class="state-error" ng-if="!loading && error">
+    <span class="material-symbols-outlined">error</span>
+    <span ng-bind="error"></span>
+  </div>
+
+  <div ng-if="!loading && !error">
+    <empty-state icon="event_busy" title="No appointments found" desc="You have not booked any appointments yet." ng-if="appointments.length === 0"></empty-state>
+
+    <div class="table-container" ng-if="appointments.length > 0">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Token ID</th>
+            <th>Doctor</th>
+            <th>Specialty</th>
+            <th>Village Sector</th>
+            <th>Date & Time</th>
+            <th>Status</th>
+            <th style="text-align: right;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="item in appointments">
+            <td>
+              <strong style="font-family: monospace; font-size: 0.95rem; color: var(--primary);" ng-bind="item.token">NALAM-48291</strong>
+            </td>
+            <td>
+              <div style="font-weight: 700;" ng-bind="item.doctorName">Dr. Arumugam K.</div>
+              <div style="font-size: 0.78rem; color: var(--text-muted);" ng-bind="item.patientName">Muthuswamy S.</div>
+            </td>
+            <td ng-bind="item.specialty">General Medicine</td>
+            <td ng-bind="item.village">Melur</td>
+            <td>
+              <div style="font-weight: 600;">{{ item.date }}</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">{{ item.time }}</div>
+            </td>
+            <td>
+              <status-pill value="{{ item.status }}"></status-pill>
+            </td>
+            <td style="text-align: right;">
+              <button class="btn btn-danger" style="padding: 0.35rem 0.65rem; font-size: 0.8rem;" ng-if="item.status === 'scheduled'" ng-click="cancelAppointment(item)">
+                Cancel Visit
+              </button>
+              <span style="font-size: 0.85rem; color: var(--text-light);" ng-if="item.status !== 'scheduled'">—</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,132 @@
+<!-- AUTHENTICATION REGISTER VIEW (CONTENT ONLY) -->
+<div style="max-width: 560px; margin: 1.5rem auto;">
+  <div class="card" style="padding: 2.25rem;">
+    <div style="text-align: center; margin-bottom: 1.75rem;">
+      <div class="brand-icon" style="margin: 0 auto 0.75rem auto; width: 48px; height: 48px; font-size: 1.5rem;">N</div>
+      <h2 style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800;">Create Patient Account</h2>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.25rem;">Start managing rural healthcare and family prescriptions in one place</p>
+    </div>
+
+    <!-- Error Alert Banner -->
+    <div class="state-error" ng-if="errorMsg">
+      <span class="material-symbols-outlined">error</span>
+      <span ng-bind="errorMsg"></span>
+    </div>
+
+    <form name="regNgForm" ng-submit="submitRegister()" novalidate>
+      <div class="grid-2">
+        <!-- Full Name Field with Live Validation -->
+        <div class="form-group">
+          <label for="regName">Full Name</label>
+          <div class="input-wrapper">
+            <input id="regName"
+                   name="name"
+                   type="text"
+                   class="form-control"
+                   ng-class="{'is-valid': isRegisterNameValid(), 'is-invalid': registerForm.name.length > 0 && !isRegisterNameValid()}"
+                   placeholder="e.g. Muthuswamy S."
+                   ng-model="registerForm.name"
+                   required/>
+            <span class="material-symbols-outlined input-valid-icon" ng-if="isRegisterNameValid()">check_circle</span>
+            <span class="material-symbols-outlined input-invalid-icon" ng-if="registerForm.name.length > 0 && !isRegisterNameValid()">cancel</span>
+          </div>
+          <div class="validation-list">
+            <div class="val-item" ng-class="{'valid': isRegisterNameValid(), 'invalid': registerForm.name.length > 0 && !isRegisterNameValid()}">
+              <span class="material-symbols-outlined">{{ isRegisterNameValid() ? 'check' : (registerForm.name.length > 0 ? 'close' : 'radio_button_unchecked') }}</span>
+              <span>{{ isRegisterNameValid() ? 'Valid full name' : 'Enter full name (min 2 letters)' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Number Field with Live Validation -->
+        <div class="form-group">
+          <label for="regMobile">10-Digit Mobile Number</label>
+          <div class="input-wrapper">
+            <input id="regMobile"
+                   name="mobile"
+                   type="tel"
+                   class="form-control"
+                   ng-class="{'is-valid': isRegisterMobileValid(), 'is-invalid': registerForm.mobile.length > 0 && !isRegisterMobileValid()}"
+                   placeholder="10-digit mobile number"
+                   ng-model="registerForm.mobile"
+                   required/>
+            <span class="material-symbols-outlined input-valid-icon" ng-if="isRegisterMobileValid()">check_circle</span>
+            <span class="material-symbols-outlined input-invalid-icon" ng-if="registerForm.mobile.length > 0 && !isRegisterMobileValid()">cancel</span>
+          </div>
+          <div class="validation-list">
+            <div class="val-item" ng-class="{'valid': isRegisterMobileValid(), 'invalid': registerForm.mobile.length > 0 && !isRegisterMobileValid()}">
+              <span class="material-symbols-outlined">{{ isRegisterMobileValid() ? 'check' : (registerForm.mobile.length > 0 ? 'close' : 'radio_button_unchecked') }}</span>
+              <span>{{ isRegisterMobileValid() ? 'Valid 10-digit mobile number' : 'Enter 10-digit mobile number' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="regVillage">Select Village Sector</label>
+          <select id="regVillage" name="village" class="form-control" ng-class="{'is-valid': isRegisterVillageValid()}" ng-model="registerForm.village" required>
+            <option value="">Choose Village Sector</option>
+            <option ng-repeat="v in villagesList" value="{{ v }}">{{ v }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="regGender">Gender</label>
+          <select id="regGender" name="gender" class="form-control" ng-model="registerForm.gender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="regDob">Date of Birth</label>
+          <input id="regDob" name="dob" type="date" class="form-control" ng-model="registerForm.dob"/>
+        </div>
+
+        <!-- Password Field with Live Validation -->
+        <div class="form-group">
+          <label for="regPassword">Account Password</label>
+          <div class="input-wrapper">
+            <input id="regPassword"
+                   name="password"
+                   type="password"
+                   class="form-control"
+                   ng-class="{'is-valid': isRegisterPasswordValid(), 'is-invalid': registerForm.password.length > 0 && !isRegisterPasswordValid()}"
+                   placeholder="Min 4 characters"
+                   ng-model="registerForm.password"
+                   required/>
+            <span class="material-symbols-outlined input-valid-icon" ng-if="isRegisterPasswordValid()">check_circle</span>
+            <span class="material-symbols-outlined input-invalid-icon" ng-if="registerForm.password.length > 0 && !isRegisterPasswordValid()">cancel</span>
+          </div>
+          <div class="validation-list">
+            <div class="val-item" ng-class="{'valid': isRegisterPasswordValid(), 'invalid': registerForm.password.length > 0 && !isRegisterPasswordValid()}">
+              <span class="material-symbols-outlined">{{ isRegisterPasswordValid() ? 'check' : (registerForm.password.length > 0 ? 'close' : 'radio_button_unchecked') }}</span>
+              <span>{{ isRegisterPasswordValid() ? 'Password requirement satisfied (✓ ' + registerForm.password.length + ' chars)' : ('Min 4 characters required (✕ ' + (registerForm.password.length || 0) + '/4 entered)') }}</span>
+            </div>
+          </div>
+          <!-- Password Security Strength Meter (HTML5 meter element) -->
+          <div style="margin-top: 0.35rem;" ng-if="registerForm.password.length > 0">
+            <div style="font-size: 0.72rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.15rem;">Password Security Rating</div>
+            <meter min="0" max="8" low="3" high="6" optimum="8" value="{{ registerForm.password.length }}"></meter>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" 
+              class="btn btn-primary" 
+              style="width: 100%; padding: 0.85rem; margin-top: 1rem; font-size: 1rem;" 
+              ng-disabled="!isRegisterNameValid() || !isRegisterMobileValid() || !isRegisterVillageValid() || !isRegisterPasswordValid() || loading">
+        <span class="spinner" style="width: 18px; height: 18px; border-width: 2px;" ng-if="loading"></span>
+        <span>{{ loading ? 'Creating Account...' : 'Register Patient Account' }}</span>
+      </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 1.5rem; font-size: 0.88rem; color: var(--text-muted);">
+      Already have an account? <a href="#/login" style="font-weight: 600;">Sign in to portal</a>
+    </div>
+  </div>
+</div>

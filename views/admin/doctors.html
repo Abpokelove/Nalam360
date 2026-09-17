@@ -1,0 +1,40 @@
+<!-- ADMIN DOCTOR DIRECTORY MANAGEMENT VIEW -->
+<div class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-header-title">Admin Doctor Directory</h1>
+      <p class="page-header-subtitle">Manage registered medical officers and clinic assignments across rural health centers</p>
+    </div>
+  </div>
+
+  <loading-spinner message="Loading doctor directory..." ng-if="loading"></loading-spinner>
+
+  <div class="state-error" ng-if="!loading && error">
+    <span class="material-symbols-outlined">error</span>
+    <span ng-bind="error"></span>
+  </div>
+
+  <div ng-if="!loading && !error">
+    <div class="grid-3">
+      <div class="card hoverable" ng-repeat="doc in doctors">
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+          <div class="avatar-circle" style="width: 48px; height: 48px; background: var(--secondary-subtle); color: var(--secondary-dark);">
+            {{ doc.name | initials }}
+          </div>
+          <div>
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">{{ doc.name }}</h3>
+            <span class="status-pill available">{{ doc.specialty }}</span>
+          </div>
+        </div>
+
+        <div style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem;">
+          <div><strong>Primary Center:</strong> {{ doc.center || doc.village }} PHC</div>
+          <div><strong>Consultation Fee:</strong> {{ doc.fee | inrCurrency }}</div>
+          <div><strong>Availability:</strong> {{ doc.availability || 'Mon-Sat 9AM - 4PM' }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

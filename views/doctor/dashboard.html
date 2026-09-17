@@ -1,0 +1,193 @@
+<!-- DOCTOR DASHBOARD VIEW (CONTENT ONLY) -->
+<div class="page-container">
+
+  <!-- Welcome Header Banner -->
+  <div class="card" style="background: linear-gradient(135deg, var(--secondary), var(--secondary-container)); color: white; margin-bottom: 1.75rem; border: none;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <span style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.9; font-weight: 700;">
+          Doctor Practice Workspace
+        </span>
+        <h1 style="font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; margin-top: 0.2rem;">
+          Good day, {{ doctor.name }}
+        </h1>
+        <p style="font-size: 0.95rem; opacity: 0.95; margin-top: 0.25rem;">
+          Specialty: <strong>{{ doctor.specialty }}</strong> · Sector Base: <strong>{{ doctor.village }} Village</strong>
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <a href="#/doctor/patients" class="btn" style="background: rgba(255,255,255,0.2); color: white; backdrop-filter: blur(4px);">
+          <span class="material-symbols-outlined">groups</span>
+          <span>Patient Roster</span>
+        </a>
+        <a href="#/doctor/appointments" class="btn" style="background: white; color: var(--secondary);">
+          <span class="material-symbols-outlined">event</span>
+          <span>Today's Visits</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State Indicator -->
+  <loading-spinner message="Loading doctor workspace summary..." ng-if="loading"></loading-spinner>
+
+  <!-- Error State Alert -->
+  <div class="state-error" ng-if="!loading && error">
+    <span class="material-symbols-outlined">error</span>
+    <span ng-bind="error"></span>
+  </div>
+
+  <!-- Content Overview -->
+  <div ng-if="!loading && !error">
+
+    <!-- Doctor Metrics Grid -->
+    <div class="grid-4" style="margin-bottom: 2rem;">
+      <div class="card metric-card">
+        <div class="metric-icon blue">
+          <span class="material-symbols-outlined">event_available</span>
+        </div>
+        <div>
+          <div class="metric-value">{{ summary.todayConsultations || 2 }}</div>
+          <div class="metric-label">Scheduled Visits Today</div>
+        </div>
+      </div>
+
+      <div class="card metric-card">
+        <div class="metric-icon teal">
+          <span class="material-symbols-outlined">groups</span>
+        </div>
+        <div>
+          <div class="metric-value">{{ summary.totalPatients || 4 }}</div>
+          <div class="metric-label">Assigned Sector Patients</div>
+        </div>
+      </div>
+
+      <div class="card metric-card">
+        <div class="metric-icon emerald">
+          <span class="material-symbols-outlined">task_alt</span>
+        </div>
+        <div>
+          <div class="metric-value">{{ summary.completedVisits || 1 }}</div>
+          <div class="metric-label">Completed Consultations</div>
+        </div>
+      </div>
+
+      <div class="card metric-card">
+        <div class="metric-icon amber">
+          <span class="material-symbols-outlined">campaign</span>
+        </div>
+        <div>
+          <div class="metric-value">{{ summary.activeCamps || 3 }}</div>
+          <div class="metric-label">Village Health Camps</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Real-Time Patient Telemetry & Cardiac ECG Monitor -->
+    <div class="card" style="margin-bottom: 2rem; background: #0f172a; border-color: #1e293b; color: white;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span class="material-symbols-outlined" style="color: #10b981; font-size: 1.5rem;">ecg</span>
+          <div>
+            <h3 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: white;">Clinical ECG Telemetry & Cardiac Waveform Monitor</h3>
+            <p style="font-size: 0.82rem; color: #94a3b8;">Real-time electro-cardiogram rhythm tracing for assigned sector patients</p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block; box-shadow: 0 0 8px #10b981;"></span>
+          <span style="font-size: 0.82rem; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.05em;">Active Clinical Feed</span>
+        </div>
+      </div>
+
+      <vitals-canvas></vitals-canvas>
+
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #1e293b; text-align: center;">
+        <div>
+          <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Mean Heart Rate</div>
+          <div style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: #10b981;">74 <span style="font-size: 0.75rem; color: #94a3b8;">BPM</span></div>
+          <meter min="40" max="140" low="60" high="100" optimum="74" value="74" style="margin-top: 0.35rem; height: 6px;"></meter>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Sector Avg BP</div>
+          <div style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: #38bdf8;">118/78 <span style="font-size: 0.75rem; color: #94a3b8;">mmHg</span></div>
+          <meter min="90" max="180" low="110" high="140" optimum="118" value="118" style="margin-top: 0.35rem; height: 6px;"></meter>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Oxygenation</div>
+          <div style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: #34d399;">99% <span style="font-size: 0.75rem; color: #94a3b8;">SpO2</span></div>
+          <meter min="70" max="100" low="90" high="95" optimum="99" value="99" style="margin-top: 0.35rem; height: 6px;"></meter>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Rhythm Status</div>
+          <div style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 800; color: #10b981; margin-top: 0.2rem;">Sinus Rhythm</div>
+          <meter min="0" max="100" low="30" high="70" optimum="100" value="100" style="margin-top: 0.35rem; height: 6px;"></meter>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scheduled Consultations Widget -->
+    <div class="grid-2">
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+          <h3 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700;">Scheduled Patient Visits</h3>
+          <a href="#/doctor/appointments" style="font-size: 0.85rem; font-weight: 600;">View All →</a>
+        </div>
+
+        <empty-state icon="event_busy" title="No visits scheduled" desc="You have no patient consultations scheduled for today." ng-if="appointments.length === 0"></empty-state>
+
+        <div style="display: flex; flex-direction: column; gap: 0.85rem;" ng-if="appointments.length > 0">
+          <div class="card" style="padding: 1rem; border-color: var(--surface-border-light); background: var(--surface-muted);" ng-repeat="item in appointments">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+              <div>
+                <strong style="font-size: 1rem; color: var(--text-main);">{{ item.patientName }}</strong>
+                <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.15rem;">
+                  {{ item.village }} Sector · {{ item.date }} at {{ item.time }}
+                </div>
+                <div style="font-size: 0.78rem; color: var(--text-light); margin-top: 0.15rem;">
+                  Token: <strong>{{ item.token }}</strong> — <em>{{ item.notes }}</em>
+                </div>
+              </div>
+              <status-pill value="{{ item.status }}"></status-pill>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;" ng-if="item.status === 'scheduled'">
+              <button class="btn btn-primary" style="padding: 0.3rem 0.65rem; font-size: 0.8rem;" ng-click="updateStatus(item, 'completed')">
+                <span class="material-symbols-outlined" style="font-size: 1rem;">check_circle</span>
+                <span>Mark Completed</span>
+              </button>
+              <button class="btn btn-danger" style="padding: 0.3rem 0.65rem; font-size: 0.8rem;" ng-click="updateStatus(item, 'cancelled')">
+                <span>Cancel</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Patients Roster Quick List -->
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+          <h3 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700;">Recent Sector Patients</h3>
+          <a href="#/doctor/patients" style="font-size: 0.85rem; font-weight: 600;">All Patients →</a>
+        </div>
+
+        <empty-state icon="person_off" title="No patients assigned" desc="No active patients in your sector." ng-if="patients.length === 0"></empty-state>
+
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;" ng-if="patients.length > 0">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.85rem; background: var(--surface-muted); border-radius: var(--radius-md);" ng-repeat="pat in patients | limitTo:4">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div class="avatar-circle">{{ pat.name | initials }}</div>
+              <div>
+                <div style="font-weight: 700; font-size: 0.95rem;">{{ pat.name }}</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">{{ pat.village }} Sector · Age {{ pat.age }} ({{ pat.gender }})</div>
+              </div>
+            </div>
+            <span class="status-pill available" style="font-size: 0.7rem;">{{ pat.primaryConcern }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

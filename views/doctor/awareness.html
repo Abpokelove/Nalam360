@@ -1,0 +1,49 @@
+<!-- DOCTOR HEALTH AWARENESS VIEW -->
+<div class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-header-title">Doctor Health Awareness Reference</h1>
+      <p class="page-header-subtitle">Community wellness guides and preventive health resources</p>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+    <button class="btn" ng-repeat="cat in categories" ng-class="{'btn-primary': selectedCategory === cat, 'btn-soft': selectedCategory !== cat}" ng-click="$parent.selectedCategory = cat">
+      {{ cat }}
+    </button>
+  </div>
+
+  <loading-spinner message="Loading awareness guides..." ng-if="loading"></loading-spinner>
+
+  <div class="state-error" ng-if="!loading && error">
+    <span class="material-symbols-outlined">error</span>
+    <span ng-bind="error"></span>
+  </div>
+
+  <div ng-if="!loading && !error">
+    <empty-state icon="menu_book" title="No guides found" desc="No articles matching this category are available." ng-if="(articles | filter:filterCategory).length === 0"></empty-state>
+
+    <div class="grid-3" ng-if="(articles | filter:filterCategory).length > 0">
+      <div class="card" ng-repeat="art in articles | filter:filterCategory">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+          <span class="status-pill available">{{ art.category }}</span>
+          <span style="font-size: 0.8rem; color: var(--text-light);">{{ art.readTime }}</span>
+        </div>
+
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">
+          {{ art.title }}
+        </h3>
+
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
+          {{ art.snippet }}
+        </p>
+
+        <div style="padding: 0.85rem; background: var(--surface-muted); border-radius: var(--radius-md); font-size: 0.85rem; color: var(--text-main); line-height: 1.5;">
+          <strong>Key Takeaway:</strong> {{ art.content }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

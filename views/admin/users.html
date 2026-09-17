@@ -1,0 +1,78 @@
+<!-- ADMIN USER & SYSTEM MANAGEMENT VIEW -->
+<div class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-header-title">Admin User & Role Management</h1>
+      <p class="page-header-subtitle">Manage system access, active role accounts, and user registration directory</p>
+    </div>
+  </div>
+
+  <!-- Admin System Banner -->
+  <div class="card" style="padding: 0; overflow: hidden; margin-bottom: 1.75rem;">
+    <div style="position: relative; height: 140px; width: 100%;">
+      <img src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1000&auto=format&fit=crop&q=80" alt="System Role Directory" style="width: 100%; height: 100%; object-fit: cover;"/>
+      <div style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.3)); color: white; display: flex; flex-direction: column; justify-content: center; padding: 1.5rem;">
+        <h2 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: white;">Multi-Role Security & Access Directory</h2>
+        <p style="font-size: 0.88rem; opacity: 0.9; margin-top: 0.2rem;">Centralized user account authorization across Patient, Doctor, and Admin roles</p>
+      </div>
+    </div>
+  </div>
+
+  <loading-spinner message="Loading system users..." ng-if="loading"></loading-spinner>
+
+  <div class="state-error" ng-if="!loading && error">
+    <span class="material-symbols-outlined">error</span>
+    <span ng-bind="error"></span>
+  </div>
+
+  <div ng-if="!loading && !error">
+
+    <!-- Active Registered Users Matrix -->
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700;">System User Accounts</h3>
+        <span class="status-pill available">{{ (summary.totalPatients || 0) + (summary.totalDoctors || 0) + 1 }} Total Accounts</span>
+      </div>
+
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Account Name</th>
+              <th>Email / Identifier</th>
+              <th>Role</th>
+              <th>Sector Village</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Muthuswamy S.</strong></td>
+              <td>patient@nalam360.test</td>
+              <td><span class="status-pill available">Patient</span></td>
+              <td>Melur</td>
+              <td><status-pill value="active"></status-pill></td>
+            </tr>
+            <tr>
+              <td><strong>Dr. Anbarasan M.</strong></td>
+              <td>doctor@nalam360.test</td>
+              <td><span class="status-pill scheduled">Doctor</span></td>
+              <td>Melur PHC</td>
+              <td><status-pill value="active"></status-pill></td>
+            </tr>
+            <tr>
+              <td><strong>System Administrator</strong></td>
+              <td>admin@nalam360.test</td>
+              <td><span class="status-pill pending">Admin</span></td>
+              <td>Central HQ</td>
+              <td><status-pill value="active"></status-pill></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</div>

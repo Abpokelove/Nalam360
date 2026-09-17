@@ -1,0 +1,53 @@
+<!-- ADMIN PROFILE & SYSTEM SETTINGS VIEW -->
+<div class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-header-title">Admin Account & System Preferences</h1>
+      <p class="page-header-subtitle">Manage system administrator credentials and development test environment controls</p>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+        <div class="avatar-circle" style="width: 56px; height: 56px; font-size: 1.4rem; background: var(--primary-subtle); color: var(--primary-dark);">
+          {{ user.name | initials }}
+        </div>
+        <div>
+          <h2 style="font-size: 1.25rem; font-weight: 700;" ng-bind="user.name">System Administrator</h2>
+          <div style="font-size: 0.85rem; color: var(--text-muted);">
+            Email: <strong>admin@nalam360.test</strong> · HQ: <strong>Central HQ</strong>
+          </div>
+        </div>
+      </div>
+
+      <form name="profileFormNg" ng-submit="saveProfile()" novalidate>
+        <div class="form-group">
+          <label>Administrator Name</label>
+          <input type="text" class="form-control" ng-model="user.name" required/>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem;" ng-disabled="profileFormNg.$invalid || saving">
+          <span class="spinner" style="width: 16px; height: 16px; border-width: 2px;" ng-if="saving"></span>
+          <span>{{ saving ? 'Saving Profile...' : 'Save Profile Changes' }}</span>
+        </button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3 style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; margin-bottom: 0.4rem;">Development & Environment Testing</h3>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+        Reset onboarding state to test fresh visitor onboarding flow (Requirement 8).
+      </p>
+
+      <div style="border-top: 1px dashed var(--surface-border); padding-top: 1rem;">
+        <button type="button" class="btn btn-outline" style="font-size: 0.85rem; padding: 0.5rem 1rem; border-color: var(--surface-border);" ng-click="resetDevelopmentState()">
+          <span class="material-symbols-outlined" style="font-size: 1rem;">restart_alt</span>
+          <span>Reset App State (Restart Onboarding)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

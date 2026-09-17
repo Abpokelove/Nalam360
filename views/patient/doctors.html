@@ -1,0 +1,54 @@
+<!-- PATIENT DOCTORS DIRECTORY VIEW (CONTENT ONLY) -->
+<div class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-header-title">Connected Doctors Network</h1>
+      <p class="page-header-subtitle">Registered medical specialists serving rural health centers</p>
+    </div>
+    <a href="#/patient/healthcare" class="btn btn-primary">
+      <span class="material-symbols-outlined">event</span>
+      <span>Book Consultation</span>
+    </a>
+  </div>
+
+  <loading-spinner message="Loading doctor directory..." ng-if="loading"></loading-spinner>
+
+  <div class="state-error" ng-if="!loading && error">
+    <span class="material-symbols-outlined">error</span>
+    <span ng-bind="error"></span>
+  </div>
+
+  <div ng-if="!loading && !error">
+    <empty-state icon="person_off" title="No doctors registered" desc="No doctors found in the rural health network." ng-if="doctors.length === 0"></empty-state>
+
+    <div class="grid-3" ng-if="doctors.length > 0">
+      <div class="card" ng-repeat="doc in doctors">
+        <div style="margin-bottom: 0.85rem; border-radius: var(--radius-md); overflow: hidden; height: 130px;">
+          <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500&auto=format&fit=crop&q=80" alt="Doctor Profile Photo" style="width: 100%; height: 100%; object-fit: cover;"/>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1rem;">
+          <div class="avatar-circle" style="width: 44px; height: 44px; font-size: 1.05rem;">{{ doc.name | initials }}</div>
+          <div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);" ng-bind="doc.name">Dr. Arumugam K.</h3>
+            <div style="font-size: 0.88rem; font-weight: 600; color: var(--primary);" ng-bind="doc.specialty">General Medicine</div>
+          </div>
+        </div>
+
+        <div style="padding: 0.85rem; background: var(--surface-muted); border-radius: var(--radius-md); font-size: 0.88rem; display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.25rem;">
+          <div><strong>Village Base:</strong> {{ doc.village }}</div>
+          <div><strong>Clinical Experience:</strong> {{ doc.experience }} years</div>
+          <div><strong>Consultation Fee:</strong> ₹{{ doc.fee }}</div>
+          <div><strong>Availability:</strong> <status-pill value="{{ doc.available ? 'available' : 'unavailable' }}"></status-pill></div>
+        </div>
+
+        <a href="#/patient/healthcare" class="btn btn-outline" style="width: 100%;">
+          <span class="material-symbols-outlined">calendar_month</span>
+          <span>Schedule Visit</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>

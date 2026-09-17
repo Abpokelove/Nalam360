@@ -1,0 +1,85 @@
+<!-- DOCTOR PATIENTS ROSTER VIEW (CONTENT ONLY) -->
+<div class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-header-title">Doctor's Sector Patient Roster</h1>
+      <p class="page-header-subtitle">Registered villagers and medical concern summary</p>
+    </div>
+  </div>
+
+  <!-- Clinical Banner -->
+  <div class="card" style="padding: 0; overflow: hidden; margin-bottom: 1.75rem; border-color: var(--secondary-light);">
+    <div style="position: relative; height: 140px; width: 100%;">
+      <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1000&auto=format&fit=crop&q=80" alt="Clinical Patient Management" style="width: 100%; height: 100%; object-fit: cover;"/>
+      <div style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.3)); color: white; display: flex; flex-direction: column; justify-content: center; padding: 1.5rem;">
+        <h2 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: white;">Assigned Sector Patient Directory</h2>
+        <p style="font-size: 0.88rem; opacity: 0.9; margin-top: 0.2rem;">Comprehensive clinical roster and patient medical history summary</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & Filter Controls -->
+  <div class="card" style="margin-bottom: 1.5rem; padding: 1.25rem;">
+    <div class="grid-2">
+      <div class="form-group" style="margin-bottom: 0;">
+        <label>Search Patient Name / Mobile / Concern</label>
+        <input type="text" class="form-control" placeholder="Search patients..." ng-model="searchQuery"/>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 0;">
+        <label>Filter by Village Sector</label>
+        <select class="form-control" ng-model="selectedVillage">
+          <option value="">All Villages</option>
+          <option ng-repeat="v in villagesList" value="{{ v }}">{{ v }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <loading-spinner message="Loading patient roster..." ng-if="loading"></loading-spinner>
+
+  <div class="state-error" ng-if="!loading && error">
+    <span class="material-symbols-outlined">error</span>
+    <span ng-bind="error"></span>
+  </div>
+
+  <div ng-if="!loading && !error">
+
+    <empty-state icon="person_search" title="No patients found" desc="No patient records match your search criteria." ng-if="(patients | filter:filterPatient).length === 0"></empty-state>
+
+    <div class="table-container" ng-if="(patients | filter:filterPatient).length > 0">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Patient Name</th>
+            <th>Contact Mobile</th>
+            <th>Village Sector</th>
+            <th>Gender & Age</th>
+            <th>Primary Health Concern</th>
+            <th>Last Visit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="pat in patients | filter:filterPatient">
+            <td>
+              <div style="display: flex; align-items: center; gap: 0.65rem;">
+                <div class="avatar-circle">{{ pat.name | initials }}</div>
+                <strong>{{ pat.name }}</strong>
+              </div>
+            </td>
+            <td>{{ pat.mobile }}</td>
+            <td>{{ pat.village }}</td>
+            <td>{{ pat.gender }}, {{ pat.age }} yrs</td>
+            <td>
+              <span class="status-pill available">{{ pat.primaryConcern }}</span>
+            </td>
+            <td>{{ pat.lastVisit }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>

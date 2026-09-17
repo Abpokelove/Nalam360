@@ -1,0 +1,139 @@
+<!-- AUTHENTICATION LOGIN VIEW (CONTENT ONLY) -->
+<div style="max-width: 500px; margin: 2rem auto;">
+  <div class="card" style="padding: 2.25rem;">
+
+    <!-- Enterprise Brand Header -->
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+      <div class="brand-icon" style="margin: 0 auto 0.75rem auto; width: 48px; height: 48px; font-size: 1.5rem;">N</div>
+      
+      <h2 style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800;" ng-if="selectedRole === 'patient'">
+        Patient Portal Access
+      </h2>
+      <h2 style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800;" ng-if="selectedRole === 'doctor'">
+        Doctor Practice Workspace
+      </h2>
+      <h2 style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800;" ng-if="selectedRole === 'admin'">
+        Admin Command Center
+      </h2>
+
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.25rem;" ng-if="selectedRole === 'patient'">
+        Sign in to manage prescription tracking, doctor visits, and village health camps
+      </p>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.25rem;" ng-if="selectedRole === 'doctor'">
+        Sign in to view sector patient roster and consultation schedule
+      </p>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.25rem;" ng-if="selectedRole === 'admin'">
+        Sign in to manage system users, doctor directory, and district health camps
+      </p>
+    </div>
+
+    <!-- Role Switcher Segment Control Tabs -->
+    <div style="background: var(--surface-muted); border: 1px solid var(--surface-border); border-radius: var(--radius-lg); padding: 0.35rem; margin-bottom: 1.75rem; display: flex; gap: 0.35rem;">
+      <button type="button" 
+              class="btn" 
+              style="flex: 1; padding: 0.5rem 0.25rem; font-size: 0.82rem; border-radius: var(--radius-md);" 
+              ng-class="{'btn-primary': selectedRole === 'patient', 'btn-soft': selectedRole !== 'patient'}" 
+              ng-click="selectRole('patient')">
+        <span class="material-symbols-outlined" style="font-size: 1rem;">person</span>
+        <span>Patient</span>
+      </button>
+
+      <button type="button" 
+              class="btn" 
+              style="flex: 1; padding: 0.5rem 0.25rem; font-size: 0.82rem; border-radius: var(--radius-md);" 
+              ng-class="{'btn-primary': selectedRole === 'doctor', 'btn-soft': selectedRole !== 'doctor'}" 
+              ng-click="selectRole('doctor')">
+        <span class="material-symbols-outlined" style="font-size: 1rem;">stethoscope</span>
+        <span>Doctor</span>
+      </button>
+
+      <button type="button" 
+              class="btn" 
+              style="flex: 1; padding: 0.5rem 0.25rem; font-size: 0.82rem; border-radius: var(--radius-md);" 
+              ng-class="{'btn-primary': selectedRole === 'admin', 'btn-soft': selectedRole !== 'admin'}" 
+              ng-click="selectRole('admin')">
+        <span class="material-symbols-outlined" style="font-size: 1rem;">admin_panel_settings</span>
+        <span>Admin</span>
+      </button>
+    </div>
+
+    <!-- Error Alert Banner -->
+    <div class="state-error" ng-if="errorMsg">
+      <span class="material-symbols-outlined">error</span>
+      <span ng-bind="errorMsg"></span>
+    </div>
+
+    <form name="loginNgForm" ng-submit="submitLogin()" novalidate>
+
+      <!-- Identity Field with Real-Time CSS Validation & Ticks/Crosses -->
+      <div class="form-group">
+        <label for="identityInput">Mobile Number or Email Address</label>
+        
+        <div class="input-wrapper">
+          <input id="identityInput"
+                 name="identity"
+                 type="text"
+                 class="form-control"
+                 ng-class="{'is-valid': isIdentityValid(), 'is-invalid': loginForm.identity.length > 0 && !isIdentityValid()}"
+                 placeholder="e.g. 9876543210 or user@domain.com"
+                 ng-model="loginForm.identity"
+                 required/>
+          
+          <span class="material-symbols-outlined input-valid-icon" ng-if="isIdentityValid()">check_circle</span>
+          <span class="material-symbols-outlined input-invalid-icon" ng-if="loginForm.identity.length > 0 && !isIdentityValid()">cancel</span>
+        </div>
+
+        <!-- Live Validation Indicator Checklist -->
+        <div class="validation-list">
+          <div class="val-item" ng-class="{'valid': isIdentityValid(), 'invalid': loginForm.identity.length > 0 && !isIdentityValid()}">
+            <span class="material-symbols-outlined">{{ isIdentityValid() ? 'check' : (loginForm.identity.length > 0 ? 'close' : 'radio_button_unchecked') }}</span>
+            <span>{{ isIdentityValid() ? 'Valid email or 10-digit mobile number' : 'Enter a valid email address or 10-digit mobile number' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Password Field with Real-Time 4-Character Min Validation Checklist -->
+      <div class="form-group" style="margin-bottom: 1.75rem;">
+        <label for="passwordInput">Account Password</label>
+        
+        <div class="input-wrapper">
+          <input id="passwordInput"
+                 name="password"
+                 type="password"
+                 class="form-control"
+                 ng-class="{'is-valid': isPasswordValid(), 'is-invalid': loginForm.password.length > 0 && !isPasswordValid()}"
+                 placeholder="Enter password (minimum 4 characters)"
+                 ng-model="loginForm.password"
+                 required/>
+
+          <span class="material-symbols-outlined input-valid-icon" ng-if="isPasswordValid()">check_circle</span>
+          <span class="material-symbols-outlined input-invalid-icon" ng-if="loginForm.password.length > 0 && !isPasswordValid()">cancel</span>
+        </div>
+
+        <!-- Live Real-Time 4-Character Checklist Indicator -->
+        <div class="validation-list">
+          <div class="val-item" ng-class="{'valid': isPasswordValid(), 'invalid': loginForm.password.length > 0 && !isPasswordValid()}">
+            <span class="material-symbols-outlined">{{ isPasswordValid() ? 'check' : (loginForm.password.length > 0 ? 'close' : 'radio_button_unchecked') }}</span>
+            <span>
+              {{ isPasswordValid() ? 'Password length requirement satisfied (✓ ' + loginForm.password.length + ' chars)' : ('Password must be at least 4 characters (✕ ' + (loginForm.password.length || 0) + '/4 entered)') }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" 
+              class="btn btn-primary" 
+              style="width: 100%; padding: 0.85rem; font-size: 1rem;" 
+              ng-disabled="!isIdentityValid() || !isPasswordValid() || loading">
+        <span class="spinner" style="width: 18px; height: 18px; border-width: 2px;" ng-if="loading"></span>
+        <span>{{ loading ? 'Authenticating...' : ('Sign In as ' + (selectedRole | statusLabel)) }}</span>
+      </button>
+
+    </form>
+
+    <div style="text-align: center; margin-top: 1.5rem; font-size: 0.88rem; color: var(--text-muted);">
+      New to Nalam360? <a href="#/register" style="font-weight: 600;">Create a Patient Account</a>
+    </div>
+
+  </div>
+</div>

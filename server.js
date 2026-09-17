@@ -228,13 +228,17 @@ app.use((req, res, next) => {
 app.use((req, res) => res.status(404).json({ message: 'Route not found.' }));
 
 async function startServer() {
-  await mongoose.connect(MONGO_URI);
-  if (process.env.ADMIN_MOBILE && process.env.ADMIN_PASSWORD) {
-    await User.updateOne(
-      { mobile: process.env.ADMIN_MOBILE },
-      { $setOnInsert: { name: process.env.ADMIN_NAME || 'Nalam Administrator', mobile: process.env.ADMIN_MOBILE, passwordHash: createPasswordHash(process.env.ADMIN_PASSWORD), role: 'admin', village: process.env.ADMIN_VILLAGE || 'Central Office' } },
-      { upsert: true }
-    );
+  try {
+    await mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 2000 });
+    if (process.env.ADMIN_MOBILE && process.env.ADMIN_PASSWORD) {
+      await User.updateOne(
+        { mobile: process.env.ADMIN_MOBILE },
+        { $setOnInsert: { name: process.env.ADMIN_NAME || 'Nalam Administrator', mobile: process.env.ADMIN_MOBILE, passwordHash: createPasswordHash(process.env.ADMIN_PASSWORD), role: 'admin', village: process.env.ADMIN_VILLAGE || 'Central Office' } },
+        { upsert: true }
+      );
+    }
+  } catch (err) {
+    console.log('MongoDB not connected. Server running in Phase 1 Frontend Mode.');
   }
   return app.listen(PORT, () => console.log(`Nalam360 running at http://localhost:${PORT}`));
 }

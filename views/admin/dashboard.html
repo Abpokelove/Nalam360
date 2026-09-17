@@ -1,0 +1,186 @@
+<!-- ADMIN DASHBOARD VIEW (CONTENT ONLY) -->
+<div class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-header-title" style="color: var(--secondary);">Admin Management Portal</h1>
+      <p class="page-header-subtitle">Platform overview and Doctor Directory administration</p>
+    </div>
+    <a href="#/admin/doctors" class="btn btn-secondary">
+      <span class="material-symbols-outlined">person_add</span>
+      <span>Manage Doctor Directory</span>
+    </a>
+  </div>
+
+  <!-- Loading State Indicator -->
+  <loading-spinner message="Loading admin workspace stats..." ng-if="loading"></loading-spinner>
+
+  <!-- Error State Alert -->
+  <div class="state-error" ng-if="!loading && error">
+    <span class="material-symbols-outlined">error</span>
+    <span ng-bind="error"></span>
+  </div>
+
+  <div ng-if="!loading && !error">
+
+    <!-- Admin Metric Counters -->
+    <div class="grid-4" style="margin-bottom: 2rem;">
+      <div class="card metric-card">
+        <div class="metric-icon blue">
+          <span class="material-symbols-outlined">group</span>
+        </div>
+        <div>
+          <div class="metric-value" ng-bind="summary.users || 1240">1,240</div>
+          <div class="metric-label">Registered Patients</div>
+        </div>
+      </div>
+
+      <div class="card metric-card">
+        <div class="metric-icon teal">
+          <span class="material-symbols-outlined">stethoscope</span>
+        </div>
+        <div>
+          <div class="metric-value" ng-bind="summary.doctors || doctors.length">6</div>
+          <div class="metric-label">Network Doctors</div>
+        </div>
+      </div>
+
+      <div class="card metric-card">
+        <div class="metric-icon emerald">
+          <span class="material-symbols-outlined">event</span>
+        </div>
+        <div>
+          <div class="metric-value" ng-bind="summary.appointments || 2">2</div>
+          <div class="metric-label">Total Appointments</div>
+        </div>
+      </div>
+
+      <div class="card metric-card">
+        <div class="metric-icon amber">
+          <span class="material-symbols-outlined">campaign</span>
+        </div>
+        <div>
+          <div class="metric-value" ng-bind="summary.camps || 3">3</div>
+          <div class="metric-label">Active Health Camps</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Doctor Directory Quick Summary -->
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <h3 style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700;">Network Doctor Directory</h3>
+        <button class="btn btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;" ng-click="openAddDoctorModal()">
+          <span class="material-symbols-outlined" style="font-size: 1.1rem;">add</span>
+          <span>Register New Doctor</span>
+        </button>
+      </div>
+
+      <empty-state icon="person_off" title="No doctors in directory" desc="Click 'Register New Doctor' to add a doctor to the network." ng-if="doctors.length === 0"></empty-state>
+
+      <div class="table-container" ng-if="doctors.length > 0">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Doctor Name</th>
+              <th>Specialty</th>
+              <th>Village Sector</th>
+              <th>Experience</th>
+              <th>Fee</th>
+              <th>Availability</th>
+              <th style="text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="doc in doctors">
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.65rem;">
+                  <div class="avatar-circle">{{ doc.name | initials }}</div>
+                  <strong>{{ doc.name }}</strong>
+                </div>
+              </td>
+              <td>{{ doc.specialty }}</td>
+              <td>{{ doc.village }}</td>
+              <td>{{ doc.experience }} years</td>
+              <td>₹{{ doc.fee }}</td>
+              <td>
+                <status-pill value="{{ doc.available ? 'available' : 'unavailable' }}"></status-pill>
+              </td>
+              <td style="text-align: right;">
+                <button class="btn btn-soft" style="padding: 0.35rem 0.6rem; font-size: 0.8rem; margin-right: 0.35rem;" ng-click="openEditDoctorModal(doc)">
+                  Edit
+                </button>
+                <button class="btn btn-danger" style="padding: 0.35rem 0.6rem; font-size: 0.8rem;" ng-click="deleteDoctor(doc)">
+                  Delete
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Doctor Add / Edit Modal Dialog -->
+  <div class="modal-backdrop" ng-if="isDoctorModalOpen">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">{{ editingDoctor ? 'Edit Doctor Profile' : 'Register New Doctor' }}</h3>
+        <button class="btn btn-soft" style="padding: 0.3rem 0.5rem;" ng-click="closeDoctorModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <form name="docCrudForm" ng-submit="saveDoctor()" novalidate>
+        <div class="form-group">
+          <label>Full Doctor Name</label>
+          <input type="text" class="form-control" placeholder="e.g. Dr. Arumugam K." ng-model="doctorForm.name" required/>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Specialty</label>
+            <select class="form-control" ng-model="doctorForm.specialty" required>
+              <option ng-repeat="s in specialtiesList" value="{{ s }}">{{ s }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Village Sector Base</label>
+            <select class="form-control" ng-model="doctorForm.village" required>
+              <option ng-repeat="v in villagesList" value="{{ v }}">{{ v }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Experience (Years)</label>
+            <input type="number" class="form-control" min="0" ng-model="doctorForm.experience"/>
+          </div>
+
+          <div class="form-group">
+            <label>Consultation Fee (₹)</label>
+            <input type="number" class="form-control" min="0" ng-model="doctorForm.fee"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+            <input type="checkbox" ng-model="doctorForm.available"/>
+            <span>Doctor Currently Available for Booking</span>
+          </label>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">
+          <button type="button" class="btn btn-soft" ng-click="closeDoctorModal()">Cancel</button>
+          <button type="submit" class="btn btn-secondary" ng-disabled="docCrudForm.$invalid">
+            <span>{{ editingDoctor ? 'Save Changes' : 'Add Doctor' }}</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>

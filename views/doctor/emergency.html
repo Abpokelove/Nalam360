@@ -1,0 +1,41 @@
+<!-- DOCTOR EMERGENCY DIRECTORY VIEW -->
+<div class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-header-title" style="color: var(--error);">Emergency Hotline Desk</h1>
+      <p class="page-header-subtitle">Direct hotline contact numbers for rural emergency dispatch</p>
+    </div>
+  </div>
+
+  <loading-spinner message="Loading emergency directory..." ng-if="loading"></loading-spinner>
+
+  <div class="state-error" ng-if="!loading && error">
+    <span class="material-symbols-outlined">error</span>
+    <span ng-bind="error"></span>
+  </div>
+
+  <div ng-if="!loading && !error">
+    <div class="grid-3" style="margin-bottom: 2.5rem;">
+      <div class="card hoverable" style="text-align: center; padding: 2rem;" ng-repeat="contact in contacts">
+        <div class="metric-icon" style="background: var(--error-bg); color: var(--error); width: 60px; height: 60px; margin: 0 auto 1rem auto; font-size: 1.8rem;">
+          <span class="material-symbols-outlined">{{ contact.icon }}</span>
+        </div>
+
+        <span class="status-pill cancelled" style="margin-bottom: 0.5rem;">{{ contact.badge }}</span>
+
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.4rem;">{{ contact.name }}</h3>
+
+        <div style="font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; color: var(--error); margin-bottom: 1.25rem;">
+          {{ contact.number }}
+        </div>
+
+        <a href="tel:{{ contact.number }}" class="btn btn-danger" style="width: 100%;">
+          <span class="material-symbols-outlined">call</span>
+          <span>Call Desk</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>
