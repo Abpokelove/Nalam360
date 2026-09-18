@@ -61,7 +61,7 @@
 
       $scope.isPasswordValid = function () {
         var pwd = $scope.loginForm.password || '';
-        return pwd.length >= 4; // Requirement: minimum 4 characters with live tick/cross
+        return pwd.length >= 6;
       };
 
       // Register Real-Time Live Validation Indicators
@@ -98,7 +98,6 @@
         $scope.loading = true;
 
         AuthService.login({
-          email: $scope.loginForm.identity,
           mobile: $scope.loginForm.identity,
           password: $scope.loginForm.password
         }).then(function (result) {
@@ -126,7 +125,7 @@
         AuthService.register($scope.registerForm).then(function (result) {
           $scope.loading = false;
           NotificationService.success('Account created successfully! Welcome to Nalam360.');
-          $location.path(AuthService.getDashboardRoute());
+          $location.path('/login');
         }).catch(function (error) {
           $scope.loading = false;
           $scope.errorMsg = error.message || 'Registration failed.';

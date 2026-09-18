@@ -1,7 +1,16 @@
 (function () {
   'use strict';
 
-  angular.module('Nalam360App').factory('ApiFactory', ['$q', '$timeout', function ($q, $timeout) {
+  angular.module('Nalam360App').factory('ApiFactory', ['$q', '$timeout', '$http', '$window', function ($q, $timeout, $http, $window) {
+
+    function request(method, url, data) {
+      var token = $window.localStorage.getItem('nalam360_access_token');
+      return $http({ method: method, url: url, data: data, headers: token ? { Authorization: 'Bearer ' + token } : {} }).then(function (response) {
+        return response.data;
+      }, function (response) {
+        return $q.reject(response.data || { message: 'Request failed.' });
+      });
+    }
 
     function delayedPromise(data, delayMs) {
       var deferred = $q.defer();
@@ -93,70 +102,20 @@
     ];
 
     return {
-      // Authentic Authentication
       login: function (credentials) {
-        if (!credentials || (!credentials.email && !credentials.mobile)) {
-          return $q.reject({ message: 'Email or mobile number is required.' });
-        }
-
-        var identity = (credentials.email || credentials.mobile || '').toLowerCase().trim();
-
-        // Match against 3 authentic development accounts
-        var userKey = Object.keys(demoUsers).find(function (key) {
-          var u = demoUsers[key];
-          return u.email.toLowerCase() === identity || u.mobile === identity;
-        });
-
-        var user = userKey ? demoUsers[userKey] : null;
-
-        // Fallback for new registration / custom test mobile
-        if (!user) {
-          if (identity.indexOf('doctor') !== -1) {
-            user = demoUsers['doctor@nalam360.test'];
-          } else if (identity.indexOf('admin') !== -1 || credentials.isAdmin) {
-            user = demoUsers['admin@nalam360.test'];
-          } else {
-            user = demoUsers['patient@nalam360.test'];
-          }
-        }
-
-        return delayedPromise({ token: 'demo_token_' + Date.now(), user: user, message: 'Signed in successfully as ' + user.name });
+        return request('POST', '/api/auth/login', credentials);
       },
 
       register: function (userData) {
-        if (!userData || !userData.name || !userData.mobile || !userData.village) {
-          return $q.reject({ message: 'Name, mobile, and village are required.' });
-        }
-        var newPatient = {
-          id: 'usr_' + Date.now(),
-          name: userData.name,
-          email: userData.mobile + '@nalam360.test',
-          mobile: userData.mobile,
-          village: userData.village,
-          gender: userData.gender || 'Not Specified',
-          dob: userData.dob || '',
-          role: 'patient'
-        };
-        patientsList.unshift({
-          id: newPatient.id,
-          name: newPatient.name,
-          mobile: newPatient.mobile,
-          village: newPatient.village,
-          gender: newPatient.gender,
-          age: 30,
-          primaryConcern: 'New Patient Registration',
-          lastVisit: 'Today'
-        });
-        return delayedPromise({ token: 'demo_token_' + Date.now(), user: newPatient, message: 'Account registered successfully!' });
+        return request('POST', '/api/auth/register', userData);
       },
 
-      getMe: function (user) {
-        return delayedPromise({ user: user });
+      getMe: function () {
+        return request('GET', '/api/auth/me');
       },
 
       updateProfile: function (user, profileData) {
-        angular.extend(user, profileData);
-        return delayedPromise({ user: user, message: 'Profile updated successfully!' });
+        return request('PUT', '/api/auth/me', profileData || user);
       },
 
       // Patients API (Doctor & Admin view)

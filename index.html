@@ -213,6 +213,7 @@
       <span class="material-symbols-outlined" ng-if="toast.type == 'success'">check_circle</span>
       <span class="material-symbols-outlined" ng-if="toast.type == 'error'">error</span>
       <span class="material-symbols-outlined" ng-if="toast.type == 'warning'">warning</span>
+      <span class="material-symbols-outlined" ng-if="toast.type == 'info'">info</span>
       <span ng-bind="toast.message"></span>
       <button style="background:none; border:none; cursor:pointer; margin-left:auto; color:inherit;" ng-click="removeToast(toast.id)">
         <span class="material-symbols-outlined" style="font-size:1.1rem;">close</span>

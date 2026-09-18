@@ -9,7 +9,7 @@
       var toast = {
         id: id,
         message: message,
-        type: type || 'success' // 'success', 'error', 'warning'
+        type: type || 'success' // 'success', 'error', 'warning', 'info'
       };
       toasts.push(toast);
 
@@ -31,6 +31,7 @@
       success: function (msg) { show(msg, 'success'); },
       error: function (msg) { show(msg, 'error'); },
       warning: function (msg) { show(msg, 'warning'); },
+      info: function (msg) { show(msg, 'info'); },
       remove: remove
     };
   }]);

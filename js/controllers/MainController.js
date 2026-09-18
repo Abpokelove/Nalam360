@@ -4,10 +4,9 @@
   angular.module('Nalam360App').controller('MainController', [
     '$scope',
     '$location',
-    '$timeout',
     'AuthService',
     'NotificationService',
-    function ($scope, $location, $timeout, AuthService, NotificationService) {
+    function ($scope, $location, AuthService, NotificationService) {
 
       $scope.auth = AuthService.state;
       $scope.authService = AuthService;
@@ -94,9 +93,7 @@
       $scope.logout = function () {
         AuthService.logout();
         NotificationService.info('You have signed out.');
-        $timeout(function () {
-          $location.path('/login');
-        });
+        $location.path('/login');
       };
 
       $scope.removeToast = function (id) {

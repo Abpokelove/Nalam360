@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true, minlength: 2 },
   mobile: { type: String, required: true, unique: true, match: /^\d{10}$/ },
   passwordHash: { type: String, required: true },
-  role: { type: String, enum: ['patient', 'admin'], default: 'patient' },
+  role: { type: String, enum: ['patient', 'doctor', 'admin'], default: 'patient' },
   village: { type: String, required: true, trim: true },
   gender: { type: String, trim: true },
   dob: { type: String, trim: true },
@@ -131,7 +131,8 @@ app.post('/api/auth/register', async (req, res) => {
     const { name, mobile, password, village, gender, dob } = req.body;
     if (!name || !mobile || !password || !village || password.length < 6) return res.status(400).json({ message: 'Name, mobile, village, and a 6-character password are required.' });
     const user = await User.create({ name, mobile, village, gender, dob, passwordHash: createPasswordHash(password), role: 'patient' });
-    res.status(201).json({ user: publicUser(user), message: 'Registration successful.' });
+    const token = encodeToken({ id: String(user._id), role: user.role, exp: Date.now() + (8 * 60 * 60 * 1000) });
+    res.status(201).json({ token, user: publicUser(user), message: 'Registration successful.' });
   } catch (error) { handleError(res, error, 'Registration failed.'); }
 });
 
@@ -237,7 +238,15 @@ async function startServer() {
         { upsert: true }
       );
     }
+    if (process.env.DOCTOR_MOBILE && process.env.DOCTOR_PASSWORD) {
+      await User.updateOne(
+        { mobile: process.env.DOCTOR_MOBILE },
+        { $setOnInsert: { name: process.env.DOCTOR_NAME || 'Nalam Doctor', mobile: process.env.DOCTOR_MOBILE, passwordHash: createPasswordHash(process.env.DOCTOR_PASSWORD), role: 'doctor', village: process.env.DOCTOR_VILLAGE || 'Central Office' } },
+        { upsert: true }
+      );
+    }
   } catch (err) {
+    console.error(`MongoDB connection failed (${err.name}): ${err.message}`);
     console.log('MongoDB not connected. Server running in Phase 1 Frontend Mode.');
   }
   return app.listen(PORT, () => console.log(`Nalam360 running at http://localhost:${PORT}`));

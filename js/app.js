@@ -14,18 +14,22 @@
          ========================================================================= */
       .when('/onboarding', {
         templateUrl: 'views/onboarding/onboarding.html',
-        controller: 'MainController'
+        controller: 'MainController',
+        access: 'public'
       })
       .when('/login', {
         templateUrl: 'views/auth/login.html',
-        controller: 'AuthController'
+        controller: 'AuthController',
+        access: 'public'
       })
       .when('/register', {
         templateUrl: 'views/auth/register.html',
-        controller: 'AuthController'
+        controller: 'AuthController',
+        access: 'public'
       })
       .when('/access-denied', {
-        templateUrl: 'views/shared/access-denied.html'
+        templateUrl: 'views/shared/access-denied.html',
+        access: 'public'
       })
 
       /* =========================================================================
@@ -177,22 +181,6 @@
         requiresAuth: true,
         roles: ['admin']
       })
-
-      /* =========================================================================
-         5. LEGACY ALIAS REDIRECTS (FOR BACKWARD COMPATIBILITY)
-         ========================================================================= */
-      .when('/dashboard', { redirectTo: '/patient/dashboard' })
-      .when('/doctor-dashboard', { redirectTo: '/doctor/dashboard' })
-      .when('/admin', { redirectTo: '/admin/dashboard' })
-      .when('/healthcare', { redirectTo: '/patient/healthcare' })
-      .when('/doctors', { redirectTo: '/patient/doctors' })
-      .when('/appointments', { redirectTo: '/patient/appointments' })
-      .when('/patients', { redirectTo: '/doctor/patients' })
-      .when('/reminders', { redirectTo: '/patient/reminders' })
-      .when('/camps', { redirectTo: '/patient/camps' })
-      .when('/awareness', { redirectTo: '/patient/awareness' })
-      .when('/emergency', { redirectTo: '/patient/emergency' })
-      .when('/profile', { redirectTo: '/patient/profile' })
 
       .otherwise({
         redirectTo: function () {

@@ -36,6 +36,21 @@ Public registration always creates a patient. The admin account is created only 
 - `index.css`: single responsive green healthcare design system.
 - `server.js`: Express application, Mongoose models, authentication, authorization, and REST API.
 
+### Client Route Contract
+
+The AngularJS client uses role-namespaced routes as its only canonical application routes. Every protected route has a route guard and an exact view/controller mapping:
+
+| Area | Route | Access | View | Controller |
+| --- | --- | --- | --- | --- |
+| Entry | `/onboarding` | public, first launch/reset | `views/onboarding/onboarding.html` | `MainController` |
+| Auth | `/login`, `/register` | public after onboarding | `views/auth/login.html`, `views/auth/register.html` | `AuthController` |
+| Shared | `/access-denied` | public | `views/shared/access-denied.html` | none |
+| Patient | `/patient/dashboard`, `/patient/healthcare`, `/patient/doctors`, `/patient/appointments`, `/patient/reminders`, `/patient/camps`, `/patient/awareness`, `/patient/emergency`, `/patient/profile` | patient only | matching file under `views/patient/` | `DashboardController`, `HealthcareController`, `AppointmentController`, `ReminderController`, `CampController`, `AwarenessController`, `EmergencyController`, `ProfileController` |
+| Doctor | `/doctor/dashboard`, `/doctor/patients`, `/doctor/appointments`, `/doctor/camps`, `/doctor/awareness`, `/doctor/emergency`, `/doctor/profile` | doctor only | matching file under `views/doctor/` | `DoctorDashboardController`, `DoctorPatientsController`, `AppointmentController`, `CampController`, `AwarenessController`, `EmergencyController`, `ProfileController` |
+| Admin | `/admin/dashboard`, `/admin/users`, `/admin/doctors`, `/admin/camps`, `/admin/awareness`, `/admin/emergency`, `/admin/profile` | admin only | matching file under `views/admin/` | `AdminController`, `CampController`, `AwarenessController`, `EmergencyController`, `ProfileController` |
+
+There are no generic dashboard routes and no legacy aliases in the active route table. Shared services, directives, and filters remain centralized; this phase does not change the backend or database.
+
 ## API
 
 - `GET /api/health`

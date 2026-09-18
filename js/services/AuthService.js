@@ -1,9 +1,11 @@
 (function () {
   'use strict';
 
-  angular.module('Nalam360App').factory('AuthService', ['ApiFactory', '$window', function (ApiFactory, $window) {
+  angular.module('Nalam360App').factory('AuthService', ['ApiFactory', '$window', '$q', function (ApiFactory, $window, $q) {
     var ONBOARDING_KEY = 'nalam360_onboarding_done';
     var SESSION_KEY = 'nalam360_active_session';
+    var TOKEN_KEY = 'nalam360_access_token';
+    var savedToken = $window.localStorage.getItem(TOKEN_KEY);
 
     var savedSession = null;
     try {
@@ -14,7 +16,8 @@
 
     var state = {
       currentUser: savedSession ? savedSession.user : null,
-      isLoggedIn: !!(savedSession && savedSession.user),
+      isLoggedIn: !!(savedSession && savedSession.user && savedToken),
+      token: savedToken,
       onboardingDone: $window.localStorage.getItem(ONBOARDING_KEY) === 'true'
     };
 
@@ -25,6 +28,7 @@
         $window.localStorage.setItem(SESSION_KEY, JSON.stringify({ user: user }));
       } else {
         $window.localStorage.removeItem(SESSION_KEY);
+        $window.localStorage.removeItem(TOKEN_KEY);
       }
     }
 
@@ -49,19 +53,34 @@
       login: function (credentials) {
         return ApiFactory.login(credentials).then(function (result) {
           saveSession(result.user);
+          state.token = result.token;
+          $window.localStorage.setItem(TOKEN_KEY, result.token);
           return result;
         });
       },
 
       register: function (userData) {
         return ApiFactory.register(userData).then(function (result) {
-          saveSession(result.user);
           return result;
         });
       },
 
+      restore: function () {
+        if (!state.token) return $q.reject({ message: 'No active session.' });
+        return ApiFactory.getMe().then(function (result) {
+          saveSession(result.user);
+          state.token = savedToken;
+          return result.user;
+        }).catch(function (error) {
+          this.logout();
+          return $q.reject(error);
+        }.bind(this));
+      },
+
       logout: function () {
         saveSession(null);
+        state.isLoggedIn = false;
+        state.currentUser = null;
       },
 
       isLoggedIn: function () {
