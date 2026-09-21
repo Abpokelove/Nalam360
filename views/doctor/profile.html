@@ -72,13 +72,14 @@
         </button>
       </form>
 
-      <div style="border-top: 1px dashed var(--surface-border); padding-top: 1rem;">
-        <div style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.35rem;">
-          Development Testing Control
-        </div>
+      <div style="border-top: 1px dashed var(--surface-border); padding-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem;">
         <button type="button" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.35rem 0.75rem; border-color: var(--surface-border);" ng-click="resetDevelopmentState()">
           <span class="material-symbols-outlined" style="font-size: 1rem;">restart_alt</span>
           <span>Reset App State (Restart Onboarding)</span>
+        </button>
+        <button type="button" class="btn btn-soft" style="font-size: 0.82rem; padding: 0.35rem 0.75rem; color: var(--error);" ng-click="logout()">
+          <span class="material-symbols-outlined" style="font-size: 1rem;">logout</span>
+          <span>Sign Out</span>
         </button>
       </div>
     </div>

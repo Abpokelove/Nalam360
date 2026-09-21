@@ -61,7 +61,7 @@
 
       $scope.isPasswordValid = function () {
         var pwd = $scope.loginForm.password || '';
-        return pwd.length >= 6;
+        return pwd.length >= 4;
       };
 
       // Register Real-Time Live Validation Indicators

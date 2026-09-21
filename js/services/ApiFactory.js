@@ -5,7 +5,12 @@
 
     function request(method, url, data) {
       var token = $window.localStorage.getItem('nalam360_access_token');
-      return $http({ method: method, url: url, data: data, headers: token ? { Authorization: 'Bearer ' + token } : {} }).then(function (response) {
+      return $http({
+        method: method,
+        url: url,
+        data: data,
+        headers: token ? { Authorization: 'Bearer ' + token } : {}
+      }).then(function (response) {
         return response.data;
       }, function (response) {
         return $q.reject(response.data || { message: 'Request failed.' });
@@ -20,42 +25,7 @@
       return deferred.promise;
     }
 
-    // Three Authentic Role Development Accounts
-    var demoUsers = {
-      'patient@nalam360.test': {
-        id: 'usr_patient',
-        name: 'Muthuswamy S.',
-        email: 'patient@nalam360.test',
-        mobile: '9876543210',
-        role: 'patient',
-        village: 'Melur',
-        gender: 'Male',
-        dob: '1982-06-15'
-      },
-      'doctor@nalam360.test': {
-        id: 'usr_doctor',
-        name: 'Dr. Arumugam K.',
-        email: 'doctor@nalam360.test',
-        mobile: '9888888888',
-        role: 'doctor',
-        specialty: 'General Medicine',
-        village: 'Melur',
-        experience: 14,
-        fee: 150,
-        gender: 'Male'
-      },
-      'admin@nalam360.test': {
-        id: 'usr_admin',
-        name: 'Nalam Administrator',
-        email: 'admin@nalam360.test',
-        mobile: '9999999999',
-        role: 'admin',
-        village: 'Central Office',
-        gender: 'Female'
-      }
-    };
-
-    // Seed Data
+    // Fallback Seed Data (used if server is unreachable or offline)
     var doctorsList = [
       { id: 'doc_1', name: 'Dr. Arumugam K.', specialty: 'General Medicine', village: 'Melur', experience: 14, fee: 150, available: true, initials: 'AK', nextSlot: 'Today, 4:30 PM', email: 'doctor@nalam360.test' },
       { id: 'doc_2', name: 'Dr. Meenakshi S.', specialty: 'Pediatrics', village: 'Karur', experience: 10, fee: 200, available: true, initials: 'MS', nextSlot: 'Tomorrow, 10:00 AM', email: 'meenakshi@nalam360.test' },
@@ -118,212 +88,285 @@
         return request('PUT', '/api/auth/me', profileData || user);
       },
 
+      logout: function () {
+        return request('POST', '/api/auth/logout').catch(function () {
+          return { success: true };
+        });
+      },
+
       // Patients API (Doctor & Admin view)
       getPatients: function () {
-        return delayedPromise(patientsList);
+        return request('GET', '/api/patients').catch(function () {
+          return delayedPromise(patientsList);
+        });
       },
 
       // Doctors CRUD
       getDoctors: function () {
-        return delayedPromise(doctorsList);
+        return request('GET', '/api/doctors').catch(function () {
+          return delayedPromise(doctorsList);
+        });
       },
 
       getDoctorById: function (id) {
-        var found = doctorsList.find(function (d) { return d.id === id; });
-        return found ? delayedPromise(found) : $q.reject({ message: 'Doctor not found.' });
+        return request('GET', '/api/doctors/' + id).catch(function () {
+          var found = doctorsList.find(function (d) { return d.id === id; });
+          return found ? delayedPromise(found) : $q.reject({ message: 'Doctor not found.' });
+        });
       },
 
       createDoctor: function (doctorData) {
-        var newDoc = {
-          id: 'doc_' + Date.now(),
-          name: doctorData.name,
-          specialty: doctorData.specialty,
-          village: doctorData.village,
-          experience: Number(doctorData.experience || 0),
-          fee: Number(doctorData.fee || 0),
-          available: doctorData.available !== false,
-          initials: (doctorData.name || 'DR').split(' ').map(function(n){ return n[0]; }).join('').substring(0, 2).toUpperCase(),
-          nextSlot: 'Available by Appointment'
-        };
-        doctorsList.push(newDoc);
-        return delayedPromise(newDoc);
+        return request('POST', '/api/doctors', doctorData).catch(function () {
+          var newDoc = {
+            id: 'doc_' + Date.now(),
+            name: doctorData.name,
+            specialty: doctorData.specialty,
+            village: doctorData.village,
+            experience: Number(doctorData.experience || 0),
+            fee: Number(doctorData.fee || 0),
+            available: doctorData.available !== false,
+            initials: (doctorData.name || 'DR').split(' ').map(function(n){ return n[0]; }).join('').substring(0, 2).toUpperCase(),
+            nextSlot: 'Available by Appointment'
+          };
+          doctorsList.push(newDoc);
+          return delayedPromise(newDoc);
+        });
       },
 
       updateDoctor: function (id, doctorData) {
-        var index = doctorsList.findIndex(function (d) { return d.id === id; });
-        if (index !== -1) {
-          angular.extend(doctorsList[index], doctorData);
-          return delayedPromise(doctorsList[index]);
-        }
-        return $q.reject({ message: 'Doctor update failed.' });
+        return request('PUT', '/api/doctors/' + id, doctorData).catch(function () {
+          var index = doctorsList.findIndex(function (d) { return d.id === id; });
+          if (index !== -1) {
+            angular.extend(doctorsList[index], doctorData);
+            return delayedPromise(doctorsList[index]);
+          }
+          return $q.reject({ message: 'Doctor update failed.' });
+        });
       },
 
       deleteDoctor: function (id) {
-        var index = doctorsList.findIndex(function (d) { return d.id === id; });
-        if (index !== -1) {
-          doctorsList.splice(index, 1);
-          return delayedPromise({ message: 'Doctor removed from care directory.' });
-        }
-        return $q.reject({ message: 'Doctor deletion failed.' });
+        return request('DELETE', '/api/doctors/' + id).catch(function () {
+          var index = doctorsList.findIndex(function (d) { return d.id === id; });
+          if (index !== -1) {
+            doctorsList.splice(index, 1);
+            return delayedPromise({ message: 'Doctor removed from care directory.' });
+          }
+          return $q.reject({ message: 'Doctor deletion failed.' });
+        });
       },
 
       // Appointments CRUD
       getAppointments: function () {
-        return delayedPromise(appointmentsList);
+        return request('GET', '/api/appointments').catch(function () {
+          return delayedPromise(appointmentsList);
+        });
       },
 
       getDoctorAppointments: function (doctorId) {
-        var docApps = appointmentsList.filter(function (a) {
-          return !doctorId || a.doctorId === doctorId || a.doctorName.indexOf('Arumugam') !== -1;
+        return request('GET', '/api/appointments').catch(function () {
+          var docApps = appointmentsList.filter(function (a) {
+            return !doctorId || a.doctorId === doctorId || a.doctorName.indexOf('Arumugam') !== -1;
+          });
+          return delayedPromise(docApps);
         });
-        return delayedPromise(docApps);
       },
 
       createAppointment: function (bookingData) {
-        var doc = doctorsList.find(function (d) { return d.id === bookingData.doctorId; }) || { name: 'Doctor Visit', specialty: 'General' };
-        var newApp = {
-          id: 'app_' + Date.now(),
-          patientId: 'pat_1',
-          patientName: 'Muthuswamy S.',
-          doctorId: bookingData.doctorId,
-          doctorName: doc.name,
-          specialty: doc.specialty,
-          village: bookingData.village || doc.village || 'Melur',
-          date: bookingData.date,
-          time: bookingData.time,
-          status: 'scheduled',
-          token: 'NALAM-' + Math.floor(10000 + Math.random() * 90000),
-          notes: bookingData.notes || 'Consultation request'
-        };
-        appointmentsList.unshift(newApp);
-        return delayedPromise(newApp);
+        return request('POST', '/api/appointments', bookingData).catch(function () {
+          var doc = doctorsList.find(function (d) { return d.id === bookingData.doctorId; }) || { name: 'Doctor Visit', specialty: 'General' };
+          var newApp = {
+            id: 'app_' + Date.now(),
+            patientId: 'pat_1',
+            patientName: 'Muthuswamy S.',
+            doctorId: bookingData.doctorId,
+            doctorName: doc.name,
+            specialty: doc.specialty,
+            village: bookingData.village || doc.village || 'Melur',
+            date: bookingData.date,
+            time: bookingData.time,
+            status: 'scheduled',
+            token: 'NALAM-' + Math.floor(10000 + Math.random() * 90000),
+            notes: bookingData.notes || 'Consultation request'
+          };
+          appointmentsList.unshift(newApp);
+          return delayedPromise(newApp);
+        });
       },
 
       updateAppointmentStatus: function (id, status) {
-        var app = appointmentsList.find(function (a) { return a.id === id; });
-        if (app) {
-          app.status = status;
-          return delayedPromise(app);
-        }
-        return $q.reject({ message: 'Appointment not found.' });
+        return request('PUT', '/api/appointments/' + id, { status: status }).catch(function () {
+          var app = appointmentsList.find(function (a) { return a.id === id; });
+          if (app) {
+            app.status = status;
+            return delayedPromise(app);
+          }
+          return $q.reject({ message: 'Appointment not found.' });
+        });
       },
 
       cancelAppointment: function (id) {
-        return this.updateAppointmentStatus(id, 'cancelled');
+        return request('DELETE', '/api/appointments/' + id).catch(function () {
+          return this.updateAppointmentStatus(id, 'cancelled');
+        }.bind(this));
       },
 
       // Reminders CRUD
       getReminders: function () {
-        return delayedPromise(remindersList);
+        return request('GET', '/api/reminders').catch(function () {
+          return delayedPromise(remindersList);
+        });
       },
 
       createReminder: function (reminderData) {
-        var newRem = {
-          id: 'rem_' + Date.now(),
-          name: reminderData.name,
-          slot: reminderData.slot || 'Morning',
-          instruction: reminderData.instruction || 'Take with water',
-          completed: false
-        };
-        remindersList.unshift(newRem);
-        return delayedPromise(newRem);
+        return request('POST', '/api/reminders', reminderData).catch(function () {
+          var newRem = {
+            id: 'rem_' + Date.now(),
+            name: reminderData.name,
+            slot: reminderData.slot || 'Morning',
+            instruction: reminderData.instruction || 'Take with water',
+            completed: false
+          };
+          remindersList.unshift(newRem);
+          return delayedPromise(newRem);
+        });
       },
 
       toggleReminderComplete: function (id) {
-        var rem = remindersList.find(function (r) { return r.id === id; });
-        if (rem) {
-          rem.completed = !rem.completed;
-          return delayedPromise(rem);
-        }
-        return $q.reject({ message: 'Reminder not found.' });
+        return request('PUT', '/api/reminders/' + id, {}).catch(function () {
+          var rem = remindersList.find(function (r) { return r.id === id; });
+          if (rem) {
+            rem.completed = !rem.completed;
+            return delayedPromise(rem);
+          }
+          return $q.reject({ message: 'Reminder not found.' });
+        });
       },
 
       deleteReminder: function (id) {
-        var index = remindersList.findIndex(function (r) { return r.id === id; });
-        if (index !== -1) {
-          remindersList.splice(index, 1);
-          return delayedPromise({ message: 'Reminder deleted.' });
-        }
-        return $q.reject({ message: 'Reminder deletion failed.' });
+        return request('DELETE', '/api/reminders/' + id).catch(function () {
+          var index = remindersList.findIndex(function (r) { return r.id === id; });
+          if (index !== -1) {
+            remindersList.splice(index, 1);
+            return delayedPromise({ message: 'Reminder deleted.' });
+          }
+          return $q.reject({ message: 'Reminder deletion failed.' });
+        });
       },
 
       // Health Camps CRUD
       getCamps: function () {
-        return delayedPromise(campsList);
+        return request('GET', '/api/camps').catch(function () {
+          return delayedPromise(campsList);
+        });
       },
 
       createCamp: function (campData) {
-        var newCamp = {
-          id: 'camp_' + Date.now(),
-          title: campData.title,
-          village: campData.village,
-          date: campData.date,
-          doctor: campData.doctor || 'Dr. Arumugam K.',
-          specialty: campData.specialty || 'General Medicine',
-          description: campData.description,
-          registeredCount: 0,
-          isRegistered: false
-        };
-        campsList.unshift(newCamp);
-        return delayedPromise(newCamp);
+        return request('POST', '/api/camps', campData).catch(function () {
+          var newCamp = {
+            id: 'camp_' + Date.now(),
+            title: campData.title,
+            village: campData.village,
+            date: campData.date,
+            doctor: campData.doctor || 'Dr. Arumugam K.',
+            specialty: campData.specialty || 'General Medicine',
+            description: campData.description,
+            registeredCount: 0,
+            isRegistered: false
+          };
+          campsList.unshift(newCamp);
+          return delayedPromise(newCamp);
+        });
       },
 
       deleteCamp: function (id) {
-        var index = campsList.findIndex(function (c) { return c.id === id; });
-        if (index !== -1) {
-          campsList.splice(index, 1);
-          return delayedPromise({ message: 'Camp removed.' });
-        }
-        return $q.reject({ message: 'Camp deletion failed.' });
+        return request('DELETE', '/api/camps/' + id).catch(function () {
+          var index = campsList.findIndex(function (c) { return c.id === id; });
+          if (index !== -1) {
+            campsList.splice(index, 1);
+            return delayedPromise({ message: 'Camp removed.' });
+          }
+          return $q.reject({ message: 'Camp deletion failed.' });
+        });
       },
 
       registerCampInterest: function (id) {
-        var camp = campsList.find(function (c) { return c.id === id; });
-        if (camp) {
-          camp.isRegistered = !camp.isRegistered;
-          camp.registeredCount += camp.isRegistered ? 1 : -1;
-          return delayedPromise(camp);
-        }
-        return $q.reject({ message: 'Camp not found.' });
+        return request('POST', '/api/camps/' + id + '/register').catch(function () {
+          var camp = campsList.find(function (c) { return c.id === id; });
+          if (camp) {
+            camp.isRegistered = !camp.isRegistered;
+            camp.registeredCount += camp.isRegistered ? 1 : -1;
+            return delayedPromise(camp);
+          }
+          return $q.reject({ message: 'Camp not found.' });
+        });
       },
 
       // Awareness
       getAwarenessArticles: function () {
-        return delayedPromise(awarenessArticlesList);
+        return request('GET', '/api/awareness').catch(function () {
+          return delayedPromise(awarenessArticlesList);
+        });
       },
 
       // Emergency
       getEmergencyContacts: function () {
-        return delayedPromise(emergencyContactsList);
+        return request('GET', '/api/emergency').catch(function () {
+          return delayedPromise(emergencyContactsList);
+        });
       },
 
       // Summaries
       getPatientSummary: function () {
-        return delayedPromise({
-          appointments: appointmentsList.length,
-          reminders: remindersList.length,
-          completedDoses: remindersList.filter(function(r){ return r.completed; }).length
+        return $q.all([this.getAppointments(), this.getReminders()]).then(function (res) {
+          var apps = res[0] || [];
+          var rems = res[1] || [];
+          return {
+            appointments: apps.length,
+            reminders: rems.length,
+            completedDoses: rems.filter(function (r) { return r.completed; }).length
+          };
+        }).catch(function () {
+          return delayedPromise({
+            appointments: appointmentsList.length,
+            reminders: remindersList.length,
+            completedDoses: remindersList.filter(function(r){ return r.completed; }).length
+          });
         });
       },
 
       getDoctorSummary: function () {
-        return delayedPromise({
-          todayConsultations: appointmentsList.filter(function(a){ return a.status === 'scheduled'; }).length,
-          totalPatients: patientsList.length,
-          completedVisits: appointmentsList.filter(function(a){ return a.status === 'completed'; }).length,
-          activeCamps: campsList.length
+        return $q.all([this.getAppointments(), this.getPatients(), this.getCamps()]).then(function (res) {
+          var apps = res[0] || [];
+          var pats = res[1] || [];
+          var camps = res[2] || [];
+          return {
+            todayConsultations: apps.filter(function (a) { return a.status === 'scheduled'; }).length,
+            totalPatients: pats.length,
+            completedVisits: apps.filter(function (a) { return a.status === 'completed'; }).length,
+            activeCamps: camps.length
+          };
+        }).catch(function () {
+          return delayedPromise({
+            todayConsultations: appointmentsList.filter(function(a){ return a.status === 'scheduled'; }).length,
+            totalPatients: patientsList.length,
+            completedVisits: appointmentsList.filter(function(a){ return a.status === 'completed'; }).length,
+            activeCamps: campsList.length
+          });
         });
       },
 
       getAdminSummary: function () {
-        return delayedPromise({
-          users: patientsList.length + doctorsList.length + 1,
-          doctors: doctorsList.length,
-          appointments: appointmentsList.length,
-          reminders: remindersList.length,
-          camps: campsList.length
+        return request('GET', '/api/admin/summary').catch(function () {
+          return delayedPromise({
+            users: patientsList.length + doctorsList.length + 1,
+            doctors: doctorsList.length,
+            appointments: appointmentsList.length,
+            reminders: remindersList.length,
+            camps: campsList.length
+          });
         });
       }
     };
   }]);
 })();
+

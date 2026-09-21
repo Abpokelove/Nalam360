@@ -41,10 +41,14 @@
         Reset onboarding state to test fresh visitor onboarding flow (Requirement 8).
       </p>
 
-      <div style="border-top: 1px dashed var(--surface-border); padding-top: 1rem;">
+      <div style="border-top: 1px dashed var(--surface-border); padding-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem;">
         <button type="button" class="btn btn-outline" style="font-size: 0.85rem; padding: 0.5rem 1rem; border-color: var(--surface-border);" ng-click="resetDevelopmentState()">
           <span class="material-symbols-outlined" style="font-size: 1rem;">restart_alt</span>
           <span>Reset App State (Restart Onboarding)</span>
+        </button>
+        <button type="button" class="btn btn-soft" style="font-size: 0.85rem; padding: 0.5rem 1rem; color: var(--error);" ng-click="logout()">
+          <span class="material-symbols-outlined" style="font-size: 1rem;">logout</span>
+          <span>Sign Out</span>
         </button>
       </div>
     </div>
