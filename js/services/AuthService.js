@@ -98,7 +98,7 @@
       },
 
       getDashboardRoute: function () {
-        if (!this.isLoggedIn()) return '/login';
+        if (!this.isLoggedIn()) return '/onboarding';
         var role = state.currentUser.role;
         if (role === 'doctor') return '/doctor/dashboard';
         if (role === 'admin') return '/admin/dashboard';

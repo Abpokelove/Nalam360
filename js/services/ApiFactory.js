@@ -101,6 +101,17 @@
         });
       },
 
+      // System Accounts (Admin view)
+      getUsers: function () {
+        return request('GET', '/api/users').catch(function () {
+          return delayedPromise([
+            { id: 'u_1', name: 'Muthuswamy S.', email: 'patient@nalam360.test', mobile: '9876543210', role: 'patient', village: 'Melur' },
+            { id: 'u_2', name: 'Dr. Arumugam K.', email: 'doctor@nalam360.test', mobile: '9888888888', role: 'doctor', village: 'Melur' },
+            { id: 'u_3', name: 'Nalam Administrator', email: 'admin@nalam360.test', mobile: '9999999999', role: 'admin', village: 'Central Office' }
+          ]);
+        });
+      },
+
       // Doctors CRUD
       getDoctors: function () {
         return request('GET', '/api/doctors').catch(function () {
@@ -109,50 +120,22 @@
       },
 
       getDoctorById: function (id) {
-        return request('GET', '/api/doctors/' + id).catch(function () {
+        return request('GET', '/api/doctors/' + id).catch(function (err) {
           var found = doctorsList.find(function (d) { return d.id === id; });
-          return found ? delayedPromise(found) : $q.reject({ message: 'Doctor not found.' });
+          return found ? delayedPromise(found) : $q.reject(err || { message: 'Doctor not found.' });
         });
       },
 
       createDoctor: function (doctorData) {
-        return request('POST', '/api/doctors', doctorData).catch(function () {
-          var newDoc = {
-            id: 'doc_' + Date.now(),
-            name: doctorData.name,
-            specialty: doctorData.specialty,
-            village: doctorData.village,
-            experience: Number(doctorData.experience || 0),
-            fee: Number(doctorData.fee || 0),
-            available: doctorData.available !== false,
-            initials: (doctorData.name || 'DR').split(' ').map(function(n){ return n[0]; }).join('').substring(0, 2).toUpperCase(),
-            nextSlot: 'Available by Appointment'
-          };
-          doctorsList.push(newDoc);
-          return delayedPromise(newDoc);
-        });
+        return request('POST', '/api/doctors', doctorData);
       },
 
       updateDoctor: function (id, doctorData) {
-        return request('PUT', '/api/doctors/' + id, doctorData).catch(function () {
-          var index = doctorsList.findIndex(function (d) { return d.id === id; });
-          if (index !== -1) {
-            angular.extend(doctorsList[index], doctorData);
-            return delayedPromise(doctorsList[index]);
-          }
-          return $q.reject({ message: 'Doctor update failed.' });
-        });
+        return request('PUT', '/api/doctors/' + id, doctorData);
       },
 
       deleteDoctor: function (id) {
-        return request('DELETE', '/api/doctors/' + id).catch(function () {
-          var index = doctorsList.findIndex(function (d) { return d.id === id; });
-          if (index !== -1) {
-            doctorsList.splice(index, 1);
-            return delayedPromise({ message: 'Doctor removed from care directory.' });
-          }
-          return $q.reject({ message: 'Doctor deletion failed.' });
-        });
+        return request('DELETE', '/api/doctors/' + id);
       },
 
       // Appointments CRUD

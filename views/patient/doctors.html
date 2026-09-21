@@ -6,9 +6,9 @@
       <h1 class="page-header-title">Connected Doctors Network</h1>
       <p class="page-header-subtitle">Registered medical specialists serving rural health centers</p>
     </div>
-    <a href="#/patient/healthcare" class="btn btn-primary">
-      <span class="material-symbols-outlined">event</span>
-      <span>Book Consultation</span>
+    <a href="#/patient/healthcare" class="btn btn-soft">
+      <span class="material-symbols-outlined">filter_alt</span>
+      <span>Filter & Search Care</span>
     </a>
   </div>
 
@@ -43,11 +43,62 @@
           <div><strong>Availability:</strong> <status-pill value="{{ doc.available ? 'available' : 'unavailable' }}"></status-pill></div>
         </div>
 
-        <a href="#/patient/healthcare" class="btn btn-outline" style="width: 100%;">
+        <button class="btn btn-primary" style="width: 100%;" ng-click="openBookingModal(doc)" ng-disabled="!doc.available">
           <span class="material-symbols-outlined">calendar_month</span>
           <span>Schedule Visit</span>
-        </a>
+        </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Interactive Appointment Booking Modal -->
+  <div class="modal-backdrop" ng-if="bookingModalOpen">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Book Consultation</h3>
+        <button class="btn btn-soft" style="padding: 0.3rem 0.5rem;" ng-click="closeBookingModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 0.85rem; padding: 0.85rem; background: var(--surface-muted); border-radius: var(--radius-md); margin-bottom: 1.25rem;">
+        <div class="avatar-circle">{{ selectedDoctor.name | initials }}</div>
+        <div>
+          <div style="font-weight: 700;">{{ selectedDoctor.name }}</div>
+          <div style="font-size: 0.85rem; color: var(--text-muted);">{{ selectedDoctor.specialty }} · {{ selectedDoctor.village }}</div>
+        </div>
+      </div>
+
+      <form name="bookingFormNg" ng-submit="confirmBooking()" novalidate>
+        <div class="form-group">
+          <label>Select Preferred Date</label>
+          <input type="date" class="form-control" ng-model="bookingForm.date" required/>
+        </div>
+
+        <div class="form-group">
+          <label>Select Time Slot</label>
+          <select class="form-control" ng-model="bookingForm.time" required>
+            <option value="09:00 AM">09:00 AM</option>
+            <option value="10:30 AM">10:30 AM</option>
+            <option value="02:00 PM">02:00 PM</option>
+            <option value="04:30 PM">04:30 PM</option>
+            <option value="06:00 PM">06:00 PM</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Village Sector Location</label>
+          <input type="text" class="form-control" ng-model="bookingForm.village" required/>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">
+          <button type="button" class="btn btn-soft" ng-click="closeBookingModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" ng-disabled="bookingFormNg.$invalid || submittingBooking">
+            <span class="spinner" style="width: 16px; height: 16px; border-width: 2px;" ng-if="submittingBooking"></span>
+            <span>{{ submittingBooking ? 'Confirming...' : 'Confirm Appointment' }}</span>
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 

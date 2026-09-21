@@ -3,21 +3,26 @@
 
   angular.module('Nalam360App').controller('AdminController', [
     '$scope',
+    '$q',
     'ApiFactory',
     'NotificationService',
-    function ($scope, ApiFactory, NotificationService) {
+    function ($scope, $q, ApiFactory, NotificationService) {
 
       $scope.loading = true;
       $scope.error = null;
 
       $scope.summary = {};
       $scope.doctors = [];
+      $scope.users = [];
 
       // Doctor Add/Edit Modal
       $scope.isDoctorModalOpen = false;
       $scope.editingDoctor = null;
       $scope.doctorForm = {
         name: '',
+        email: '',
+        mobile: '',
+        password: 'doctor123',
         specialty: 'General Medicine',
         village: 'Melur',
         experience: 5,
@@ -32,11 +37,14 @@
         $scope.loading = true;
         $scope.error = null;
 
-        ApiFactory.getAdminSummary().then(function (sumRes) {
-          $scope.summary = sumRes;
-          return ApiFactory.getDoctors();
-        }).then(function (docRes) {
-          $scope.doctors = docRes;
+        $q.all([
+          ApiFactory.getAdminSummary().catch(function () { return {}; }),
+          ApiFactory.getDoctors().catch(function () { return []; }),
+          ApiFactory.getUsers().catch(function () { return []; })
+        ]).then(function (results) {
+          $scope.summary = results[0] || {};
+          $scope.doctors = results[1] || [];
+          $scope.users = results[2] || [];
           $scope.loading = false;
         }).catch(function (err) {
           $scope.loading = false;
@@ -49,6 +57,9 @@
         $scope.editingDoctor = null;
         $scope.doctorForm = {
           name: '',
+          email: '',
+          mobile: '',
+          password: 'doctor123',
           specialty: 'General Medicine',
           village: 'Melur',
           experience: 5,
@@ -83,17 +94,17 @@
             }
             NotificationService.success('Doctor details updated.');
             $scope.closeDoctorModal();
-          }).catch(function () {
-            NotificationService.error('Failed to update doctor.');
+          }).catch(function (err) {
+            NotificationService.error((err && err.message) || 'Failed to update doctor.');
           });
         } else {
           ApiFactory.createDoctor($scope.doctorForm).then(function (created) {
             $scope.doctors.push(created);
             $scope.summary.doctors = ($scope.summary.doctors || 0) + 1;
-            NotificationService.success('New doctor registered in network!');
+            NotificationService.success('Doctor account created! Email: ' + (created.email || $scope.doctorForm.email));
             $scope.closeDoctorModal();
-          }).catch(function () {
-            NotificationService.error('Failed to register doctor.');
+          }).catch(function (err) {
+            NotificationService.error((err && err.message) || 'Failed to register doctor.');
           });
         }
       };
@@ -110,8 +121,8 @@
           }
           $scope.summary.doctors = Math.max(0, ($scope.summary.doctors || 1) - 1);
           NotificationService.info(doctor.name + ' removed.');
-        }).catch(function () {
-          NotificationService.error('Failed to delete doctor.');
+        }).catch(function (err) {
+          NotificationService.error((err && err.message) || 'Failed to delete doctor.');
         });
       };
 

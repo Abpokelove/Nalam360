@@ -4,8 +4,12 @@
   <div class="page-header">
     <div>
       <h1 class="page-header-title">Admin Doctor Directory</h1>
-      <p class="page-header-subtitle">Manage registered medical officers and clinic assignments across rural health centers</p>
+      <p class="page-header-subtitle">Manage registered medical officers and create doctor login accounts for rural health centers</p>
     </div>
+    <button class="btn btn-primary" ng-click="openAddDoctorModal()">
+      <span class="material-symbols-outlined">person_add</span>
+      <span>Add New Doctor Account</span>
+    </button>
   </div>
 
   <loading-spinner message="Loading doctor directory..." ng-if="loading"></loading-spinner>
@@ -16,24 +20,115 @@
   </div>
 
   <div ng-if="!loading && !error">
-    <div class="grid-3">
-      <div class="card hoverable" ng-repeat="doc in doctors">
-        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-          <div class="avatar-circle" style="width: 48px; height: 48px; background: var(--secondary-subtle); color: var(--secondary-dark);">
-            {{ doc.name | initials }}
+    <empty-state icon="person_off" title="No doctors in directory" desc="Click 'Add New Doctor Account' above to register a medical officer." ng-if="doctors.length === 0"></empty-state>
+
+    <div class="grid-3" ng-if="doctors.length > 0">
+      <div class="card hoverable" style="display: flex; flex-direction: column; justify-content: space-between;" ng-repeat="doc in doctors">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.85rem;">
+              <div class="avatar-circle" style="width: 48px; height: 48px; background: var(--secondary-subtle); color: var(--secondary-dark);">
+                {{ doc.name | initials }}
+              </div>
+              <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">{{ doc.name }}</h3>
+                <span class="status-pill available">{{ doc.specialty }}</span>
+              </div>
+            </div>
+            <status-pill value="{{ doc.available ? 'available' : 'unavailable' }}"></status-pill>
           </div>
-          <div>
-            <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">{{ doc.name }}</h3>
-            <span class="status-pill available">{{ doc.specialty }}</span>
+
+          <div style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.25rem; background: var(--surface-muted); padding: 0.85rem; border-radius: var(--radius-md);">
+            <div><strong>Primary Center:</strong> {{ doc.village }} PHC</div>
+            <div><strong>Account Email:</strong> {{ doc.email || 'doctor@nalam360.test' }}</div>
+            <div><strong>Experience:</strong> {{ doc.experience }} years</div>
+            <div><strong>Consultation Fee:</strong> ₹{{ doc.fee }}</div>
           </div>
         </div>
 
-        <div style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem;">
-          <div><strong>Primary Center:</strong> {{ doc.center || doc.village }} PHC</div>
-          <div><strong>Consultation Fee:</strong> {{ doc.fee | inrCurrency }}</div>
-          <div><strong>Availability:</strong> {{ doc.availability || 'Mon-Sat 9AM - 4PM' }}</div>
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+          <button class="btn btn-soft" style="flex: 1; padding: 0.4rem;" ng-click="openEditDoctorModal(doc)">
+            <span class="material-symbols-outlined" style="font-size: 1rem;">edit</span>
+            <span>Edit</span>
+          </button>
+          <button class="btn btn-soft" style="flex: 1; padding: 0.4rem; color: var(--error);" ng-click="deleteDoctor(doc)">
+            <span class="material-symbols-outlined" style="font-size: 1rem;">delete</span>
+            <span>Remove</span>
+          </button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Create & Edit Doctor Account Modal -->
+  <div class="modal-backdrop" ng-if="isDoctorModalOpen">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">{{ editingDoctor ? 'Edit Doctor Profile & Credentials' : 'Add New Doctor Account' }}</h3>
+        <button class="btn btn-soft" style="padding: 0.3rem 0.5rem;" ng-click="closeDoctorModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <form name="adminDocFormNg" ng-submit="saveDoctor()" novalidate>
+        <div class="form-group">
+          <label>Doctor Full Name</label>
+          <input type="text" class="form-control" placeholder="e.g. Dr. Anbarasan M." ng-model="doctorForm.name" required/>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Login Email Address</label>
+            <input type="email" class="form-control" placeholder="e.g. anbarasan@nalam360.test" ng-model="doctorForm.email"/>
+          </div>
+
+          <div class="form-group">
+            <label>10-Digit Mobile Number</label>
+            <input type="text" class="form-control" placeholder="e.g. 9888877777" ng-model="doctorForm.mobile"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Account Password {{ editingDoctor ? '(Leave blank to keep unchanged)' : '(Set Login Password for Doctor)' }}</label>
+          <input type="password" class="form-control" placeholder="Enter password (minimum 4 characters)" ng-model="doctorForm.password" ng-required="!editingDoctor"/>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Medical Specialty</label>
+            <select class="form-control" ng-model="doctorForm.specialty" required>
+              <option ng-repeat="spec in specialtiesList" value="{{ spec }}">{{ spec }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Village Sector PHC</label>
+            <select class="form-control" ng-model="doctorForm.village" required>
+              <option ng-repeat="v in villagesList" value="{{ v }}">{{ v }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Experience (Years)</label>
+            <input type="number" min="0" class="form-control" ng-model="doctorForm.experience" required/>
+          </div>
+
+          <div class="form-group">
+            <label>Consultation Fee (₹)</label>
+            <input type="number" min="0" class="form-control" ng-model="doctorForm.fee" required/>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">
+          <button type="button" class="btn btn-soft" ng-click="closeDoctorModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" ng-disabled="adminDocFormNg.$invalid">
+            <span class="material-symbols-outlined">save</span>
+            <span>{{ editingDoctor ? 'Save Doctor Changes' : 'Create Doctor Account' }}</span>
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 

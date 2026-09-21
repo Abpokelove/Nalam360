@@ -93,7 +93,7 @@
       $scope.logout = function () {
         AuthService.logout();
         NotificationService.info('You have signed out.');
-        $location.path('/login');
+        $location.path('/onboarding');
       };
 
       $scope.removeToast = function (id) {

@@ -321,28 +321,79 @@ app.get('/api/doctors/:id', auth(), async (req, res) => {
 
 app.post('/api/doctors', auth('admin'), async (req, res) => {
   try {
-    const doc = await Doctor.create(req.body);
-    res.status(201).json({ ...doc.toObject(), id: String(doc._id) });
+    const { name, email, mobile, password, specialty, village, experience, fee, available } = req.body;
+    
+    if (!name || !specialty || !village) {
+      return res.status(400).json({ success: false, message: 'Doctor name, specialty, and village sector are required.' });
+    }
+
+    const cleanMobile = mobile ? String(mobile).replace(/\D/g, '') : `98888${Math.floor(10000 + Math.random() * 90000)}`;
+    const docEmail = (email || '').trim().toLowerCase() || `doctor_${Date.now()}@nalam360.test`;
+    const docPassword = password || 'doctor123';
+
+    // 1. Create Doctor Profile Entry
+    const initials = (name || 'DR').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+    const doc = await Doctor.create({
+      name: name.trim(),
+      email: docEmail,
+      specialty: specialty.trim(),
+      village: village.trim(),
+      experience: Number(experience || 0),
+      fee: Number(fee || 0),
+      available: available !== false,
+      initials,
+      nextSlot: 'Available Today'
+    });
+
+    // 2. Create Doctor User Login Account (role: 'doctor')
+    const existingUser = await User.findOne({ $or: [{ email: docEmail }, { mobile: cleanMobile }] });
+    if (!existingUser) {
+      await User.create({
+        name: name.trim(),
+        email: docEmail,
+        mobile: cleanMobile,
+        passwordHash: createPasswordHash(docPassword),
+        role: 'doctor',
+        village: village.trim(),
+        gender: 'Male'
+      });
+    }
+
+    res.status(201).json({ ...doc.toObject(), id: String(doc._id), mobile: cleanMobile, email: docEmail });
   } catch (error) {
-    handleError(res, error, 'Failed to add doctor.');
+    handleError(res, error, 'Failed to create doctor profile and login account.');
   }
 });
 
 app.put('/api/doctors/:id', auth('admin'), async (req, res) => {
   try {
-    const doc = await Doctor.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true }).lean();
+    const { password, ...doctorData } = req.body;
+    const doc = await Doctor.findByIdAndUpdate(req.params.id, doctorData, { new: true, runValidators: true }).lean();
     if (!doc) return res.status(404).json({ success: false, message: 'Doctor not found.' });
+
+    // Update associated User account password if provided
+    if (password && password.length >= 4 && doc.email) {
+      const user = await User.findOne({ email: doc.email, role: 'doctor' });
+      if (user) {
+        user.passwordHash = createPasswordHash(password);
+        await user.save();
+      }
+    }
+
     res.json({ ...doc, id: String(doc._id) });
   } catch (error) {
-    handleError(res, error, 'Failed to update doctor.');
+    handleError(res, error, 'Failed to update doctor details.');
   }
 });
 
 app.delete('/api/doctors/:id', auth('admin'), async (req, res) => {
   try {
     const doc = await Doctor.findByIdAndDelete(req.params.id);
+    if (doc && doc.email) {
+      await User.deleteOne({ email: doc.email, role: 'doctor' });
+    }
     if (!doc) return res.status(404).json({ success: false, message: 'Doctor not found.' });
-    res.json({ success: true, message: 'Doctor removed from care directory.' });
+    res.json({ success: true, message: 'Doctor profile and login account removed from directory.' });
   } catch (error) {
     handleError(res, error, 'Failed to delete doctor.');
   }
@@ -601,6 +652,16 @@ app.get('/api/patients', auth(['doctor', 'admin']), async (req, res) => {
     res.json(result);
   } catch (error) {
     handleError(res, error, 'Failed to fetch patients roster.');
+  }
+});
+
+// All System Users (Admin Access)
+app.get('/api/users', auth('admin'), async (req, res) => {
+  try {
+    const users = await User.find().select('-passwordHash').sort({ createdAt: -1 }).lean();
+    res.json(users.map(u => publicUser(u)));
+  } catch (error) {
+    handleError(res, error, 'Failed to fetch system user accounts.');
   }
 });
 

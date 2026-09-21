@@ -185,8 +185,7 @@
       .otherwise({
         redirectTo: function () {
           var auth = angular.element(document.body).injector().get('AuthService');
-          if (!auth.isOnboardingDone()) return '/onboarding';
-          if (!auth.isLoggedIn()) return '/login';
+          if (!auth.isLoggedIn()) return '/onboarding';
           return auth.getDashboardRoute();
         }
       });
@@ -197,29 +196,22 @@
      ========================================================================= */
   app.run(['$rootScope', '$location', 'AuthService', 'NotificationService', function ($rootScope, $location, AuthService, NotificationService) {
     $rootScope.$on('$routeChangeStart', function (event, next) {
-      // 1. Onboarding check on first launch or after development state reset
-      if (!AuthService.isOnboardingDone() && next && next.originalPath !== '/onboarding') {
+      // 1. Unauthenticated user attempt to visit protected route -> redirect to /onboarding
+      if (next && next.requiresAuth && !AuthService.isLoggedIn()) {
         event.preventDefault();
+        NotificationService.warning('Please sign in to access Nalam360.');
         $location.path('/onboarding');
         return;
       }
 
-      // 2. Unauthenticated user attempt to visit protected route -> redirect to /login
-      if (next && next.requiresAuth && !AuthService.isLoggedIn()) {
-        event.preventDefault();
-        NotificationService.warning('Please sign in to access Nalam360.');
-        $location.path('/login');
-        return;
-      }
-
-      // 3. Authenticated user trying to visit /login or /register or /onboarding -> redirect to role dashboard
+      // 2. Authenticated user trying to visit /login or /register or /onboarding -> redirect to role dashboard
       if (AuthService.isLoggedIn() && next && (next.originalPath === '/login' || next.originalPath === '/register' || next.originalPath === '/onboarding')) {
         event.preventDefault();
         $location.path(AuthService.getDashboardRoute());
         return;
       }
 
-      // 4. Role Authorization Guard
+      // 3. Role Authorization Guard
       if (next && next.roles && AuthService.isLoggedIn()) {
         var userRole = AuthService.getRole();
         if (next.roles.indexOf(userRole) === -1) {

@@ -32,7 +32,7 @@
     <div class="card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
         <h3 style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700;">System User Accounts</h3>
-        <span class="status-pill available">{{ (summary.totalPatients || 0) + (summary.totalDoctors || 0) + 1 }} Total Accounts</span>
+        <span class="status-pill available">{{ users.length || summary.users || 3 }} Total Registered Accounts</span>
       </div>
 
       <div class="table-container">
@@ -40,32 +40,22 @@
           <thead>
             <tr>
               <th>Account Name</th>
-              <th>Email / Identifier</th>
+              <th>Email / Mobile Identifier</th>
               <th>Role</th>
               <th>Sector Village</th>
               <th>Status</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><strong>Muthuswamy S.</strong></td>
-              <td>patient@nalam360.test</td>
-              <td><span class="status-pill available">Patient</span></td>
-              <td>Melur</td>
-              <td><status-pill value="active"></status-pill></td>
-            </tr>
-            <tr>
-              <td><strong>Dr. Anbarasan M.</strong></td>
-              <td>doctor@nalam360.test</td>
-              <td><span class="status-pill scheduled">Doctor</span></td>
-              <td>Melur PHC</td>
-              <td><status-pill value="active"></status-pill></td>
-            </tr>
-            <tr>
-              <td><strong>System Administrator</strong></td>
-              <td>admin@nalam360.test</td>
-              <td><span class="status-pill pending">Admin</span></td>
-              <td>Central HQ</td>
+            <tr ng-repeat="u in users">
+              <td><strong>{{ u.name }}</strong></td>
+              <td>{{ u.email || u.mobile }}</td>
+              <td>
+                <span class="status-pill" ng-class="{'available': u.role === 'patient', 'scheduled': u.role === 'doctor', 'pending': u.role === 'admin'}">
+                  {{ u.role | statusLabel }}
+                </span>
+              </td>
+              <td>{{ u.village }}</td>
               <td><status-pill value="active"></status-pill></td>
             </tr>
           </tbody>
