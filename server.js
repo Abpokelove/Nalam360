@@ -116,6 +116,91 @@ function createPasswordHash(password) {
   return `${salt}:${hashPassword(password, salt)}`;
 }
 
+const fallbackUsers = [
+  {
+    _id: 'seed_patient',
+    name: 'Muthuswamy S.',
+    email: 'patient@nalam360.test',
+    mobile: '9876543210',
+    passwordHash: createPasswordHash('patient123'),
+    role: 'patient',
+    village: 'Melur',
+    gender: 'Male',
+    dob: '1982-06-15'
+  },
+  {
+    _id: 'seed_doctor',
+    name: 'Dr. Arumugam K.',
+    email: 'doctor@nalam360.test',
+    mobile: '9888888888',
+    passwordHash: createPasswordHash('doctor123'),
+    role: 'doctor',
+    village: 'Melur',
+    gender: 'Male'
+  },
+  {
+    _id: 'seed_admin',
+    name: 'Nalam Administrator',
+    email: 'admin@nalam360.test',
+    mobile: '9999999999',
+    passwordHash: createPasswordHash('admin123'),
+    role: 'admin',
+    village: 'Central Office',
+    gender: 'Female'
+  }
+];
+
+const fallbackDoctors = [
+  { _id: 'doc_1', name: 'Dr. Arumugam K.', email: 'doctor@nalam360.test', specialty: 'General Medicine', village: 'Melur', experience: 14, fee: 150, available: true, initials: 'AK', nextSlot: 'Today, 4:30 PM' },
+  { _id: 'doc_2', name: 'Dr. Meenakshi S.', email: 'meenakshi@nalam360.test', specialty: 'Pediatrics', village: 'Karur', experience: 10, fee: 200, available: true, initials: 'MS', nextSlot: 'Tomorrow, 10:00 AM' },
+  { _id: 'doc_3', name: 'Dr. Ramanathan V.', email: 'raman@nalam360.test', specialty: 'Cardiology', village: 'Hosur', experience: 18, fee: 350, available: true, initials: 'RV', nextSlot: 'Today, 6:00 PM' },
+  { _id: 'doc_4', name: 'Dr. Kavitha P.', email: 'kavitha@nalam360.test', specialty: 'Gynecology', village: 'Sivakasi', experience: 12, fee: 250, available: true, initials: 'KP', nextSlot: 'Tomorrow, 11:30 AM' },
+  { _id: 'doc_5', name: 'Dr. Murugan T.', email: 'murugan@nalam360.test', specialty: 'Ophthalmology', village: 'Pollachi', experience: 8, fee: 180, available: false, initials: 'MT', nextSlot: 'Friday, 2:00 PM' }
+];
+
+const fallbackPatients = [
+  { id: 'pat_1', name: 'Muthuswamy S.', mobile: '9876543210', village: 'Melur', gender: 'Male', age: 44, primaryConcern: 'Hypertension Checkup', lastVisit: '2026-09-10' },
+  { id: 'pat_2', name: 'Rajeshwari K.', mobile: '9812345678', village: 'Karur', gender: 'Female', age: 38, primaryConcern: 'Diabetes Followup', lastVisit: '2026-09-12' },
+  { id: 'pat_3', name: 'Abdul B.', mobile: '9845678901', village: 'Pollachi', gender: 'Male', age: 52, primaryConcern: 'Eye Strain Screening', lastVisit: '2026-08-28' }
+];
+
+const fallbackAppointments = [
+  { _id: 'app_1', patientId: 'seed_patient', patientName: 'Muthuswamy S.', doctorId: 'doc_1', doctorName: 'Dr. Arumugam K.', specialty: 'General Medicine', village: 'Melur', date: '2026-09-22', time: '10:30 AM', status: 'scheduled', token: 'NALAM-48291', notes: 'Routine blood pressure review' },
+  { _id: 'app_2', patientId: 'seed_patient', patientName: 'Muthuswamy S.', doctorId: 'doc_1', doctorName: 'Dr. Arumugam K.', specialty: 'General Medicine', village: 'Melur', date: '2026-09-23', time: '04:00 PM', status: 'scheduled', token: 'NALAM-88123', notes: 'Follow-up consultation' }
+];
+
+const fallbackReminders = [
+  { _id: 'rem_1', patientId: 'seed_patient', name: 'Metformin 500mg', slot: 'Morning', instruction: 'Take after breakfast', completed: true },
+  { _id: 'rem_2', patientId: 'seed_patient', name: 'Amlodipine 5mg', slot: 'Morning', instruction: 'With water after breakfast', completed: true },
+  { _id: 'rem_3', patientId: 'seed_patient', name: 'Multivitamin', slot: 'Afternoon', instruction: 'After lunch', completed: false }
+];
+
+const fallbackCamps = [
+  { _id: 'camp_1', title: 'Free Village Eye Screening Camp', village: 'Melur', date: 'Oct 24, 2026', doctor: 'Dr. Murugan T.', specialty: 'Ophthalmology', description: 'Free vision checks and cataract screenings.', registeredCount: 42, registeredUsers: [] },
+  { _id: 'camp_2', title: 'Community Diabetes & BP Screening', village: 'Karur', date: 'Oct 28, 2026', doctor: 'Dr. Arumugam K.', specialty: 'General Medicine', description: 'BP and sugar screening and counseling.', registeredCount: 68, registeredUsers: ['seed_patient'] },
+  { _id: 'camp_3', title: 'Pediatric Wellness & Nutrition Camp', village: 'Sivakasi', date: 'Nov 05, 2026', doctor: 'Dr. Meenakshi S.', specialty: 'Pediatrics', description: 'Child growth and nutrition support.', registeredCount: 35, registeredUsers: [] }
+];
+
+const fallbackAwareness = [
+  { _id: 'art_1', title: 'Hydration During Agricultural Field Work', category: 'General Health', readTime: '3 min read', snippet: 'Essential advice for farm workers to prevent heatstroke and dehydration.', content: 'Drink clean water at regular intervals...' },
+  { _id: 'art_2', title: 'Managing Blood Pressure Naturally', category: 'Cardiology', readTime: '4 min read', snippet: 'Practical dietary adjustments and routines for rural lifestyles.', content: 'Reduce salt and walk daily...' }
+];
+
+function isMongoConnected() {
+  return mongoose.connection.readyState === 1;
+}
+
+function findFallbackUserByLogin(term) {
+  const normalized = String(term || '').trim();
+  const cleanMobile = normalized.replace(/\D/g, '');
+  return fallbackUsers.find((user) => {
+    const emailMatch = user.email && user.email.toLowerCase() === normalized.toLowerCase();
+    const mobileMatch = user.mobile && String(user.mobile) === normalized;
+    const cleanMatch = cleanMobile.length === 10 && String(user.mobile).replace(/\D/g, '') === cleanMobile;
+    return emailMatch || mobileMatch || cleanMatch;
+  }) || null;
+}
+
 function verifyPassword(password, stored) {
   if (!stored) return false;
   const [salt, hash] = String(stored).split(':');
@@ -162,10 +247,16 @@ function auth(requiredRoles) {
       const payload = decodeToken(token);
 
       if (!payload) {
-        return res.status(401).json({ success: false, message: 'Authentication token is required or expired.' });
+        return res.status(401).json({ success: false, message: 'Authentication required.' });
       }
 
-      const user = await User.findById(payload.id).lean();
+      let user = null;
+      if (isMongoConnected()) {
+        user = await User.findById(payload.id).lean();
+      } else {
+        user = fallbackUsers.find((entry) => String(entry._id) === String(payload.id)) || null;
+      }
+
       if (!user) {
         return res.status(401).json({ success: false, message: 'Active user session invalid.' });
       }
@@ -220,16 +311,33 @@ app.post('/api/auth/register', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Password must be at least 4 characters.' });
     }
 
-    const user = await User.create({
-      name: name.trim(),
-      email: (email || '').trim().toLowerCase(),
-      mobile: cleanMobile,
-      village: village.trim(),
-      gender: gender || 'Male',
-      dob: dob || '',
-      passwordHash: createPasswordHash(password),
-      role: 'patient'
-    });
+    let user;
+    if (mongoose.connection.readyState === 1) {
+      user = await User.create({
+        name: name.trim(),
+        email: (email || '').trim().toLowerCase(),
+        mobile: cleanMobile,
+        village: village.trim(),
+        gender: gender || 'Male',
+        dob: dob || '',
+        passwordHash: createPasswordHash(password),
+        role: 'patient'
+      });
+    } else {
+      const createdUser = {
+        _id: `demo_patient_${Date.now()}`,
+        name: name.trim(),
+        email: (email || '').trim().toLowerCase(),
+        mobile: cleanMobile,
+        village: village.trim(),
+        gender: gender || 'Male',
+        dob: dob || '',
+        passwordHash: createPasswordHash(password),
+        role: 'patient'
+      };
+      fallbackUsers.push(createdUser);
+      user = createdUser;
+    }
 
     const token = encodeToken({ id: String(user._id), role: user.role, exp: Date.now() + (24 * 60 * 60 * 1000) });
     res.status(201).json({ success: true, token, user: publicUser(user), message: 'Patient account registered successfully.' });
@@ -246,14 +354,19 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Please enter email/mobile and password.' });
     }
 
-    const cleanMobile = term.replace(/\D/g, '');
-    const user = await User.findOne({
-      $or: [
-        { email: term.toLowerCase() },
-        { mobile: term },
-        { mobile: cleanMobile.length === 10 ? cleanMobile : '-1' }
-      ]
-    });
+    let user = null;
+    if (mongoose.connection.readyState === 1) {
+      const cleanMobile = term.replace(/\D/g, '');
+      user = await User.findOne({
+        $or: [
+          { email: term.toLowerCase() },
+          { mobile: term },
+          { mobile: cleanMobile.length === 10 ? cleanMobile : '-1' }
+        ]
+      });
+    } else {
+      user = findFallbackUserByLogin(term);
+    }
 
     if (!user || !verifyPassword(password, user.passwordHash)) {
       return res.status(401).json({ success: false, message: 'Invalid mobile number, email, or password.' });
@@ -273,6 +386,18 @@ app.get('/api/auth/me', auth(), (req, res) => {
 app.put('/api/auth/me', auth(), async (req, res) => {
   try {
     const { name, village, gender, dob } = req.body;
+    if (!isMongoConnected()) {
+      const target = fallbackUsers.find((user) => String(user._id) === String(req.user._id));
+      if (!target) {
+        return res.status(404).json({ success: false, message: 'User not found.' });
+      }
+      target.name = name || target.name;
+      target.village = village || target.village;
+      target.gender = gender || target.gender;
+      target.dob = dob || target.dob;
+      return res.json({ success: true, user: publicUser(target), message: 'Profile details updated.' });
+    }
+
     const user = await User.findByIdAndUpdate(
       req.user._id,
       { name, village, gender, dob },
@@ -291,6 +416,10 @@ app.post('/api/auth/logout', auth(), (req, res) => {
 // Doctor Routes
 app.get('/api/doctors', auth(), async (req, res) => {
   try {
+    if (!isMongoConnected()) {
+      return res.json(fallbackDoctors.map(d => ({ ...d, id: String(d._id) })));
+    }
+
     const { specialty, village, search } = req.query;
     const filter = {};
     if (specialty) filter.specialty = specialty;
@@ -311,6 +440,12 @@ app.get('/api/doctors', auth(), async (req, res) => {
 
 app.get('/api/doctors/:id', auth(), async (req, res) => {
   try {
+    if (!isMongoConnected()) {
+      const doctor = fallbackDoctors.find(d => String(d._id) === String(req.params.id));
+      if (!doctor) return res.status(404).json({ success: false, message: 'Doctor not found.' });
+      return res.json({ ...doctor, id: String(doctor._id) });
+    }
+
     const doctor = await Doctor.findById(req.params.id).lean();
     if (!doctor) return res.status(404).json({ success: false, message: 'Doctor not found.' });
     res.json({ ...doctor, id: String(doctor._id) });
@@ -322,7 +457,7 @@ app.get('/api/doctors/:id', auth(), async (req, res) => {
 app.post('/api/doctors', auth('admin'), async (req, res) => {
   try {
     const { name, email, mobile, password, specialty, village, experience, fee, available } = req.body;
-    
+
     if (!name || !specialty || !village) {
       return res.status(400).json({ success: false, message: 'Doctor name, specialty, and village sector are required.' });
     }
@@ -330,6 +465,39 @@ app.post('/api/doctors', auth('admin'), async (req, res) => {
     const cleanMobile = mobile ? String(mobile).replace(/\D/g, '') : `98888${Math.floor(10000 + Math.random() * 90000)}`;
     const docEmail = (email || '').trim().toLowerCase() || `doctor_${Date.now()}@nalam360.test`;
     const docPassword = password || 'doctor123';
+
+    if (!isMongoConnected()) {
+      const initials = (name || 'DR').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+      const createdDoctor = {
+        _id: `doc_${Date.now()}`,
+        name: name.trim(),
+        email: docEmail,
+        specialty: specialty.trim(),
+        village: village.trim(),
+        experience: Number(experience || 0),
+        fee: Number(fee || 0),
+        available: available !== false,
+        initials,
+        nextSlot: 'Available Today'
+      };
+
+      const existingUser = fallbackUsers.find((user) => user.role === 'doctor' && (user.email === docEmail || user.mobile === cleanMobile));
+      if (!existingUser) {
+        fallbackUsers.push({
+          _id: `seed_doctor_${Date.now()}`,
+          name: name.trim(),
+          email: docEmail,
+          mobile: cleanMobile,
+          passwordHash: createPasswordHash(docPassword),
+          role: 'doctor',
+          village: village.trim(),
+          gender: 'Male'
+        });
+      }
+
+      fallbackDoctors.unshift(createdDoctor);
+      return res.status(201).json({ ...createdDoctor, id: String(createdDoctor._id), mobile: cleanMobile, email: docEmail });
+    }
 
     // 1. Create Doctor Profile Entry
     const initials = (name || 'DR').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
@@ -368,6 +536,20 @@ app.post('/api/doctors', auth('admin'), async (req, res) => {
 app.put('/api/doctors/:id', auth('admin'), async (req, res) => {
   try {
     const { password, ...doctorData } = req.body;
+
+    if (!isMongoConnected()) {
+      const doc = fallbackDoctors.find((entry) => String(entry._id) === String(req.params.id));
+      if (!doc) return res.status(404).json({ success: false, message: 'Doctor not found.' });
+      Object.assign(doc, doctorData);
+      if (password && password.length >= 4 && doc.email) {
+        const user = fallbackUsers.find((entry) => entry.role === 'doctor' && entry.email === doc.email);
+        if (user) {
+          user.passwordHash = createPasswordHash(password);
+        }
+      }
+      return res.json({ ...doc, id: String(doc._id) });
+    }
+
     const doc = await Doctor.findByIdAndUpdate(req.params.id, doctorData, { new: true, runValidators: true }).lean();
     if (!doc) return res.status(404).json({ success: false, message: 'Doctor not found.' });
 
@@ -388,6 +570,18 @@ app.put('/api/doctors/:id', auth('admin'), async (req, res) => {
 
 app.delete('/api/doctors/:id', auth('admin'), async (req, res) => {
   try {
+    if (!isMongoConnected()) {
+      const index = fallbackDoctors.findIndex((entry) => String(entry._id) === String(req.params.id));
+      if (index === -1) return res.status(404).json({ success: false, message: 'Doctor not found.' });
+      const removed = fallbackDoctors[index];
+      fallbackDoctors.splice(index, 1);
+      if (removed && removed.email) {
+        const userIndex = fallbackUsers.findIndex((entry) => entry.role === 'doctor' && entry.email === removed.email);
+        if (userIndex !== -1) fallbackUsers.splice(userIndex, 1);
+      }
+      return res.json({ success: true, message: 'Doctor profile and login account removed from directory.' });
+    }
+
     const doc = await Doctor.findByIdAndDelete(req.params.id);
     if (doc && doc.email) {
       await User.deleteOne({ email: doc.email, role: 'doctor' });
@@ -402,11 +596,20 @@ app.delete('/api/doctors/:id', auth('admin'), async (req, res) => {
 // Appointment Routes
 app.get('/api/appointments', auth(), async (req, res) => {
   try {
+    if (!isMongoConnected()) {
+      let list = [...fallbackAppointments];
+      if (req.user.role === 'patient') {
+        list = list.filter(a => String(a.patientId) === String(req.user._id));
+      } else if (req.user.role === 'doctor') {
+        list = list.filter(a => a.doctorName.toLowerCase().includes(req.user.name.toLowerCase().replace('dr. ', '')) || a.village === req.user.village);
+      }
+      return res.json(list.map(a => ({ ...a, id: String(a._id) })));
+    }
+
     let query = {};
     if (req.user.role === 'patient') {
       query.patientId = req.user._id;
     } else if (req.user.role === 'doctor') {
-      // Find appointments matching doctor name/specialty or assigned
       query = { $or: [{ doctorName: { $regex: req.user.name.replace('Dr. ', ''), $options: 'i' } }, { village: req.user.village }] };
     }
     const appointments = await Appointment.find(query).sort({ createdAt: -1 }).lean();
@@ -419,6 +622,26 @@ app.get('/api/appointments', auth(), async (req, res) => {
 app.post('/api/appointments', auth(), async (req, res) => {
   try {
     const { doctorId, date, time, village, notes } = req.body;
+    if (!isMongoConnected()) {
+      const doctor = fallbackDoctors.find(d => String(d._id) === String(doctorId)) || fallbackDoctors[0];
+      const newApp = {
+        _id: `app_${Date.now()}`,
+        patientId: req.user._id,
+        doctorId: String(doctor._id),
+        patientName: req.user.name,
+        doctorName: doctor.name,
+        specialty: doctor.specialty,
+        village: village || req.user.village,
+        date: date || new Date().toISOString().split('T')[0],
+        time: time || '10:00 AM',
+        status: 'scheduled',
+        token: `NALAM-${Math.floor(10000 + Math.random() * 90000)}`,
+        notes: notes || 'Consultation booking'
+      };
+      fallbackAppointments.unshift(newApp);
+      return res.status(201).json({ ...newApp, id: String(newApp._id) });
+    }
+
     let doctorName = 'Dr. Arumugam K.';
     let specialty = 'General Medicine';
 
@@ -453,6 +676,13 @@ app.post('/api/appointments', auth(), async (req, res) => {
 
 app.put('/api/appointments/:id', auth(), async (req, res) => {
   try {
+    if (!isMongoConnected()) {
+      const target = fallbackAppointments.find(a => String(a._id) === String(req.params.id));
+      if (!target) return res.status(404).json({ success: false, message: 'Appointment not found.' });
+      target.status = req.body.status || target.status;
+      return res.json({ ...target, id: String(target._id) });
+    }
+
     const { status } = req.body;
     const appointment = await Appointment.findByIdAndUpdate(
       req.params.id,
@@ -469,6 +699,13 @@ app.put('/api/appointments/:id', auth(), async (req, res) => {
 
 app.delete('/api/appointments/:id', auth(), async (req, res) => {
   try {
+    if (!isMongoConnected()) {
+      const index = fallbackAppointments.findIndex(a => String(a._id) === String(req.params.id));
+      if (index === -1) return res.status(404).json({ success: false, message: 'Appointment not found.' });
+      fallbackAppointments.splice(index, 1);
+      return res.json({ success: true, message: 'Appointment cancelled.' });
+    }
+
     const appointment = await Appointment.findByIdAndDelete(req.params.id);
     if (!appointment) return res.status(404).json({ success: false, message: 'Appointment not found.' });
     res.json({ success: true, message: 'Appointment cancelled.' });
@@ -480,6 +717,14 @@ app.delete('/api/appointments/:id', auth(), async (req, res) => {
 // Medication Reminder Routes (Support both /api/reminders & /api/medication-reminders)
 const handleGetReminders = async (req, res) => {
   try {
+    if (!isMongoConnected()) {
+      let list = [...fallbackReminders];
+      if (req.user.role !== 'admin') {
+        list = list.filter(r => String(r.patientId) === String(req.user._id));
+      }
+      return res.json(list.map(r => ({ ...r, id: String(r._id) })));
+    }
+
     const query = req.user.role === 'admin' ? {} : { patientId: req.user._id };
     const reminders = await Reminder.find(query).sort({ createdAt: -1 }).lean();
     res.json(reminders.map(r => ({ ...r, id: String(r._id) })));
@@ -491,6 +736,19 @@ const handleGetReminders = async (req, res) => {
 const handlePostReminder = async (req, res) => {
   try {
     const { name, slot, instruction } = req.body;
+    if (!isMongoConnected()) {
+      const newReminder = {
+        _id: `rem_${Date.now()}`,
+        patientId: req.user._id,
+        name: name || req.body.medicineName,
+        slot: slot || 'Morning',
+        instruction: instruction || 'Take after food',
+        completed: false
+      };
+      fallbackReminders.unshift(newReminder);
+      return res.status(201).json({ ...newReminder, id: String(newReminder._id) });
+    }
+
     const reminder = await Reminder.create({
       patientId: req.user._id,
       name: name || req.body.medicineName,
@@ -512,6 +770,13 @@ app.post('/api/medication-reminders', auth(), handlePostReminder);
 
 app.put('/api/reminders/:id', auth(), async (req, res) => {
   try {
+    if (!isMongoConnected()) {
+      const reminder = fallbackReminders.find(r => String(r._id) === String(req.params.id));
+      if (!reminder) return res.status(404).json({ success: false, message: 'Reminder not found.' });
+      reminder.completed = req.body.completed !== undefined ? req.body.completed : !reminder.completed;
+      return res.json({ ...reminder, id: String(reminder._id) });
+    }
+
     const reminder = await Reminder.findById(req.params.id);
     if (!reminder) return res.status(404).json({ success: false, message: 'Reminder not found.' });
 
@@ -529,6 +794,13 @@ app.put('/api/reminders/:id', auth(), async (req, res) => {
 
 app.put('/api/medication-reminders/:id', auth(), async (req, res) => {
   try {
+    if (!isMongoConnected()) {
+      const reminder = fallbackReminders.find(r => String(r._id) === String(req.params.id));
+      if (!reminder) return res.status(404).json({ success: false, message: 'Reminder not found.' });
+      Object.assign(reminder, req.body);
+      return res.json({ ...reminder, id: String(reminder._id) });
+    }
+
     const reminder = await Reminder.findByIdAndUpdate(req.params.id, req.body, { new: true }).lean();
     if (!reminder) return res.status(404).json({ success: false, message: 'Reminder not found.' });
     res.json({ ...reminder, id: String(reminder._id) });
@@ -539,6 +811,13 @@ app.put('/api/medication-reminders/:id', auth(), async (req, res) => {
 
 app.delete('/api/reminders/:id', auth(), async (req, res) => {
   try {
+    if (!isMongoConnected()) {
+      const index = fallbackReminders.findIndex(r => String(r._id) === String(req.params.id));
+      if (index === -1) return res.status(404).json({ success: false, message: 'Reminder not found.' });
+      fallbackReminders.splice(index, 1);
+      return res.json({ success: true, message: 'Reminder deleted.' });
+    }
+
     const reminder = await Reminder.findByIdAndDelete(req.params.id);
     if (!reminder) return res.status(404).json({ success: false, message: 'Reminder not found.' });
     res.json({ success: true, message: 'Reminder deleted.' });
@@ -549,6 +828,13 @@ app.delete('/api/reminders/:id', auth(), async (req, res) => {
 
 app.delete('/api/medication-reminders/:id', auth(), async (req, res) => {
   try {
+    if (!isMongoConnected()) {
+      const index = fallbackReminders.findIndex(r => String(r._id) === String(req.params.id));
+      if (index === -1) return res.status(404).json({ success: false, message: 'Reminder not found.' });
+      fallbackReminders.splice(index, 1);
+      return res.json({ success: true, message: 'Reminder deleted.' });
+    }
+
     const reminder = await Reminder.findByIdAndDelete(req.params.id);
     if (!reminder) return res.status(404).json({ success: false, message: 'Reminder not found.' });
     res.json({ success: true, message: 'Reminder deleted.' });
@@ -560,6 +846,14 @@ app.delete('/api/medication-reminders/:id', auth(), async (req, res) => {
 // Health Camps Routes (Support both /api/camps & /api/health-camps)
 const handleGetCamps = async (req, res) => {
   try {
+    if (!isMongoConnected()) {
+      const result = fallbackCamps.map(c => {
+        const isReg = req.user ? (c.registeredUsers || []).some(uid => String(uid) === String(req.user._id)) : false;
+        return { ...c, id: String(c._id), isRegistered: isReg };
+      });
+      return res.json(result);
+    }
+
     const camps = await Camp.find().sort({ createdAt: -1 }).lean();
     const result = camps.map(c => {
       const isReg = req.user ? (c.registeredUsers || []).some(uid => String(uid) === String(req.user._id)) : false;
@@ -576,6 +870,17 @@ app.get('/api/health-camps', auth(), handleGetCamps);
 
 app.post('/api/camps', auth('admin'), async (req, res) => {
   try {
+    if (!isMongoConnected()) {
+      const camp = {
+        _id: `camp_${Date.now()}`,
+        ...req.body,
+        registeredCount: 0,
+        registeredUsers: []
+      };
+      fallbackCamps.unshift(camp);
+      return res.status(201).json({ ...camp, id: String(camp._id), isRegistered: false });
+    }
+
     const camp = await Camp.create(req.body);
     res.status(201).json({ ...camp.toObject(), id: String(camp._id), isRegistered: false });
   } catch (error) {
@@ -585,6 +890,17 @@ app.post('/api/camps', auth('admin'), async (req, res) => {
 
 app.post('/api/health-camps', auth('admin'), async (req, res) => {
   try {
+    if (!isMongoConnected()) {
+      const camp = {
+        _id: `camp_${Date.now()}`,
+        ...req.body,
+        registeredCount: 0,
+        registeredUsers: []
+      };
+      fallbackCamps.unshift(camp);
+      return res.status(201).json({ ...camp, id: String(camp._id), isRegistered: false });
+    }
+
     const camp = await Camp.create(req.body);
     res.status(201).json({ ...camp.toObject(), id: String(camp._id), isRegistered: false });
   } catch (error) {
@@ -594,6 +910,22 @@ app.post('/api/health-camps', auth('admin'), async (req, res) => {
 
 app.post('/api/camps/:id/register', auth(), async (req, res) => {
   try {
+    if (!isMongoConnected()) {
+      const camp = fallbackCamps.find(c => String(c._id) === String(req.params.id));
+      if (!camp) return res.status(404).json({ success: false, message: 'Health camp not found.' });
+
+      const userIdStr = String(req.user._id);
+      const existingIndex = (camp.registeredUsers || []).findIndex(uid => String(uid) === userIdStr);
+      if (existingIndex !== -1) {
+        camp.registeredUsers.splice(existingIndex, 1);
+        camp.registeredCount = Math.max(0, camp.registeredCount - 1);
+      } else {
+        camp.registeredUsers.push(req.user._id);
+        camp.registeredCount += 1;
+      }
+      return res.json({ ...camp, id: String(camp._id), isRegistered: existingIndex === -1 });
+    }
+
     const camp = await Camp.findById(req.params.id);
     if (!camp) return res.status(404).json({ success: false, message: 'Health camp not found.' });
 
@@ -628,6 +960,10 @@ app.delete('/api/camps/:id', auth('admin'), async (req, res) => {
 // Awareness Articles Routes
 app.get('/api/awareness', auth(), async (req, res) => {
   try {
+    if (!isMongoConnected()) {
+      return res.json(fallbackAwareness.map(a => ({ ...a, id: String(a._id) })));
+    }
+
     const articles = await Awareness.find().sort({ createdAt: -1 }).lean();
     res.json(articles.map(a => ({ ...a, id: String(a._id) })));
   } catch (error) {
@@ -638,6 +974,10 @@ app.get('/api/awareness', auth(), async (req, res) => {
 // Sector Patients (Doctor & Admin access)
 app.get('/api/patients', auth(['doctor', 'admin']), async (req, res) => {
   try {
+    if (!isMongoConnected()) {
+      return res.json(fallbackPatients);
+    }
+
     const patients = await User.find({ role: 'patient' }).select('-passwordHash').sort({ name: 1 }).lean();
     const result = patients.map(p => ({
       id: String(p._id),
@@ -658,6 +998,10 @@ app.get('/api/patients', auth(['doctor', 'admin']), async (req, res) => {
 // All System Users (Admin Access)
 app.get('/api/users', auth('admin'), async (req, res) => {
   try {
+    if (!isMongoConnected()) {
+      return res.json(fallbackUsers.map(u => publicUser(u)));
+    }
+
     const users = await User.find().select('-passwordHash').sort({ createdAt: -1 }).lean();
     res.json(users.map(u => publicUser(u)));
   } catch (error) {
@@ -676,6 +1020,17 @@ app.get('/api/emergency', auth(), (req, res) => {
 // Admin Metrics Summary
 app.get('/api/admin/summary', auth('admin'), async (req, res) => {
   try {
+    if (!isMongoConnected()) {
+      return res.json({
+        success: true,
+        users: fallbackUsers.length,
+        doctors: fallbackDoctors.length,
+        appointments: fallbackAppointments.length,
+        reminders: fallbackReminders.length,
+        camps: fallbackCamps.length
+      });
+    }
+
     const [users, doctors, appointments, reminders, camps] = await Promise.all([
       User.countDocuments(),
       Doctor.countDocuments(),
@@ -698,7 +1053,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use((req, res) => res.status(404).json({ success: false, message: 'API Endpoint not found.' }));
+app.use((req, res) => res.status(404).json({ success: false, message: 'Route not found.' }));
 
 /* =========================================================================
    4. DATABASE SEEDING MECHANISM

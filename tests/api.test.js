@@ -15,6 +15,16 @@ test('protected doctors endpoint rejects anonymous requests', async () => {
   assert.equal(response.body.message, 'Authentication required.');
 });
 
+test('login succeeds in demo mode when MongoDB is unavailable', async () => {
+  const response = await request(app)
+    .post('/api/auth/login')
+    .send({ identity: 'patient@nalam360.test', password: 'patient123' });
+
+  assert.equal(response.status, 200);
+  assert.equal(response.body.success, true);
+  assert.equal(response.body.user.role, 'patient');
+});
+
 test('unknown API routes return JSON 404 responses', async () => {
   const response = await request(app).get('/api/does-not-exist');
   assert.equal(response.status, 404);
