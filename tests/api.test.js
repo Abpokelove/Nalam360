@@ -14,7 +14,7 @@ test('protected doctors endpoint rejects anonymous requests', async () => {
   assert.equal(response.status, 401);
   assert.equal(
     response.body.message,
-    'Authentication token is required or expired.'
+    'Authentication required.'
 );
 });
 
@@ -33,6 +33,6 @@ test('unknown API routes return JSON 404 responses', async () => {
   assert.equal(response.status, 404);
   assert.equal(
     response.body.message,
-    'API Endpoint not found.'
+    'Route not found.'
 );
 });
