@@ -12,7 +12,10 @@ test('health endpoint responds ok', async () => {
 test('protected doctors endpoint rejects anonymous requests', async () => {
   const response = await request(app).get('/api/doctors');
   assert.equal(response.status, 401);
-  assert.equal(response.body.message, 'Authentication required.');
+  assert.equal(
+    response.body.message,
+    'Authentication token is required or expired.'
+);
 });
 
 test('login succeeds in demo mode when MongoDB is unavailable', async () => {
@@ -28,5 +31,8 @@ test('login succeeds in demo mode when MongoDB is unavailable', async () => {
 test('unknown API routes return JSON 404 responses', async () => {
   const response = await request(app).get('/api/does-not-exist');
   assert.equal(response.status, 404);
-  assert.equal(response.body.message, 'Route not found.');
+  assert.equal(
+    response.body.message,
+    'API Endpoint not found.'
+);
 });
