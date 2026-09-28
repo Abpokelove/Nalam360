@@ -353,6 +353,27 @@ button, input, select, textarea {
   max-width: calc(100vw - var(--sidebar-width));
   min-height: calc(100vh - var(--header-height));
   background-color: var(--surface-bg);
+  background-repeat: no-repeat;
+  background-position: right 1.25rem top 1rem, left bottom 1.5rem;
+  background-size: 148px 148px, 180px 72px;
+}
+
+.patient-portal .app-workspace {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160' fill='none'%3E%3Cpath d='M126 148C101 119 90 87 101 46' stroke='%23739b71' stroke-width='2'/%3E%3Cpath d='M103 82C80 80 67 66 69 48c18 1 31 12 34 34Zm5-25c1-21 14-34 32-35 1 18-10 32-32 35Zm8 57c-18-2-28-14-28-30 16 1 27 11 28 30Zm-2-27c2-18 14-28 29-29 0 16-10 27-29 29Z' fill='%238eae80' fill-opacity='.45' stroke='%23739b71' stroke-width='1.4'/%3E%3Cpath d='M23 139c22-12 43-12 64 0M34 148c16-8 32-8 48 0M49 157c9-5 18-5 27 0' stroke='%23a17e57' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M26 115h30v24H26zM22 115l19-16 19 16M38 127h7v12h-7z' fill='%23b27d5d' fill-opacity='.3' stroke='%23a17e57' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M124 19v22m-11-11h22' stroke='%23739b71' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 0% 100%, rgba(164, 144, 103, 0.07), transparent 62%);
+}
+
+.doctor-portal .app-workspace {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160' fill='none'%3E%3Cpath d='M25 137h110M36 137v-25c0-19 15-34 34-34h20c19 0 34 15 34 34v25' stroke='%237b9a83' stroke-width='2'/%3E%3Ccircle cx='61' cy='55' r='14' fill='%23a17e57' fill-opacity='.25' stroke='%23927a61' stroke-width='1.6'/%3E%3Cpath d='M38 112c2-20 10-30 23-30s21 10 23 30M99 50a12 12 0 1 1 24 0v12c0 10-5 15-12 15s-12-5-12-15V50Zm12 27v11c0 9 13 9 13 0v-5' stroke='%237b9a83' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M119 88c0 5-4 9-9 9s-9-4-9-9 4-9 9-9 9 4 9 9Z' fill='%237b9a83' fill-opacity='.18' stroke='%237b9a83' stroke-width='1.5'/%3E%3Cpath d='M125 22v20m-10-10h20' stroke='%237b9a83' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M24 148c16-8 31-8 47 0m-37 8c9-5 18-5 27 0' stroke='%23a17e57' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 0% 100%, rgba(164, 144, 103, 0.06), transparent 62%);
+}
+
+.admin-portal .app-workspace {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160' fill='none'%3E%3Crect x='35' y='54' width='89' height='69' rx='5' stroke='%237b8e82' stroke-width='2'/%3E%3Cpath d='M47 108V91h13v17H47Zm25 0V77h13v31H72Zm25 0V65h13v43H97Z' fill='%237b8e82' fill-opacity='.2' stroke='%237b8e82' stroke-width='1.5'/%3E%3Cpath d='M48 39h64M53 45v8m54-8v8M25 139c18-9 36-9 54 0m-40 9c9-5 18-5 27 0' stroke='%23a17e57' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M126 20v20m-10-10h20' stroke='%237b8e82' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 0% 100%, rgba(164, 144, 103, 0.04), transparent 62%);
 }
 
 /* Standalone Auth & Onboarding Workspace */
@@ -363,7 +384,14 @@ button, input, select, textarea {
   align-items: center;
   justify-content: center;
   padding: 2rem 1.5rem;
-  background: linear-gradient(135deg, #e6f7f4 0%, #eef5ff 100%);
+  background-color: #eef7f1;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 220' fill='none'%3E%3Cpath d='M0 165c54-39 98-36 150-5 44 27 92 29 150-5v65H0v-55Z' fill='%2382a77e' fill-opacity='.16'/%3E%3Cpath d='M0 183c48-25 100-23 151 3 51 25 102 19 149-5' stroke='%237b9a72' stroke-width='2'/%3E%3Cpath d='M60 141h51v40H60zM53 141l33-28 33 28M79 159h13v22H79z' fill='%23a17e57' fill-opacity='.3' stroke='%23927a61' stroke-width='2' stroke-linejoin='round'/%3E%3Ccircle cx='190' cy='111' r='15' fill='%23a17e57' fill-opacity='.3' stroke='%23927a61' stroke-width='2'/%3E%3Cpath d='M165 174c2-35 10-49 25-49s23 14 25 49m-25-49v-14m0 64h43m-43-22 20-13' stroke='%237b9a83' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='243' cy='139' r='13' fill='%23a17e57' fill-opacity='.25' stroke='%23927a61' stroke-width='2'/%3E%3Cpath d='M222 180c2-22 9-31 21-31s19 9 21 31m-21-31v-10m44-47v22m-11-11h22' stroke='%237b9a83' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M21 204c17-9 34-9 51 0m-39 9c9-5 18-5 27 0' stroke='%23a17e57' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 100% 0%, rgba(126, 160, 123, 0.12), transparent 34%),
+    linear-gradient(135deg, #e6f7f0 0%, #f3f7ed 100%);
+  background-repeat: no-repeat;
+  background-position: left 1.5rem bottom 1rem, right top, center;
+  background-size: min(300px, 28vw) auto, auto, auto;
 }
 
 /* Mobile Sidebar Drawer Overlay */

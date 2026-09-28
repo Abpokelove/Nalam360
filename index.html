@@ -19,7 +19,7 @@
   <!-- =========================================================================
        SINGLE UNIFIED APPLICATION PORTAL SHELL & WORKSPACE
        ========================================================================= -->
-  <div class="app-container" ng-class="{'auth-layout': isAuthPage()}">
+  <div class="app-container" ng-class="{'auth-layout': isAuthPage(), 'patient-portal': auth.currentUser.role === 'patient', 'doctor-portal': auth.currentUser.role === 'doctor', 'admin-portal': auth.currentUser.role === 'admin'}">
 
     <!-- Global Header Topbar (Only rendered when in authenticated portal workspace) -->
     <header class="app-header" ng-if="!isAuthPage()">
