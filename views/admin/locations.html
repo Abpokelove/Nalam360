@@ -1,0 +1,82 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-header-title">Locations & Facilities</h1>
+      <p class="page-header-subtitle">Maintain sourced administrative geography and distinct healthcare facility records</p>
+    </div>
+  </div>
+
+  <div class="state-error" ng-if="!loading && error" role="alert">
+    <span class="material-symbols-outlined">error</span><span ng-bind="error"></span>
+  </div>
+  <loading-spinner message="Loading location records..." ng-if="loading"></loading-spinner>
+
+  <div ng-if="!loading && !error">
+    <div class="grid-2">
+      <section class="card">
+        <h2 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">{{ editingLocationId ? 'Correct location record' : 'Add location' }}</h2>
+        <form ng-submit="saveLocation()" novalidate>
+          <div class="form-group">
+            <label for="locationLevel">Location level</label>
+            <select id="locationLevel" class="form-control" ng-model="locationForm.level" ng-change="changeLocationLevel()" ng-disabled="editingLocationId" required>
+              <option value="district">District</option><option value="taluk">Taluk</option><option value="village">Village</option>
+            </select>
+          </div>
+          <div class="form-group" ng-if="locationForm.level !== 'district'">
+            <label for="locationParent">Parent {{ locationForm.level === 'taluk' ? 'district' : 'taluk' }}</label>
+            <select id="locationParent" class="form-control" ng-model="locationForm.parentId" ng-options="location.id as (location.name + (location.verified ? ' · verified' : ' · unverified')) for location in parentOptions" required>
+              <option value="">Choose parent</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="locationName">Name</label>
+            <input id="locationName" class="form-control" ng-model="locationForm.name" required maxlength="120"/>
+          </div>
+          <div class="form-group">
+            <label for="locationSource">Source URL</label>
+            <input id="locationSource" type="url" class="form-control" ng-model="locationForm.sourceUrl" placeholder="Official or authoritative source"/>
+          </div>
+          <label style="display: flex; gap: 0.6rem; align-items: center; margin-bottom: 1rem;">
+            <input type="checkbox" ng-model="locationForm.verified"/>
+            <span>Mark verified (requires a source and verified parent)</span>
+          </label>
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="submit" class="btn btn-primary" ng-disabled="savingLocation || !locationForm.name || (locationForm.level !== 'district' && !locationForm.parentId)">{{ editingLocationId ? 'Save correction' : 'Add location' }}</button>
+            <button type="button" class="btn btn-soft" ng-if="editingLocationId" ng-click="cancelLocationEdit()">Cancel</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">{{ editingFacilityId ? 'Correct facility record' : 'Add healthcare facility' }}</h2>
+        <form ng-submit="saveFacility()" novalidate>
+          <div class="form-group"><label for="facilityName">Facility name</label><input id="facilityName" class="form-control" ng-model="facilityForm.name" required maxlength="160"/></div>
+          <div class="form-group"><label for="facilityType">Facility type</label><select id="facilityType" class="form-control" ng-model="facilityForm.type" required><option value="phc">Primary Health Centre</option><option value="clinic">Clinic</option><option value="hospital">Hospital</option><option value="other">Other facility</option></select></div>
+          <div class="form-group"><label for="facilityDistrict">District</label><select id="facilityDistrict" class="form-control" ng-model="facilityForm.districtId" ng-change="changeFacilityDistrict()" ng-options="location.id as location.name for location in locations | filter:{level:'district'}" required><option value="">Choose district</option></select></div>
+          <div class="form-group"><label for="facilityTaluk">Taluk</label><select id="facilityTaluk" class="form-control" ng-model="facilityForm.talukId" ng-change="changeFacilityTaluk()" ng-options="location.id as location.name for location in talukOptions" ng-disabled="!facilityForm.districtId" required><option value="">Choose taluk</option></select></div>
+          <div class="form-group"><label for="facilityVillage">Village</label><select id="facilityVillage" class="form-control" ng-model="facilityForm.villageId" ng-options="location.id as location.name for location in villageOptions" ng-disabled="!facilityForm.talukId" required><option value="">Choose village</option></select></div>
+          <div class="grid-2"><div class="form-group"><label for="facilityAddress">Address (optional)</label><input id="facilityAddress" class="form-control" ng-model="facilityForm.address"/></div><div class="form-group"><label for="facilityContact">Contact (optional)</label><input id="facilityContact" class="form-control" ng-model="facilityForm.contact"/></div></div>
+          <div class="form-group"><label for="facilitySource">Source URL</label><input id="facilitySource" type="url" class="form-control" ng-model="facilityForm.sourceUrl" placeholder="Official facility source"/></div>
+          <label style="display: flex; gap: 0.6rem; align-items: center; margin-bottom: 1rem;"><input type="checkbox" ng-model="facilityForm.verified"/><span>Mark verified (requires a source and verified geography)</span></label>
+          <div style="display: flex; gap: 0.5rem;"><button type="submit" class="btn btn-primary" ng-disabled="savingFacility || !facilityForm.name || !facilityForm.villageId">{{ editingFacilityId ? 'Save correction' : 'Add facility' }}</button><button type="button" class="btn btn-soft" ng-if="editingFacilityId" ng-click="cancelFacilityEdit()">Cancel</button></div>
+        </form>
+      </section>
+    </div>
+
+    <section class="card" style="margin-top: 1.5rem;">
+      <h2 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Administrative locations</h2>
+      <div class="table-container"><table class="table"><thead><tr><th>Name</th><th>Level</th><th>Parent</th><th>Source</th><th>Verification</th><th></th></tr></thead><tbody>
+        <tr ng-repeat="location in locations track by location.id"><td>{{ location.name }}</td><td>{{ location.level }}</td><td>{{ location.parentId || '—' }}</td><td><a ng-if="location.sourceUrl" ng-href="{{ location.sourceUrl }}" target="_blank" rel="noopener noreferrer">Open source</a><span ng-if="!location.sourceUrl">Not supplied</span></td><td><span class="status-pill" ng-class="location.verified ? 'available' : 'pending'">{{ location.verified ? 'Verified' : 'Unverified' }}</span></td><td><button type="button" class="btn btn-soft" ng-click="editLocation(location)">Edit</button></td></tr>
+      </tbody></table></div>
+      <empty-state icon="map" title="No location records" desc="Add sourced records from district down to village. No geography is pre-filled." ng-if="locations.length === 0"></empty-state>
+    </section>
+
+    <section class="card" style="margin-top: 1.5rem;">
+      <h2 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Healthcare facilities</h2>
+      <div class="table-container"><table class="table"><thead><tr><th>Facility</th><th>Type</th><th>Village</th><th>Verification</th><th></th></tr></thead><tbody>
+        <tr ng-repeat="facility in facilities track by facility.id"><td>{{ facility.name }}</td><td>{{ facility.type }}</td><td>{{ facility.villageId }}</td><td><span class="status-pill" ng-class="facility.verified ? 'available' : 'pending'">{{ facility.verified ? 'Verified' : 'Unverified' }}</span></td><td><button type="button" class="btn btn-soft" ng-click="editFacility(facility)">Edit</button></td></tr>
+      </tbody></table></div>
+      <empty-state icon="local_hospital" title="No healthcare facilities" desc="Facility records are maintained separately from village records." ng-if="facilities.length === 0"></empty-state>
+    </section>
+  </div>
+</div>

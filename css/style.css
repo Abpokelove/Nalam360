@@ -149,6 +149,40 @@ button, input, select, textarea {
   box-shadow: var(--shadow-sm);
 }
 
+.connection-mode-banner {
+  position: fixed;
+  z-index: 49;
+  top: var(--header-height);
+  left: var(--sidebar-width);
+  right: 0;
+  padding: 0.45rem 1rem;
+  background: #fff7df;
+  color: #704d0c;
+  border-bottom: 1px solid #ead9a6;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.app-container.demo-mode .app-workspace,
+.app-container.api-offline .app-workspace {
+  padding-top: 3.25rem;
+}
+
+.app-container.demo-mode .auth-workspace,
+.app-container.api-offline .auth-workspace {
+  padding-top: 4.5rem;
+}
+
+.app-container.auth-layout .connection-mode-banner {
+  top: 0;
+}
+
+.connection-mode-banner.unavailable {
+  background: var(--error-bg);
+  color: var(--error);
+  border-color: rgba(220, 38, 38, 0.2);
+}
+
 .header-left {
   display: flex;
   align-items: center;
@@ -586,6 +620,11 @@ button, input, select, textarea {
   color: var(--error);
 }
 
+.status-pill.not_visited {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
 /* Forms */
 .form-group {
   display: flex;
@@ -864,6 +903,10 @@ button, input, select, textarea {
     margin-left: 0;
     max-width: 100vw;
     padding: 1.25rem 1rem;
+  }
+
+  .connection-mode-banner {
+    left: 0;
   }
 
   .grid-4, .grid-3, .grid-2 {

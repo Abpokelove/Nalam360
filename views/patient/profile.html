@@ -26,11 +26,26 @@
           <input type="text" class="form-control" ng-model="user.name" required/>
         </div>
 
+        <div class="grid-2" ng-if="isPatient">
+          <div class="form-group">
+            <label for="profileDistrict">District</label>
+            <select id="profileDistrict" class="form-control" ng-model="user.districtId" ng-change="changeProfileDistrict()" ng-options="location.id as location.name for location in profileDistricts" required>
+              <option value="">Choose verified district</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="profileTaluk">Taluk</label>
+            <select id="profileTaluk" class="form-control" ng-model="user.talukId" ng-change="changeProfileTaluk()" ng-options="location.id as location.name for location in profileTaluks" ng-disabled="!user.districtId" required>
+              <option value="">Choose verified taluk</option>
+            </select>
+          </div>
+        </div>
+
         <div class="grid-2">
           <div class="form-group">
-            <label>Village Sector</label>
-            <select class="form-control" ng-model="user.village" required>
-              <option ng-repeat="v in villagesList" value="{{ v }}">{{ v }}</option>
+            <label for="profileVillage">Village</label>
+            <select id="profileVillage" class="form-control" ng-model="user.villageId" ng-change="changeProfileVillage()" ng-options="location.id as location.name for location in profileVillages" ng-disabled="!user.talukId" ng-required="isPatient">
+              <option value="">Choose verified village</option>
             </select>
           </div>
 
@@ -42,6 +57,11 @@
               <option value="Other">Other</option>
             </select>
           </div>
+        </div>
+
+        <div class="state-empty" ng-if="!profileLocationLoading && profileDistricts.length === 0" role="status">
+          <div class="state-empty-title">Verified locations are not configured</div>
+          <div class="state-empty-desc">Your administrator must add sourced location records before your village can be updated.</div>
         </div>
 
         <div class="form-group">

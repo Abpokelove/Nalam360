@@ -14,6 +14,11 @@
       $scope.summary = {};
       $scope.doctors = [];
       $scope.users = [];
+      $scope.locations = [];
+      $scope.facilities = [];
+      $scope.doctorTaluks = [];
+      $scope.doctorVillages = [];
+      $scope.doctorFacilities = [];
 
       // Doctor Add/Edit Modal
       $scope.isDoctorModalOpen = false;
@@ -24,27 +29,63 @@
         mobile: '',
         password: 'doctor123',
         specialty: 'General Medicine',
-        village: 'Melur',
+        village: '',
+        districtId: '',
+        talukId: '',
+        villageId: '',
+        facilityId: '',
         experience: 5,
         fee: 150,
+        password: '',
         available: true
       };
 
       $scope.specialtiesList = ['General Medicine', 'Pediatrics', 'Cardiology', 'Gynecology', 'Ophthalmology', 'Dermatology'];
-      $scope.villagesList = ['Melur', 'Karur', 'Hosur', 'Sivakasi', 'Pollachi', 'Tenkasi'];
+      $scope.changeDoctorDistrict = function () {
+        $scope.doctorForm.talukId = '';
+        $scope.doctorForm.villageId = '';
+        $scope.doctorForm.facilityId = '';
+        $scope.doctorTaluks = $scope.locations.filter(function (location) {
+          return location.level === 'taluk' && location.parentId === $scope.doctorForm.districtId;
+        });
+        $scope.doctorVillages = [];
+        $scope.doctorFacilities = [];
+      };
+
+      $scope.changeDoctorTaluk = function () {
+        $scope.doctorForm.villageId = '';
+        $scope.doctorForm.facilityId = '';
+        $scope.doctorVillages = $scope.locations.filter(function (location) {
+          return location.level === 'village' && location.parentId === $scope.doctorForm.talukId;
+        });
+        $scope.doctorFacilities = [];
+      };
+
+      $scope.changeDoctorVillage = function () {
+        $scope.doctorForm.facilityId = '';
+        $scope.doctorFacilities = $scope.facilities.filter(function (facility) {
+          return facility.villageId === $scope.doctorForm.villageId && facility.verified;
+        });
+        var village = $scope.doctorVillages.find(function (location) { return location.id === $scope.doctorForm.villageId; });
+        $scope.doctorForm.village = village ? village.name : '';
+      };
 
       function loadAdminDashboard() {
         $scope.loading = true;
         $scope.error = null;
 
         $q.all([
-          ApiFactory.getAdminSummary().catch(function () { return {}; }),
-          ApiFactory.getDoctors().catch(function () { return []; }),
-          ApiFactory.getUsers().catch(function () { return []; })
+          ApiFactory.getAdminSummary(),
+          ApiFactory.getDoctors(),
+          ApiFactory.getUsers(),
+          ApiFactory.getAdminLocations(),
+          ApiFactory.getAdminFacilities()
         ]).then(function (results) {
           $scope.summary = results[0] || {};
           $scope.doctors = results[1] || [];
           $scope.users = results[2] || [];
+          $scope.locations = results[3] || [];
+          $scope.facilities = results[4] || [];
           $scope.loading = false;
         }).catch(function (err) {
           $scope.loading = false;
@@ -61,9 +102,14 @@
           mobile: '',
           password: 'doctor123',
           specialty: 'General Medicine',
-          village: 'Melur',
+          village: '',
+          districtId: '',
+          talukId: '',
+          villageId: '',
+          facilityId: '',
           experience: 5,
           fee: 150,
+          password: '',
           available: true
         };
         $scope.isDoctorModalOpen = true;
@@ -72,6 +118,15 @@
       $scope.openEditDoctorModal = function (doctor) {
         $scope.editingDoctor = doctor;
         $scope.doctorForm = angular.copy(doctor);
+        $scope.doctorForm.password = '';
+        if ($scope.doctorForm.districtId) {
+          $scope.changeDoctorDistrict();
+          $scope.doctorForm.talukId = doctor.talukId;
+          $scope.changeDoctorTaluk();
+          $scope.doctorForm.villageId = doctor.villageId;
+          $scope.changeDoctorVillage();
+          $scope.doctorForm.facilityId = doctor.facilityId;
+        }
         $scope.isDoctorModalOpen = true;
       };
 
@@ -81,7 +136,7 @@
       };
 
       $scope.saveDoctor = function () {
-        if (!$scope.doctorForm.name || !$scope.doctorForm.specialty || !$scope.doctorForm.village) {
+        if (!$scope.doctorForm.name || !$scope.doctorForm.specialty || !$scope.doctorForm.villageId || !$scope.doctorForm.facilityId) {
           NotificationService.error('Please complete all required fields.');
           return;
         }

@@ -3,20 +3,23 @@
 
   angular.module('Nalam360App').controller('EmergencyController', [
     '$scope',
+    '$q',
     'ApiFactory',
     'NotificationService',
-    function ($scope, ApiFactory, NotificationService) {
+    function ($scope, $q, ApiFactory, NotificationService) {
 
       $scope.loading = true;
       $scope.error = null;
       $scope.contacts = [];
+      $scope.facilities = [];
 
       function fetchEmergencyData() {
         $scope.loading = true;
         $scope.error = null;
 
-        ApiFactory.getEmergencyContacts().then(function (result) {
-          $scope.contacts = result;
+        $q.all([ApiFactory.getEmergencyContacts(), ApiFactory.getFacilities()]).then(function (results) {
+          $scope.contacts = results[0];
+          $scope.facilities = results[1];
           $scope.loading = false;
         }).catch(function (err) {
           $scope.loading = false;

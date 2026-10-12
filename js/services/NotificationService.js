@@ -1,14 +1,14 @@
 (function () {
   'use strict';
 
-  angular.module('Nalam360App').factory('NotificationService', ['$timeout', function ($timeout) {
+  angular.module('Nalam360App').factory('NotificationService', ['$timeout', 'TranslationService', function ($timeout, TranslationService) {
     var toasts = [];
 
     function show(message, type, duration) {
       var id = 'toast_' + Date.now();
       var toast = {
         id: id,
-        message: message,
+        message: TranslationService.translate(message),
         type: type || 'success' // 'success', 'error', 'warning', 'info'
       };
       toasts.push(toast);

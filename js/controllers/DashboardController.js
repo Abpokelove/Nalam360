@@ -44,11 +44,6 @@
         return ($scope.reminders || []).filter(function (r) { return r.completed; }).length;
       };
 
-      // Watch for role changes to refresh data
-      $scope.$watch(function () { return AuthService.getRole(); }, function () {
-        loadDashboardData();
-      });
-
       loadDashboardData();
     }
   ]);

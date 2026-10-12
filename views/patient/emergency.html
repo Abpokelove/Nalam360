@@ -62,27 +62,16 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><strong>Melur Primary Health Center (24/7 ER)</strong></td>
-              <td>Melur</td>
-              <td>0452-248102</td>
-              <td><status-pill value="available"></status-pill></td>
-            </tr>
-            <tr>
-              <td><strong>Karur District General Hospital</strong></td>
-              <td>Karur</td>
-              <td>04324-22005</td>
-              <td><status-pill value="available"></status-pill></td>
-            </tr>
-            <tr>
-              <td><strong>Sivakasi Community Care Desk</strong></td>
-              <td>Sivakasi</td>
-              <td>04562-23118</td>
+            <tr ng-repeat="facility in facilities track by facility.id">
+              <td><strong>{{ facility.name }}</strong></td>
+              <td>{{ facility.villageName }}, {{ facility.talukName }}</td>
+              <td><a ng-if="facility.contact" ng-href="tel:{{ facility.contact }}">{{ facility.contact }}</a><span ng-if="!facility.contact">Not supplied</span></td>
               <td><status-pill value="available"></status-pill></td>
             </tr>
           </tbody>
         </table>
       </div>
+      <empty-state icon="location_off" title="No verified local facilities" desc="No sourced healthcare facilities are currently listed for your village or taluk." ng-if="facilities.length === 0"></empty-state>
     </div>
 
   </div>

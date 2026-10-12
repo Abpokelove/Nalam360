@@ -17,7 +17,7 @@
         <div>
           <h2 style="font-size: 1.25rem; font-weight: 700;" ng-bind="user.name">Dr. Anbarasan M.</h2>
           <div style="font-size: 0.85rem; color: var(--text-muted);">
-            Specialty: <strong>General Medicine & Cardiology</strong> · Center: <strong>Melur PHC</strong>
+            Your assigned work location is managed by an administrator.
           </div>
         </div>
       </div>
@@ -28,18 +28,10 @@
           <input type="text" class="form-control" ng-model="user.name" required/>
         </div>
 
-        <div class="grid-2">
-          <div class="form-group">
-            <label>Assigned Medical Center</label>
-            <select class="form-control" ng-model="user.village" required>
-              <option ng-repeat="v in villagesList" value="{{ v }}">{{ v }} Primary Health Center</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Mobile Contact</label>
-            <input type="text" class="form-control" ng-model="user.mobile"/>
-          </div>
+        <div class="form-group">
+          <label>Assigned village</label>
+          <input type="text" class="form-control" ng-model="user.village" readonly/>
+          <small style="color: var(--text-muted);">Contact an administrator to correct your verified facility assignment.</small>
         </div>
 
         <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem;" ng-disabled="profileFormNg.$invalid || saving">

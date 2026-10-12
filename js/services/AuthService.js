@@ -7,6 +7,7 @@
     var TOKEN_KEY = 'nalam360_access_token';
 
     var savedSession = null;
+    var savedToken = $window.localStorage.getItem(TOKEN_KEY) || null;
     try {
       savedSession = JSON.parse($window.localStorage.getItem(SESSION_KEY));
     } catch (e) {
@@ -14,23 +15,23 @@
     }
 
     var state = {
-      currentUser: savedSession ? savedSession.user : null,
-      token: $window.localStorage.getItem(TOKEN_KEY) || null,
-      isLoggedIn: !!(savedSession && savedSession.user),
+      currentUser: (savedSession && savedToken) ? savedSession.user : null,
+      token: savedToken,
+      isLoggedIn: !!(savedSession && savedSession.user && savedToken),
       onboardingDone: $window.localStorage.getItem(ONBOARDING_KEY) === 'true'
     };
 
     function saveSession(user, token) {
       state.currentUser = user;
-      state.isLoggedIn = !!user;
-      if (token) {
+      state.isLoggedIn = !!(user && token);
+      if (token && user) {
         state.token = token;
         $window.localStorage.setItem(TOKEN_KEY, token);
-      }
-      if (user) {
         $window.localStorage.setItem(SESSION_KEY, JSON.stringify({ user: user }));
       } else {
+        state.currentUser = null;
         state.token = null;
+        state.isLoggedIn = false;
         $window.localStorage.removeItem(SESSION_KEY);
         $window.localStorage.removeItem(TOKEN_KEY);
       }
@@ -38,6 +39,13 @@
 
     return {
       state: state,
+
+      updateCurrentUser: function (user) {
+        if (!user) return;
+        state.currentUser = user;
+        state.isLoggedIn = true;
+        $window.localStorage.setItem(SESSION_KEY, JSON.stringify({ user: user }));
+      },
 
       isOnboardingDone: function () {
         return state.onboardingDone;
@@ -68,17 +76,21 @@
         });
       },
 
+      clearSession: function () {
+        saveSession(null, null);
+      },
+
       logout: function () {
+        saveSession(null, null);
         try {
           ApiFactory.logout();
         } catch (e) {
           // ignore API error on logout
         }
-        saveSession(null, null);
       },
 
       isLoggedIn: function () {
-        return state.isLoggedIn && !!state.currentUser;
+        return !!(state.isLoggedIn && state.currentUser && state.token);
       },
 
       getRole: function () {

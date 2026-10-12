@@ -38,6 +38,15 @@
         });
       };
 
+      $scope.updateStatus = function (appointment, status) {
+        ApiFactory.updateAppointmentStatus(appointment.id, status).then(function (updated) {
+          appointment.status = updated.status;
+          NotificationService.success(updated.status === 'not_visited' ? 'Appointment marked not visited.' : 'Appointment marked ' + updated.status + '.');
+        }).catch(function (error) {
+          NotificationService.error((error && error.message) || 'Failed to update appointment status.');
+        });
+      };
+
       fetchAppointments();
     }
   ]);

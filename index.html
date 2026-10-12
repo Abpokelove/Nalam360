@@ -19,7 +19,7 @@
   <!-- =========================================================================
        SINGLE UNIFIED APPLICATION PORTAL SHELL & WORKSPACE
        ========================================================================= -->
-  <div class="app-container" ng-class="{'auth-layout': isAuthPage(), 'patient-portal': auth.currentUser.role === 'patient', 'doctor-portal': auth.currentUser.role === 'doctor', 'admin-portal': auth.currentUser.role === 'admin'}">
+  <div class="app-container" nalam-translate-page ng-class="{'auth-layout': isAuthPage(), 'patient-portal': auth.currentUser.role === 'patient', 'doctor-portal': auth.currentUser.role === 'doctor', 'admin-portal': auth.currentUser.role === 'admin', 'demo-mode': backendMode === 'demo', 'api-offline': backendMode === 'unavailable'}">
 
     <!-- Global Header Topbar (Only rendered when in authenticated portal workspace) -->
     <header class="app-header" ng-if="!isAuthPage()">
@@ -36,7 +36,7 @@
 
         <span class="page-title-badge">
           <span class="material-symbols-outlined" style="font-size:1rem;">label</span>
-          <span ng-bind="getCurrentPageTitle()">Rural Health Hub</span>
+          <span ng-bind="getCurrentPageTitle() | translate">Rural Health Hub</span>
         </span>
       </div>
 
@@ -68,6 +68,13 @@
       </div>
     </header>
 
+    <div class="connection-mode-banner" role="status" ng-if="backendMode === 'demo'">
+      Demo mode: records are held in memory and will not persist after the server restarts.
+    </div>
+    <div class="connection-mode-banner unavailable" role="alert" ng-if="backendMode === 'unavailable'">
+      The application API is unavailable. Changes cannot be saved.
+    </div>
+
     <div class="app-body">
       <!-- Responsive Sidebar Drawer (Only rendered when in portal workspace) -->
       <aside class="app-sidebar" ng-class="{'open': isSidebarOpen}" ng-if="!isAuthPage()">
@@ -95,6 +102,10 @@
             <a href="#/patient/reminders" class="nav-item" ng-class="{'active': isActiveRoute('/patient/reminders')}">
               <span class="material-symbols-outlined">medication</span>
               <span>Medication Tracker</span>
+            </a>
+            <a href="#/patient/prescriptions" class="nav-item" ng-class="{'active': isActiveRoute('/patient/prescriptions')}">
+              <span class="material-symbols-outlined">prescriptions</span>
+              <span>My Prescriptions</span>
             </a>
             <a href="#/patient/camps" class="nav-item" ng-class="{'active': isActiveRoute('/patient/camps')}">
               <span class="material-symbols-outlined">campaign</span>
@@ -129,6 +140,10 @@
               <span class="material-symbols-outlined">event</span>
               <span>Consultation Schedule</span>
             </a>
+            <a href="#/doctor/prescriptions" class="nav-item" ng-class="{'active': isActiveRoute('/doctor/prescriptions')}">
+              <span class="material-symbols-outlined">prescriptions</span>
+              <span>Prescriptions</span>
+            </a>
             <a href="#/doctor/camps" class="nav-item" ng-class="{'active': isActiveRoute('/doctor/camps')}">
               <span class="material-symbols-outlined">campaign</span>
               <span>Health Camps</span>
@@ -161,6 +176,10 @@
             <a href="#/admin/doctors" class="nav-item" ng-class="{'active': isActiveRoute('/admin/doctors')}">
               <span class="material-symbols-outlined">medical_services</span>
               <span>Doctor Management</span>
+            </a>
+            <a href="#/admin/locations" class="nav-item" ng-class="{'active': isActiveRoute('/admin/locations')}">
+              <span class="material-symbols-outlined">location_city</span>
+              <span>Locations & Facilities</span>
             </a>
             <a href="#/admin/camps" class="nav-item" ng-class="{'active': isActiveRoute('/admin/camps')}">
               <span class="material-symbols-outlined">campaign</span>
@@ -231,6 +250,7 @@
   <script src="js/services/ApiFactory.js"></script>
   <script src="js/services/AuthService.js"></script>
   <script src="js/services/NotificationService.js"></script>
+  <script src="js/services/TranslationService.js"></script>
   <script src="js/directives/directives.js"></script>
   <script src="js/filters/filters.js"></script>
 
@@ -241,12 +261,14 @@
   <script src="js/controllers/DoctorPatientsController.js"></script>
   <script src="js/controllers/HealthcareController.js"></script>
   <script src="js/controllers/AppointmentController.js"></script>
+  <script src="js/controllers/PrescriptionController.js"></script>
   <script src="js/controllers/ReminderController.js"></script>
   <script src="js/controllers/CampController.js"></script>
   <script src="js/controllers/AwarenessController.js"></script>
   <script src="js/controllers/EmergencyController.js"></script>
   <script src="js/controllers/ProfileController.js"></script>
   <script src="js/controllers/AdminController.js"></script>
+  <script src="js/controllers/LocationAdminController.js"></script>
 
 </body>
 </html>

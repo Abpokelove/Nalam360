@@ -1,0 +1,68 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-header-title">Consultation Prescriptions</h1>
+      <p class="page-header-subtitle">Record or update medication instructions for completed consultations</p>
+    </div>
+  </div>
+
+  <loading-spinner message="Loading consultations and prescriptions..." ng-if="loading"></loading-spinner>
+  <div class="state-error" ng-if="!loading && error" role="alert">
+    <span class="material-symbols-outlined">error</span>
+    <span ng-bind="error"></span>
+  </div>
+  <empty-state icon="event_busy" title="No completed consultations" desc="Only completed consultations assigned to your account can have a prescription." ng-if="!loading && !error && appointments.length === 0"></empty-state>
+
+  <div class="grid-2" ng-if="!loading && !error && appointments.length > 0">
+    <section class="card">
+      <h2 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Consultation details</h2>
+      <div class="form-group">
+        <label for="prescriptionAppointment">Completed consultation</label>
+        <select id="prescriptionAppointment" class="form-control" ng-model="selectedAppointmentId" ng-change="selectAppointment()">
+          <option value="">Choose a consultation</option>
+          <option ng-repeat="appointment in appointments" value="{{ appointment.id }}">
+            {{ appointment.patientName }} · {{ appointment.date }} · {{ appointment.token }}
+          </option>
+        </select>
+      </div>
+
+      <div ng-if="selectedAppointmentId">
+        <div class="form-group" ng-repeat="item in form.items track by $index">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <strong>Medicine {{ $index + 1 }}</strong>
+            <button type="button" class="btn btn-soft" aria-label="Remove medicine" ng-click="removeItem($index)" ng-disabled="form.items.length === 1">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </div>
+          <div class="grid-2">
+            <input class="form-control" aria-label="Medicine name" placeholder="Medicine name" ng-model="item.medicine" required/>
+            <input class="form-control" aria-label="Dosage" placeholder="Dosage" ng-model="item.dosage" required/>
+            <input class="form-control" aria-label="Frequency" placeholder="Frequency" ng-model="item.frequency" required/>
+            <input class="form-control" aria-label="Duration" placeholder="Duration" ng-model="item.duration" required/>
+          </div>
+          <input class="form-control" style="margin-top: 0.75rem;" aria-label="Medicine instructions" placeholder="Instructions (optional)" ng-model="item.instructions"/>
+        </div>
+        <button type="button" class="btn btn-soft" ng-click="addItem()">
+          <span class="material-symbols-outlined">add</span><span>Add medicine</span>
+        </button>
+        <div class="form-group" style="margin-top: 1rem;">
+          <label for="prescriptionNotes">Consultation notes</label>
+          <textarea id="prescriptionNotes" class="form-control" rows="3" ng-model="form.notes"></textarea>
+        </div>
+        <button type="button" class="btn btn-primary" ng-click="savePrescription()" ng-disabled="saving || !form.items.length">
+          <span class="spinner" ng-if="saving"></span>
+          <span>{{ editingPrescriptionId ? 'Update prescription' : 'Save prescription' }}</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Saved records</h2>
+      <empty-state icon="prescriptions" title="No prescriptions yet" desc="Choose a completed consultation to record its first prescription." ng-if="prescriptions.length === 0"></empty-state>
+      <div ng-repeat="prescription in prescriptions track by prescription.id" style="padding: 0.85rem 0; border-bottom: 1px solid var(--surface-border-light);">
+        <strong>{{ prescription.patientId.name }}</strong>
+        <div style="font-size: 0.85rem; color: var(--text-muted);">{{ prescription.appointmentId.date }} · {{ prescription.items.length }} medicine(s)</div>
+      </div>
+    </section>
+  </div>
+</div>

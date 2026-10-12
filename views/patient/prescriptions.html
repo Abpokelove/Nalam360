@@ -1,0 +1,49 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-header-title">My Prescriptions</h1>
+      <p class="page-header-subtitle">Medication instructions recorded by your consulting doctor</p>
+    </div>
+  </div>
+
+  <loading-spinner message="Loading prescription records..." ng-if="loading"></loading-spinner>
+  <div class="state-error" ng-if="!loading && error" role="alert">
+    <span class="material-symbols-outlined">error</span>
+    <span ng-bind="error"></span>
+  </div>
+  <empty-state icon="prescriptions" title="No prescriptions recorded" desc="Prescriptions will appear here when your doctor records them after a consultation." ng-if="!loading && !error && prescriptions.length === 0"></empty-state>
+
+  <div class="grid-2" ng-if="!loading && !error && prescriptions.length > 0">
+    <article class="card" ng-repeat="prescription in prescriptions track by prescription.id">
+      <div class="page-header" style="margin-bottom: 1rem;">
+        <div>
+          <h2 style="font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700;">
+            {{ prescription.doctorId.name || 'Consulting doctor' }}
+          </h2>
+          <p class="page-header-subtitle">
+            {{ prescription.doctorId.specialty }}<span ng-if="prescription.appointmentId.date"> · {{ prescription.appointmentId.date }}</span>
+          </p>
+        </div>
+        <span class="status-pill completed">{{ prescription.items.length }} items</span>
+      </div>
+
+      <div class="table-container">
+        <table class="table">
+          <thead><tr><th>Medicine</th><th>Dosage</th><th>Frequency</th><th>Duration</th></tr></thead>
+          <tbody>
+            <tr ng-repeat="item in prescription.items track by $index">
+              <td>{{ item.medicine }}</td>
+              <td>{{ item.dosage }}</td>
+              <td>{{ item.frequency }}</td>
+              <td>{{ item.duration }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p ng-if="prescription.notes" style="margin-top: 1rem; color: var(--text-muted);">{{ prescription.notes }}</p>
+      <p ng-repeat="item in prescription.items track by $index" ng-if="item.instructions" style="margin-top: 0.5rem; color: var(--text-muted);">
+        <strong>{{ item.medicine }}:</strong> {{ item.instructions }}
+      </p>
+    </article>
+  </div>
+</div>

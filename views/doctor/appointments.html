@@ -39,12 +39,14 @@
                 <div style="font-weight: 600;">{{ apt.date }}</div>
                 <div style="font-size: 0.8rem; color: var(--text-muted);">{{ apt.time }}</div>
               </td>
-              <td>{{ apt.center || apt.village || 'Primary Center' }}</td>
+              <td>{{ apt.center || apt.village || 'Location not recorded' }}</td>
               <td><status-pill value="{{ apt.status }}"></status-pill></td>
               <td>
-                <button class="btn btn-soft" style="padding: 0.35rem 0.65rem; font-size: 0.8rem;" ng-click="cancelAppointment(apt)" ng-if="apt.status === 'confirmed' || apt.status === 'Scheduled'">
-                  Cancel Appointment
-                </button>
+                <div style="display: flex; gap: 0.4rem;" ng-if="apt.status === 'scheduled'">
+                  <button type="button" class="btn btn-primary" style="padding: 0.35rem 0.65rem; font-size: 0.8rem;" ng-click="updateStatus(apt, 'completed')">Mark visited</button>
+                  <button type="button" class="btn btn-danger" style="padding: 0.35rem 0.65rem; font-size: 0.8rem;" ng-click="updateStatus(apt, 'not_visited')">Not visited</button>
+                </div>
+                <span ng-if="apt.status !== 'scheduled'">No actions</span>
               </td>
             </tr>
           </tbody>

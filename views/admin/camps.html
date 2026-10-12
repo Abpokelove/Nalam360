@@ -8,6 +8,25 @@
     </div>
   </div>
 
+  <section class="card" style="margin-bottom: 1.5rem;">
+    <h2 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Schedule a health camp</h2>
+    <form ng-submit="createCamp()" novalidate>
+      <div class="grid-2">
+        <div class="form-group"><label for="campTitle">Camp title</label><input id="campTitle" class="form-control" ng-model="campForm.title" required/></div>
+        <div class="form-group"><label for="campDate">Date</label><input id="campDate" type="date" class="form-control" ng-model="campForm.date" required/></div>
+        <div class="form-group"><label for="campDoctor">Responsible doctor</label><input id="campDoctor" class="form-control" ng-model="campForm.doctor" required/></div>
+        <div class="form-group"><label for="campCategory">Service category</label><select id="campCategory" class="form-control" ng-model="campForm.category" required><option value="general">General medical</option><option value="eye">Eye care</option><option value="dental">Dental</option><option value="diabetes">Diabetes screening</option><option value="maternal-child">Maternal and child health</option></select></div>
+        <div class="form-group"><label for="campDistrict">District</label><select id="campDistrict" class="form-control" ng-model="campForm.districtId" ng-change="changeDistrict()" ng-options="location.id as location.name for location in locations | filter:{level:'district'}" required><option value="">Choose district</option></select></div>
+        <div class="form-group"><label for="campTaluk">Taluk</label><select id="campTaluk" class="form-control" ng-model="campForm.talukId" ng-change="changeTaluk()" ng-options="location.id as location.name for location in talukOptions" ng-disabled="!campForm.districtId" required><option value="">Choose taluk</option></select></div>
+        <div class="form-group"><label for="campVillage">Village</label><select id="campVillage" class="form-control" ng-model="campForm.villageId" ng-change="changeVillage()" ng-options="location.id as location.name for location in villageOptions" ng-disabled="!campForm.talukId" required><option value="">Choose village</option></select></div>
+        <div class="form-group"><label for="campFacility">Facility (optional)</label><select id="campFacility" class="form-control" ng-model="campForm.facilityId" ng-options="facility.id as facility.name for facility in facilityOptions" ng-disabled="!campForm.villageId"><option value="">Community venue / no facility</option></select></div>
+      </div>
+      <div class="form-group"><label for="campDescription">Description</label><textarea id="campDescription" class="form-control" rows="3" ng-model="campForm.description" required></textarea></div>
+      <div class="form-group"><label for="campImage">Image URL (optional, HTTPS recommended)</label><input id="campImage" type="url" class="form-control" ng-model="campForm.imageUrl" placeholder="Leave blank to show a category icon"/></div>
+      <button type="submit" class="btn btn-primary" ng-disabled="savingCamp || !campForm.title || !campForm.villageId || !campForm.description">{{ savingCamp ? 'Saving...' : 'Save health camp' }}</button>
+    </form>
+  </section>
+
   <div class="card" style="padding: 0; overflow: hidden; margin-bottom: 2rem;">
     <div style="position: relative; height: 180px; width: 100%;">
       <img src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=1000&auto=format&fit=crop&q=80" alt="Admin Health Camp Oversight" style="width: 100%; height: 100%; object-fit: cover;"/>
@@ -31,7 +50,7 @@
     <div class="grid-3" ng-if="camps.length > 0">
       <div class="card hoverable" style="display: flex; flex-direction: column; justify-content: space-between; padding: 0; overflow: hidden;" ng-repeat="camp in camps">
         <div style="height: 130px; position: relative;">
-          <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?w=600&auto=format&fit=crop&q=80" alt="Health Camp Location" style="width: 100%; height: 100%; object-fit: cover;"/>
+          <img ng-src="{{ campImage(camp) }}" alt="{{ camp.category }} health camp" style="width: 100%; height: 100%; object-fit: cover;"/>
           <span class="status-pill available" style="position: absolute; top: 0.75rem; left: 0.75rem; backdrop-filter: blur(4px);">{{ camp.village }} Village</span>
         </div>
 
@@ -44,6 +63,7 @@
             <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.4rem;">
               {{ camp.title }}
             </h3>
+            <span class="status-pill available" style="margin-bottom: 0.5rem;">{{ camp.category }}</span>
 
             <div style="font-size: 0.85rem; font-weight: 600; color: var(--primary); margin-bottom: 0.75rem;">
               Attending Doctor: {{ camp.doctor }}

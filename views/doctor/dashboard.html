@@ -48,7 +48,7 @@
           <span class="material-symbols-outlined">event_available</span>
         </div>
         <div>
-          <div class="metric-value">{{ summary.todayConsultations || 2 }}</div>
+          <div class="metric-value">{{ summary.todayConsultations || 0 }}</div>
           <div class="metric-label">Scheduled Visits Today</div>
         </div>
       </div>
@@ -58,7 +58,7 @@
           <span class="material-symbols-outlined">groups</span>
         </div>
         <div>
-          <div class="metric-value">{{ summary.totalPatients || 4 }}</div>
+          <div class="metric-value">{{ summary.totalPatients || 0 }}</div>
           <div class="metric-label">Assigned Sector Patients</div>
         </div>
       </div>
@@ -68,7 +68,7 @@
           <span class="material-symbols-outlined">task_alt</span>
         </div>
         <div>
-          <div class="metric-value">{{ summary.completedVisits || 1 }}</div>
+          <div class="metric-value">{{ summary.completedVisits || 0 }}</div>
           <div class="metric-label">Completed Consultations</div>
         </div>
       </div>
@@ -78,51 +78,17 @@
           <span class="material-symbols-outlined">campaign</span>
         </div>
         <div>
-          <div class="metric-value">{{ summary.activeCamps || 3 }}</div>
+          <div class="metric-value">{{ summary.activeCamps || 0 }}</div>
           <div class="metric-label">Village Health Camps</div>
         </div>
       </div>
     </div>
 
-    <!-- Real-Time Patient Telemetry & Cardiac ECG Monitor -->
-    <div class="card" style="margin-bottom: 2rem; background: #0f172a; border-color: #1e293b; color: white;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
-          <span class="material-symbols-outlined" style="color: #10b981; font-size: 1.5rem;">ecg</span>
-          <div>
-            <h3 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: white;">Clinical ECG Telemetry & Cardiac Waveform Monitor</h3>
-            <p style="font-size: 0.82rem; color: #94a3b8;">Real-time electro-cardiogram rhythm tracing for assigned sector patients</p>
-          </div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <span style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block; box-shadow: 0 0 8px #10b981;"></span>
-          <span style="font-size: 0.82rem; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.05em;">Active Clinical Feed</span>
-        </div>
-      </div>
-
-      <vitals-canvas></vitals-canvas>
-
-      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #1e293b; text-align: center;">
-        <div>
-          <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Mean Heart Rate</div>
-          <div style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: #10b981;">74 <span style="font-size: 0.75rem; color: #94a3b8;">BPM</span></div>
-          <meter min="40" max="140" low="60" high="100" optimum="74" value="74" style="margin-top: 0.35rem; height: 6px;"></meter>
-        </div>
-        <div>
-          <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Sector Avg BP</div>
-          <div style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: #38bdf8;">118/78 <span style="font-size: 0.75rem; color: #94a3b8;">mmHg</span></div>
-          <meter min="90" max="180" low="110" high="140" optimum="118" value="118" style="margin-top: 0.35rem; height: 6px;"></meter>
-        </div>
-        <div>
-          <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Oxygenation</div>
-          <div style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: #34d399;">99% <span style="font-size: 0.75rem; color: #94a3b8;">SpO2</span></div>
-          <meter min="70" max="100" low="90" high="95" optimum="99" value="99" style="margin-top: 0.35rem; height: 6px;"></meter>
-        </div>
-        <div>
-          <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Rhythm Status</div>
-          <div style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 800; color: #10b981; margin-top: 0.2rem;">Sinus Rhythm</div>
-          <meter min="0" max="100" low="30" high="70" optimum="100" value="100" style="margin-top: 0.35rem; height: 6px;"></meter>
-        </div>
+    <div class="card" style="margin-bottom: 2rem; display: flex; align-items: flex-start; gap: 1rem;">
+      <span class="material-symbols-outlined" style="font-size: 1.6rem; color: var(--text-muted);">ecg</span>
+      <div>
+        <h3 style="font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700;">Clinical device data</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted);">No patient device feed is connected. This dashboard does not display clinical measurements.</p>
       </div>
     </div>
 
@@ -151,10 +117,14 @@
               <status-pill value="{{ item.status }}"></status-pill>
             </div>
 
-            <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;" ng-if="item.status === 'scheduled'">
+            <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap;" ng-if="item.status === 'scheduled'">
               <button class="btn btn-primary" style="padding: 0.3rem 0.65rem; font-size: 0.8rem;" ng-click="updateStatus(item, 'completed')">
                 <span class="material-symbols-outlined" style="font-size: 1rem;">check_circle</span>
-                <span>Mark Completed</span>
+                <span>Visited</span>
+              </button>
+              <button class="btn btn-soft" style="padding: 0.3rem 0.65rem; font-size: 0.8rem; color: var(--warning); border-color: var(--warning);" ng-click="updateStatus(item, 'not_visited')">
+                <span class="material-symbols-outlined" style="font-size: 1rem;">person_off</span>
+                <span>Not Visited</span>
               </button>
               <button class="btn btn-danger" style="padding: 0.3rem 0.65rem; font-size: 0.8rem;" ng-click="updateStatus(item, 'cancelled')">
                 <span>Cancel</span>
@@ -182,7 +152,6 @@
                 <div style="font-size: 0.8rem; color: var(--text-muted);">{{ pat.village }} Sector · Age {{ pat.age }} ({{ pat.gender }})</div>
               </div>
             </div>
-            <span class="status-pill available" style="font-size: 0.7rem;">{{ pat.primaryConcern }}</span>
           </div>
         </div>
       </div>

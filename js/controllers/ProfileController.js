@@ -17,17 +17,82 @@
         role: 'patient'
       });
 
-      $scope.villagesList = ['Melur', 'Karur', 'Hosur', 'Sivakasi', 'Pollachi', 'Tenkasi'];
+      $scope.isPatient = AuthService.isPatient();
+      $scope.isDoctor = AuthService.isDoctor();
+      $scope.profileDistricts = [];
+      $scope.profileTaluks = [];
+      $scope.profileVillages = [];
+      $scope.profileLocationLoading = false;
+
+      if ($scope.isPatient) {
+        $scope.profileLocationLoading = true;
+        ApiFactory.getLocations('district').then(function (districts) {
+          $scope.profileDistricts = districts;
+          if (!$scope.user.districtId) return;
+          return ApiFactory.getLocations('taluk', $scope.user.districtId).then(function (taluks) {
+            $scope.profileTaluks = taluks;
+            if (!$scope.user.talukId) return;
+            return ApiFactory.getLocations('village', $scope.user.talukId).then(function (villages) {
+              $scope.profileVillages = villages;
+            });
+          });
+        }).catch(function () {
+          $scope.profileDistricts = [];
+        }).finally(function () {
+          $scope.profileLocationLoading = false;
+        });
+      }
+
+      $scope.changeProfileDistrict = function () {
+        $scope.user.talukId = '';
+        $scope.user.villageId = '';
+        $scope.user.village = '';
+        $scope.profileTaluks = [];
+        $scope.profileVillages = [];
+        if (!$scope.user.districtId) return;
+        ApiFactory.getLocations('taluk', $scope.user.districtId).then(function (taluks) {
+          $scope.profileTaluks = taluks;
+        });
+      };
+
+      $scope.changeProfileTaluk = function () {
+        $scope.user.villageId = '';
+        $scope.user.village = '';
+        $scope.profileVillages = [];
+        if (!$scope.user.talukId) return;
+        ApiFactory.getLocations('village', $scope.user.talukId).then(function (villages) {
+          $scope.profileVillages = villages;
+        });
+      };
+
+      $scope.changeProfileVillage = function () {
+        var village = $scope.profileVillages.find(function (location) { return location.id === $scope.user.villageId; });
+        $scope.user.village = village ? village.name : '';
+      };
 
       $scope.saving = false;
       $scope.supportForm = { subject: '', message: '' };
 
       $scope.saveProfile = function () {
+        var profileData = { name: $scope.user.name };
+        if ($scope.isPatient) {
+          if (($scope.user.districtId || $scope.user.talukId || $scope.user.villageId) && (!$scope.user.districtId || !$scope.user.talukId || !$scope.user.villageId)) {
+            NotificationService.error('Choose a complete district, taluk, and village hierarchy.');
+            return;
+          }
+          profileData.village = $scope.user.village;
+          profileData.districtId = $scope.user.districtId;
+          profileData.talukId = $scope.user.talukId;
+          profileData.villageId = $scope.user.villageId;
+          profileData.gender = $scope.user.gender;
+          profileData.dob = $scope.user.dob;
+        }
         $scope.saving = true;
 
-        ApiFactory.updateProfile($scope.user).then(function (result) {
+        ApiFactory.updateProfile($scope.user, profileData).then(function (result) {
           $scope.saving = false;
-          AuthService.state.currentUser = result.user;
+          AuthService.updateCurrentUser(result.user);
+          $scope.user = angular.copy(result.user);
           NotificationService.success('Profile details saved successfully!');
         }).catch(function (err) {
           $scope.saving = false;

@@ -4,14 +4,15 @@
   var app = angular.module('Nalam360App');
 
   // Capitalize status text
-  app.filter('statusLabel', function () {
+  app.filter('statusLabel', ['TranslationService', function (TranslationService) {
     return function (value) {
       if (!value) return '';
-      return String(value).replace(/^./, function (letter) {
+      var display = value === 'not_visited' ? 'Not Visited' : String(value).replace(/^./, function (letter) {
         return letter.toUpperCase();
       });
+      return TranslationService.translate(display);
     };
-  });
+  }]);
 
   // Extract 2-letter uppercase initials
   app.filter('initials', function () {

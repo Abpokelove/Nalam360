@@ -18,21 +18,55 @@
 
       <div class="form-group" style="margin-bottom: 0;">
         <label>Filter by Specialty</label>
-        <select class="form-control" ng-model="selectedSpecialty">
+        <select class="form-control" ng-model="selectedSpecialty" ng-change="changeFilters()">
           <option value="">All Specialties</option>
           <option ng-repeat="spec in specialtiesList" value="{{ spec }}">{{ spec }}</option>
         </select>
       </div>
 
       <div class="form-group" style="margin-bottom: 0;">
-        <label>Filter by Village Sector</label>
-        <select class="form-control" ng-model="selectedVillage">
-          <option value="">All Villages</option>
-          <option ng-repeat="v in villagesList" value="{{ v }}">{{ v }}</option>
+        <label>Village within your verified taluk</label>
+        <select class="form-control" ng-model="selectedVillageId" ng-change="changeVillage()" ng-options="location.id as location.name for location in villages">
+          <option value="">Choose verified village</option>
+        </select>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 0;">
+        <label>Doctor availability</label>
+        <select class="form-control" ng-model="selectedAvailability" ng-change="changeFilters()">
+          <option value="">All availability</option>
+          <option value="true">Accepting appointments</option>
+          <option value="false">Not accepting appointments</option>
+        </select>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 0;" ng-if="facilities.length">
+        <label>Healthcare facility</label>
+        <select class="form-control" ng-model="selectedFacilityId" ng-change="changeFilters()" ng-options="facility.id as facility.name for facility in facilities">
+          <option value="">All local facilities</option>
         </select>
       </div>
     </div>
   </div>
+
+  <div class="state-empty" ng-if="!locationLoading && !currentUser.villageId" role="status">
+    <div class="state-empty-title">Your location has not been verified</div>
+    <div class="state-empty-desc">Doctor and facility results require a sourced district, taluk, and village assignment.</div>
+  </div>
+
+  <section ng-if="!loading && facilities.length" style="margin-bottom: 1.5rem;">
+    <h2 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem;">Verified facilities in this area</h2>
+    <div class="grid-3">
+      <article class="card" ng-repeat="facility in facilities | filter:{ villageId: selectedVillageId } track by facility.id">
+        <div style="display: flex; justify-content: space-between; gap: 0.75rem; align-items: flex-start;">
+          <div><h3 style="font-size: 1rem; font-weight: 700;">{{ facility.name }}</h3><p style="color: var(--text-muted);">{{ facility.type }} · {{ facility.villageName }}, {{ facility.talukName }}</p></div>
+          <span class="status-pill" ng-class="facility.locationMatch === 'exact' ? 'available' : 'scheduled'">{{ facility.locationMatch === 'exact' ? 'Your village' : 'Nearby taluk' }}</span>
+        </div>
+        <p ng-if="facility.address" style="margin-top: 0.5rem; color: var(--text-muted);">{{ facility.address }}</p>
+        <a ng-if="facility.contact" ng-href="tel:{{ facility.contact }}" style="display: inline-block; margin-top: 0.5rem;">{{ facility.contact }}</a>
+      </article>
+    </div>
+  </section>
 
   <loading-spinner message="Loading care directory..." ng-if="loading"></loading-spinner>
 
@@ -63,7 +97,8 @@
           </div>
 
           <div style="font-size: 0.88rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1.25rem;">
-            <div><span class="material-symbols-outlined" style="font-size: 1rem; vertical-align: middle;">location_on</span> <strong>Village:</strong> {{ doc.village }}</div>
+            <div><span class="material-symbols-outlined" style="font-size: 1rem; vertical-align: middle;">location_on</span> <strong>Village:</strong> {{ doc.villageName || doc.village }}</div>
+            <div><span class="status-pill" ng-class="doc.locationMatch === 'exact' ? 'available' : 'scheduled'">{{ doc.locationMatch === 'exact' ? 'Your village' : 'Nearby taluk' }}</span></div>
             <div><span class="material-symbols-outlined" style="font-size: 1rem; vertical-align: middle;">workspace_premium</span> <strong>Experience:</strong> {{ doc.experience }} years</div>
             <div><span class="material-symbols-outlined" style="font-size: 1rem; vertical-align: middle;">payments</span> <strong>Consultation Fee:</strong> ₹{{ doc.fee }}</div>
             <div><span class="material-symbols-outlined" style="font-size: 1rem; vertical-align: middle;">schedule</span> <strong>Next Slot:</strong> {{ doc.nextSlot }}</div>
@@ -99,23 +134,20 @@
       <form name="bookingFormNg" ng-submit="confirmBooking()" novalidate>
         <div class="form-group">
           <label>Select Preferred Date</label>
-          <input type="date" class="form-control" ng-model="bookingForm.date" required/>
+          <input type="date" class="form-control" ng-model="bookingForm.date" min="{{ todayDate }}" ng-change="updateAvailableTimes()" required/>
         </div>
 
         <div class="form-group">
           <label>Select Time Slot</label>
-          <select class="form-control" ng-model="bookingForm.time" required>
-            <option value="09:00 AM">09:00 AM</option>
-            <option value="10:30 AM">10:30 AM</option>
-            <option value="02:00 PM">02:00 PM</option>
-            <option value="04:30 PM">04:30 PM</option>
-            <option value="06:00 PM">06:00 PM</option>
+          <select class="form-control" ng-model="bookingForm.time" ng-disabled="loadingTimeSlots || !availableTimeSlots.length" required>
+            <option value="">{{ loadingTimeSlots ? 'Checking times...' : 'Choose an open time' }}</option>
+            <option ng-repeat="slot in availableTimeSlots" value="{{ slot }}">{{ slot }}</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label>Village Sector Location</label>
-          <input type="text" class="form-control" ng-model="bookingForm.village" required/>
+          <label>Village</label>
+          <input type="text" class="form-control" value="{{ selectedDoctor.villageName || selectedDoctor.village }}" readonly/>
         </div>
 
         <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">

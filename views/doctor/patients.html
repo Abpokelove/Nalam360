@@ -55,9 +55,8 @@
             <th>Patient Name</th>
             <th>Contact Mobile</th>
             <th>Village Sector</th>
-            <th>Gender & Age</th>
-            <th>Primary Health Concern</th>
-            <th>Last Visit</th>
+            <th>Gender</th>
+            <th>Date of Birth</th>
           </tr>
         </thead>
         <tbody>
@@ -70,11 +69,8 @@
             </td>
             <td>{{ pat.mobile }}</td>
             <td>{{ pat.village }}</td>
-            <td>{{ pat.gender }}, {{ pat.age }} yrs</td>
-            <td>
-              <span class="status-pill available">{{ pat.primaryConcern }}</span>
-            </td>
-            <td>{{ pat.lastVisit }}</td>
+            <td>{{ pat.gender || 'Not provided' }}</td>
+            <td>{{ pat.dob || 'Not provided' }}</td>
           </tr>
         </tbody>
       </table>

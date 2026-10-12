@@ -65,6 +65,12 @@
         requiresAuth: true,
         roles: ['patient']
       })
+      .when('/patient/prescriptions', {
+        templateUrl: 'views/patient/prescriptions.html',
+        controller: 'PrescriptionController',
+        requiresAuth: true,
+        roles: ['patient']
+      })
       .when('/patient/camps', {
         templateUrl: 'views/patient/camps.html',
         controller: 'CampController',
@@ -111,6 +117,12 @@
         requiresAuth: true,
         roles: ['doctor']
       })
+      .when('/doctor/prescriptions', {
+        templateUrl: 'views/doctor/prescriptions.html',
+        controller: 'PrescriptionController',
+        requiresAuth: true,
+        roles: ['doctor']
+      })
       .when('/doctor/camps', {
         templateUrl: 'views/doctor/camps.html',
         controller: 'CampController',
@@ -154,6 +166,12 @@
       .when('/admin/doctors', {
         templateUrl: 'views/admin/doctors.html',
         controller: 'AdminController',
+        requiresAuth: true,
+        roles: ['admin']
+      })
+      .when('/admin/locations', {
+        templateUrl: 'views/admin/locations.html',
+        controller: 'LocationAdminController',
         requiresAuth: true,
         roles: ['admin']
       })

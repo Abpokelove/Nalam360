@@ -4,44 +4,82 @@
   angular.module('Nalam360App').controller('AuthController', [
     '$scope',
     '$location',
+    'ApiFactory',
     'AuthService',
     'NotificationService',
-    function ($scope, $location, AuthService, NotificationService) {
+    function ($scope, $location, ApiFactory, AuthService, NotificationService) {
 
       $scope.selectedRole = 'patient'; // Default active role tab
 
       $scope.loginForm = {
-        identity: 'patient@nalam360.test',
-        password: 'patient123'
+        identity: '',
+        password: ''
       };
 
       $scope.registerForm = {
         name: '',
         mobile: '',
         village: '',
+        districtId: '',
+        talukId: '',
+        villageId: '',
         gender: 'Male',
         dob: '',
         password: ''
       };
 
-      $scope.villagesList = ['Melur', 'Karur', 'Hosur', 'Sivakasi', 'Pollachi', 'Tenkasi', 'Periyakulam'];
+      $scope.districts = [];
+      $scope.taluks = [];
+      $scope.villages = [];
       $scope.loading = false;
       $scope.errorMsg = null;
 
+      ApiFactory.getLocations('district').then(function (locations) {
+        $scope.districts = locations;
+      }).catch(function () {
+        $scope.errorMsg = 'Verified location records are not available. Please contact an administrator.';
+      });
+
+      $scope.selectDistrict = function () {
+        $scope.registerForm.talukId = '';
+        $scope.registerForm.villageId = '';
+        $scope.registerForm.village = '';
+        $scope.taluks = [];
+        $scope.villages = [];
+        if (!$scope.registerForm.districtId) return;
+        ApiFactory.getLocations('taluk', $scope.registerForm.districtId).then(function (locations) {
+          $scope.taluks = locations;
+        });
+      };
+
+      $scope.selectTaluk = function () {
+        $scope.registerForm.villageId = '';
+        $scope.registerForm.village = '';
+        $scope.villages = [];
+        if (!$scope.registerForm.talukId) return;
+        ApiFactory.getLocations('village', $scope.registerForm.talukId).then(function (locations) {
+          $scope.villages = locations;
+        });
+      };
+
+      $scope.selectVillage = function () {
+        var village = $scope.villages.find(function (location) { return location.id === $scope.registerForm.villageId; });
+        $scope.registerForm.village = village ? village.name : '';
+      };
+
       // Role Tab Switcher (Patient, Doctor, Admin)
+      var demoCredentials = {
+        patient: { identity: '9876543210', password: 'patient123' },
+        doctor: { identity: '9888888888', password: 'doctor123' },
+        admin: { identity: '9999999999', password: 'admin123' }
+      };
+
       $scope.selectRole = function (role) {
         $scope.selectedRole = role;
         $scope.errorMsg = null;
-
-        if (role === 'patient') {
-          $scope.loginForm.identity = 'patient@nalam360.test';
-          $scope.loginForm.password = 'patient123';
-        } else if (role === 'doctor') {
-          $scope.loginForm.identity = 'doctor@nalam360.test';
-          $scope.loginForm.password = 'doctor123';
-        } else if (role === 'admin') {
-          $scope.loginForm.identity = 'admin@nalam360.test';
-          $scope.loginForm.password = 'admin123';
+        if (demoCredentials[role]) {
+          $scope.loginForm.identity = demoCredentials[role].identity;
+          $scope.loginForm.password = demoCredentials[role].password;
         }
       };
 
@@ -49,6 +87,9 @@
       $scope.fillDemoPatient = function () { $scope.selectRole('patient'); };
       $scope.fillDemoDoctor = function () { $scope.selectRole('doctor'); };
       $scope.fillDemoAdmin = function () { $scope.selectRole('admin'); };
+
+      // Initialize default demo role
+      $scope.selectRole('patient');
 
       // Real-Time Live Validation Indicators
       $scope.isIdentityValid = function () {
@@ -74,7 +115,7 @@
       };
 
       $scope.isRegisterVillageValid = function () {
-        return !!$scope.registerForm.village;
+        return !!$scope.registerForm.districtId && !!$scope.registerForm.talukId && !!$scope.registerForm.villageId;
       };
 
       $scope.isRegisterPasswordValid = function () {
@@ -115,7 +156,7 @@
       $scope.submitRegister = function () {
         $scope.errorMsg = null;
 
-        if (!$scope.isRegisterNameValid() || !$scope.isRegisterMobileValid() || !$scope.isRegisterPasswordValid()) {
+        if (!$scope.isRegisterNameValid() || !$scope.isRegisterMobileValid() || !$scope.isRegisterPasswordValid() || !$scope.isRegisterVillageValid()) {
           $scope.errorMsg = 'Please fulfill all highlighted validation requirements.';
           return;
         }

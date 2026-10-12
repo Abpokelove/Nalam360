@@ -10,7 +10,7 @@
     <!-- Error Alert Banner -->
     <div class="state-error" ng-if="errorMsg">
       <span class="material-symbols-outlined">error</span>
-      <span ng-bind="errorMsg"></span>
+      <span ng-bind="errorMsg | translate"></span>
     </div>
 
     <form name="regNgForm" ng-submit="submitRegister()" novalidate>
@@ -62,15 +62,35 @@
         </div>
       </div>
 
-      <div class="grid-2">
+      <div class="grid-3">
         <div class="form-group">
-          <label for="regVillage">Select Village Sector</label>
-          <select id="regVillage" name="village" class="form-control" ng-class="{'is-valid': isRegisterVillageValid()}" ng-model="registerForm.village" required>
-            <option value="">Choose Village Sector</option>
-            <option ng-repeat="v in villagesList" value="{{ v }}">{{ v }}</option>
+          <label for="regDistrict">District</label>
+          <select id="regDistrict" class="form-control" ng-model="registerForm.districtId" ng-change="selectDistrict()" ng-options="location.id as location.name for location in districts" required>
+            <option value="">Choose verified district</option>
           </select>
         </div>
 
+        <div class="form-group">
+          <label for="regTaluk">Taluk</label>
+          <select id="regTaluk" class="form-control" ng-model="registerForm.talukId" ng-change="selectTaluk()" ng-options="location.id as location.name for location in taluks" ng-disabled="!registerForm.districtId" required>
+            <option value="">Choose verified taluk</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="regVillage">Village</label>
+          <select id="regVillage" class="form-control" ng-model="registerForm.villageId" ng-change="selectVillage()" ng-options="location.id as location.name for location in villages" ng-disabled="!registerForm.talukId" required>
+            <option value="">Choose verified village</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="state-empty" ng-if="districts.length === 0" role="status">
+        <div class="state-empty-title">Verified locations are not configured</div>
+        <div class="state-empty-desc">An administrator must add sourced district, taluk, and village records before registration is available.</div>
+      </div>
+
+      <div class="grid-2">
         <div class="form-group">
           <label for="regGender">Gender</label>
           <select id="regGender" name="gender" class="form-control" ng-model="registerForm.gender">
@@ -81,12 +101,13 @@
         </div>
       </div>
 
-      <div class="grid-2">
         <div class="form-group">
           <label for="regDob">Date of Birth</label>
           <input id="regDob" name="dob" type="date" class="form-control" ng-model="registerForm.dob"/>
         </div>
+      </div>
 
+      <div class="grid-2">
         <!-- Password Field with Live Validation -->
         <div class="form-group">
           <label for="regPassword">Account Password</label>

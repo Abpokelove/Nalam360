@@ -60,7 +60,7 @@
     <!-- Error Alert Banner -->
     <div class="state-error" ng-if="errorMsg">
       <span class="material-symbols-outlined">error</span>
-      <span ng-bind="errorMsg"></span>
+      <span ng-bind="errorMsg | translate"></span>
     </div>
 
     <form name="loginNgForm" ng-submit="submitLogin()" novalidate>

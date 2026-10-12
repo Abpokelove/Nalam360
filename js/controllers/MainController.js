@@ -4,15 +4,23 @@
   angular.module('Nalam360App').controller('MainController', [
     '$scope',
     '$location',
+    'ApiFactory',
     'AuthService',
+    'TranslationService',
     'NotificationService',
-    function ($scope, $location, AuthService, NotificationService) {
+    function ($scope, $location, ApiFactory, AuthService, TranslationService, NotificationService) {
 
       $scope.auth = AuthService.state;
       $scope.authService = AuthService;
       $scope.toasts = NotificationService.toasts;
       $scope.isSidebarOpen = false;
-      $scope.selectedLang = 'en';
+      $scope.selectedLang = TranslationService.state.language;
+      $scope.backendMode = 'checking';
+      ApiFactory.getHealth().then(function (health) {
+        $scope.backendMode = health.mongo === 'connected' ? 'persistent' : 'demo';
+      }).catch(function () {
+        $scope.backendMode = 'unavailable';
+      });
 
       var pageTitles = {
         '/onboarding': 'Welcome to Nalam360',
@@ -24,6 +32,7 @@
         '/patient/doctors': 'Doctor Network',
         '/patient/appointments': 'Care Schedule',
         '/patient/reminders': 'Medication Tracker',
+        '/patient/prescriptions': 'My Prescriptions',
         '/patient/camps': 'Community Health Camps',
         '/patient/awareness': 'Health Guides',
         '/patient/emergency': 'Emergency Assistance',
@@ -32,6 +41,7 @@
         '/doctor/dashboard': 'Doctor Workspace',
         '/doctor/patients': 'Sector Patients Roster',
         '/doctor/appointments': 'Doctor Schedule',
+        '/doctor/prescriptions': 'Consultation Prescriptions',
         '/doctor/camps': 'Health Camps Roster',
         '/doctor/awareness': 'Awareness Guides',
         '/doctor/emergency': 'Emergency Hotlines Desk',
@@ -40,6 +50,7 @@
         '/admin/dashboard': 'Admin Command Center',
         '/admin/users': 'Admin - User & Role Management',
         '/admin/doctors': 'Admin - Doctor Directory',
+        '/admin/locations': 'Location & Facility Records',
         '/admin/camps': 'Admin - Health Camps',
         '/admin/awareness': 'Admin - Health Guides',
         '/admin/emergency': 'Admin - Emergency Hotlines',
@@ -85,7 +96,8 @@
       };
 
       $scope.toggleLanguage = function () {
-        $scope.selectedLang = $scope.selectedLang === 'en' ? 'ta' : 'en';
+        TranslationService.toggle();
+        $scope.selectedLang = TranslationService.state.language;
         var langName = $scope.selectedLang === 'en' ? 'English' : 'Tamil (தமிழ்)';
         NotificationService.success('Language changed to ' + langName);
       };

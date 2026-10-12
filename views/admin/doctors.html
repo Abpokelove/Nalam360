@@ -39,7 +39,7 @@
           </div>
 
           <div style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.25rem; background: var(--surface-muted); padding: 0.85rem; border-radius: var(--radius-md);">
-            <div><strong>Primary Center:</strong> {{ doc.village }} PHC</div>
+            <div><strong>Primary Center:</strong> {{ doc.facilityName || 'Unverified facility' }}</div>
             <div><strong>Account Email:</strong> {{ doc.email || 'doctor@nalam360.test' }}</div>
             <div><strong>Experience:</strong> {{ doc.experience }} years</div>
             <div><strong>Consultation Fee:</strong> ₹{{ doc.fee }}</div>
@@ -90,7 +90,7 @@
 
         <div class="form-group">
           <label>Account Password {{ editingDoctor ? '(Leave blank to keep unchanged)' : '(Set Login Password for Doctor)' }}</label>
-          <input type="password" class="form-control" placeholder="Enter password (minimum 4 characters)" ng-model="doctorForm.password" ng-required="!editingDoctor"/>
+          <input type="password" class="form-control" placeholder="Set a strong initial password (12+ characters)" ng-model="doctorForm.password" ng-required="!editingDoctor" minlength="12" autocomplete="new-password"/>
         </div>
 
         <div class="grid-2">
@@ -101,12 +101,10 @@
             </select>
           </div>
 
-          <div class="form-group">
-            <label>Village Sector PHC</label>
-            <select class="form-control" ng-model="doctorForm.village" required>
-              <option ng-repeat="v in villagesList" value="{{ v }}">{{ v }}</option>
-            </select>
-          </div>
+          <div class="form-group"><label>District</label><select class="form-control" ng-model="doctorForm.districtId" ng-change="changeDoctorDistrict()" ng-options="location.id as location.name for location in locations | filter:{level:'district'}" required><option value="">Choose district</option></select></div>
+          <div class="form-group"><label>Taluk</label><select class="form-control" ng-model="doctorForm.talukId" ng-change="changeDoctorTaluk()" ng-options="location.id as location.name for location in doctorTaluks" ng-disabled="!doctorForm.districtId" required><option value="">Choose taluk</option></select></div>
+          <div class="form-group"><label>Village</label><select class="form-control" ng-model="doctorForm.villageId" ng-change="changeDoctorVillage()" ng-options="location.id as location.name for location in doctorVillages" ng-disabled="!doctorForm.talukId" required><option value="">Choose village</option></select></div>
+          <div class="form-group"><label>Assigned facility</label><select class="form-control" ng-model="doctorForm.facilityId" ng-options="facility.id as facility.name for facility in doctorFacilities" ng-disabled="!doctorForm.villageId" required><option value="">Choose verified facility</option></select></div>
         </div>
 
         <div class="grid-2">
@@ -123,7 +121,7 @@
 
         <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">
           <button type="button" class="btn btn-soft" ng-click="closeDoctorModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary" ng-disabled="adminDocFormNg.$invalid">
+          <button type="submit" class="btn btn-primary" ng-disabled="adminDocFormNg.$invalid || !doctorForm.villageId || !doctorForm.facilityId || (!editingDoctor && !doctorForm.password)">
             <span class="material-symbols-outlined">save</span>
             <span>{{ editingDoctor ? 'Save Doctor Changes' : 'Create Doctor Account' }}</span>
           </button>
